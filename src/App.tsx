@@ -9,6 +9,11 @@ import Register from "./pages/auth/registartion/Register";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StorePage from "./pages/store/StorePage";
 import ProductsPage from "./pages/products/ProductsPage";
+import AdminLayout from "./pages/admindashboard/AdminLayout";
+import DashboardPage from "./pages/admindashboard/DashboardPage";
+import UsersPage from "./pages/admindashboard/UsersPage";
+import ReportsPage from "./pages/admindashboard/ReportsPage";
+import SettingsPage from "./pages/admindashboard/SettingsPage";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +56,29 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+  path: "/admin",
+  element: <AdminLayout />, 
+  children: [
+  {
+      path: "/admin/dashboard",
+      element: <DashboardPage />,
+    },
+    {
+      path: "/admin/users",
+      element: <UsersPage />,
+    },
+    {
+      path: "/admin/reports",
+      element: <ReportsPage />,
+    },
+    {
+      path: "/admin/settings",
+      element: <SettingsPage />,
+    },
+  ],
+},
+
 ]);
 
 const queryClient = new QueryClient();
