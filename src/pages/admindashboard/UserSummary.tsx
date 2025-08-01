@@ -3,8 +3,6 @@ import { IoMdTrendingUp } from "react-icons/io";
 import { RiLoader2Fill } from "react-icons/ri";
 import { Users } from "lucide-react";
 
-
-
 function UserSummary() {    
   return (
     <div className="border border-gray-200 bg-white shadow-sm rounded-lg p-6">

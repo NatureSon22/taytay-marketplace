@@ -51,7 +51,7 @@ function UserActivityLog() {
 
   const handleDayChange = (day: string) => {
     setSelectedDay(day);
-    setPage(1); // reset to first page on filter change
+    setPage(1); 
   };
 
   return (
@@ -102,7 +102,6 @@ function UserActivityLog() {
         </Table>
       </ScrollArea>
 
-      {/* Pagination */}
       {pageCount > 1 && (
         <div className="flex justify-end gap-2 mt-4">
           <Button
