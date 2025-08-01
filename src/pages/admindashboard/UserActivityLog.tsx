@@ -16,25 +16,11 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { format } from "date-fns";
-
-const dummyLogs = [
-  { user: "Juan Dela Cruz", action: "Updated profile", date: "2025-07-30 10:45 AM", day: "Wednesday" },
-  { user: "Maria Santos", action: "Added new product", date: "2025-07-29 2:15 PM", day: "Tuesday" },
-  { user: "Pedro Reyes", action: "Deleted account", date: "2025-07-28 11:10 AM", day: "Monday" },
-  { user: "Anne Lopez", action: "Changed password", date: "2025-07-28 9:45 AM", day: "Monday" },
-  { user: "Karl Moreno", action: "Logged in", date: "2025-07-27 5:20 PM", day: "Sunday" },
-  { user: "Luisa Lim", action: "Reset password", date: "2025-07-26 3:10 PM", day: "Saturday" },
-  { user: "Enrico Tan", action: "Updated email", date: "2025-07-25 1:30 PM", day: "Friday" },
-];
+import { formatDate } from "@/utils/formatDate";
+import { dummyLogs } from "@/data/userData";
 
 const daysOfWeek = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const itemsPerPage = 5;
-
-function formatDate(raw: string) {
-  const parsed = new Date(raw);
-  return isNaN(parsed.getTime()) ? raw : format(parsed, "MMMM d, yyyy · h:mm a");
-}
 
 function UserActivityLog() {
   const [selectedDay, setSelectedDay] = useState("All");
@@ -57,7 +43,7 @@ function UserActivityLog() {
   return (
     <div className="bg-white border rounded-xl p-6 mb-6 shadow-sm">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">User Activity Log</h2>
+        <h2 className="text-xl font-semibold">Activity Log</h2>
         <Select value={selectedDay} onValueChange={handleDayChange}>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Filter by Day" />

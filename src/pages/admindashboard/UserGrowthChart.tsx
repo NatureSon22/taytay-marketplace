@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { dummyData } from "@/data/userData"; // Assuming you have a data file for dummy data
 import {
   LineChart,
   Line,
@@ -7,7 +8,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
 import {
   Select,
   SelectContent,
@@ -15,21 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-const dummyData = [
-  { month: "January", users: 40 },
-  { month: "February", users: 80 },
-  { month: "March", users: 120 },
-  { month: "April", users: 150 },
-  { month: "May", users: 200 },
-  { month: "June", users: 250 },
-  { month: "July", users: 300 },
-  { month: "August", users: 0 },
-  { month: "September", users: 0 },
-  { month: "October", users: 0 },
-  { month: "November", users: 0 },
-  { month: "December", users: 0 },
-];
 
 function UserGrowthChart() {
   const [selectedMonth, setSelectedMonth] = useState("All");
