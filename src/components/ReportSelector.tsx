@@ -21,7 +21,7 @@ function ReportSelector({
     <div className="flex gap-2 items-center w-[500px] justify-end">
       <p className="text-gray-600">Select Report</p>
       <Select value={selectedReport} onValueChange={onChange}>
-        <SelectTrigger className="w-[200px]">
+        <SelectTrigger className="w-[200px] cursor-pointer">
           <SelectValue placeholder="Select Report" />
         </SelectTrigger>
         <SelectContent>

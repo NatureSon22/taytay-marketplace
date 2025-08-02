@@ -2,10 +2,12 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import ReportSelector from "@/components/ReportSelector";
 import SearchBar from "./SearchBar";
+import GenerateReportButton from "./GenerateReportButton";
 import UserGrowthTable from "./UserGrowthTable";
 import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
 import ActivityLogTable from "./ActivityLogTable";
+import { sellerData, adminData, dummyData, dummyLogs } from "@/data/userData"; 
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
@@ -19,16 +21,43 @@ function ReportsPage() {
       />
 
       <div className="space-y-10 bg-white border rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between !mb-[20px]">
-        <SearchBar value={searchQuery} onChange={setSearchQuery} />
-        <ReportSelector
-          selectedReport={selectedReport}
-          onChange={(report) => {
-            setSelectedReport(report);
-            setSearchQuery("");
-          }}
-        />
-        </div>
+        <div className="flex items-center justify-between gap-4">
+
+          {selectedReport !== "User Growth" && (
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          )}
+
+          <ReportSelector
+            selectedReport={selectedReport}
+            onChange={(report) => {
+              setSelectedReport(report);
+              setSearchQuery("");
+            }}
+          />
+
+          <GenerateReportButton
+            reportTitle={selectedReport}
+            data={
+              selectedReport === "Seller"
+                ? sellerData.filter((s) =>
+                    s.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                : selectedReport === "Admin"
+                ? adminData.filter((a) =>
+                    a.username.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                : selectedReport === "Activity Log"
+                ? dummyLogs.filter((log) =>
+                    log.user.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                : selectedReport === "User Growth"
+                ? dummyData.filter((dummy) =>
+                    dummy.month.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                : [] 
+            }
+            />
+      </div>
 
         {selectedReport === "Seller" && <SellerTable searchQuery={searchQuery} />}
         {selectedReport === "Admin" && <AdminTable searchQuery={searchQuery} />}

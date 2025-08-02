@@ -31,6 +31,7 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="py-4 font-bold">ID</TableHead>
             <TableHead className="py-4 font-bold">USER</TableHead>
             <TableHead className="py-4 font-bold">ACTION</TableHead>
             <TableHead className="py-4 font-bold">DATE</TableHead>
@@ -47,6 +48,7 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
             ) : (
               currentData.map((log) => (
                 <TableRow key={log.id}>
+                  <TableCell className="py-4">{log.id}</TableCell>
                   <TableCell className="py-4">{log.user}</TableCell>
                   <TableCell className="py-4">{log.action}</TableCell>
                   <TableCell className="py-4">{formatDate(log.date)}</TableCell>
