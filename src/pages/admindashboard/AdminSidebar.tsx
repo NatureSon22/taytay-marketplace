@@ -20,7 +20,7 @@ function AdminSidebar() {
       <div className="px-6 py-4 text-xl font-bold flex align-center justify-center pt-6 pb-[80px]">
             <img src={heroLogo} alt="Hero Logo" className="h-[80px] w-auto" />
       </div>
-      <nav className="flex-1">
+      <nav className="flex-1 pl-">
         {menu.map((item) => (
           <SidebarItem
             key={item.label}

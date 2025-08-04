@@ -103,7 +103,7 @@ function UsersTable() {
                     </>
                   ) : (
                     <>
-                      <TableCell>{(user as Administrator).username}</TableCell>
+                      <TableCell>{(user as Administrator).firstName} {(user as Administrator).lastName}</TableCell>
                       <TableCell>
                         <UserStatusSelect value={(user as Administrator).status} options={["Active", "Inactive"]} />
                       </TableCell>

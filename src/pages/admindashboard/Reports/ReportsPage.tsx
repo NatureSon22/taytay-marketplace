@@ -44,7 +44,8 @@ function ReportsPage() {
                   )
                 : selectedReport === "Admin"
                 ? adminData.filter((a) =>
-                    a.username.toLowerCase().includes(searchQuery.toLowerCase())
+                    a.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    a.lastName.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                 : selectedReport === "Activity Log"
                 ? dummyLogs.filter((log) =>

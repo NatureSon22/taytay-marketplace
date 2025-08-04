@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Pagination from "@/components/ui/Pagination";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 11;
 
 function SellerTable({ searchQuery }: { searchQuery: string }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,14 +27,14 @@ function SellerTable({ searchQuery }: { searchQuery: string }) {
   return (
     <div className="space-y-4">
 
-      <ScrollArea className="w-full rounded-md border max-h-[600px]">
+      <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="py-3 font-bold">ID</TableHead>
-              <TableHead className="py-3 font-bold">FULL NAME</TableHead>
-              <TableHead className="py-3 font-bold">STORE</TableHead>
-              <TableHead className="py-3 font-bold">STATUS</TableHead>
+              <TableHead className="py-2 !pl-6 font-bold">ID</TableHead>
+              <TableHead className="py-2 font-bold">FULL NAME</TableHead>
+              <TableHead className="py-2 font-bold">STORE</TableHead>
+              <TableHead className="py-2 font-bold">STATUS</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -47,10 +47,10 @@ function SellerTable({ searchQuery }: { searchQuery: string }) {
             ) : (
               currentData.map((seller) => (
               <TableRow key={seller.id}>
-                <TableCell className="py-3">{seller.id}</TableCell>
-                <TableCell className="py-3">{seller.fullName}</TableCell>
-                <TableCell className="py-3">{seller.storeName}</TableCell>
-                <TableCell className="py-3">
+                <TableCell className="py-2">{seller.id}</TableCell>
+                <TableCell className="py-2">{seller.fullName}</TableCell>
+                <TableCell className="py-2">{seller.storeName}</TableCell>
+                <TableCell className="py-2">
                   <div
                     className={`flex rounded-full items-center justify-center w-[100px]
                       ${seller.status === "Pending" ? "bg-yellow-100 text-yellow-800" : ""}

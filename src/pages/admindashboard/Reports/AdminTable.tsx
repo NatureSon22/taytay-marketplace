@@ -17,7 +17,8 @@ function AdminTable({ searchQuery }: { searchQuery: string }) {
   const [currentPage, setCurrentPage] = useState(1);
   const filteredData = adminData.filter((admin) =>
     admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    admin.username.toLowerCase().includes(searchQuery.toLowerCase())
+    admin.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    admin.lastName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -27,11 +28,11 @@ function AdminTable({ searchQuery }: { searchQuery: string }) {
   return (
     <div className="space-y-4">
 
-      <ScrollArea className="w-full rounded-md border">
+      <ScrollArea className="w-full rounded-[20px] border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="py-4 font-bold">ID</TableHead>
+            <TableHead className="py-4 !pl-6 font-bold">ID</TableHead>
             <TableHead className="py-4 font-bold">EMAIL</TableHead>
             <TableHead className="py-4 font-bold">USERNAME</TableHead>
             <TableHead className="py-4 font-bold">STATUS</TableHead>
@@ -49,7 +50,7 @@ function AdminTable({ searchQuery }: { searchQuery: string }) {
                 <TableRow key={admin.id}>
                   <TableCell className="py-4">{admin.id}</TableCell>
                   <TableCell className="py-4">{admin.email}</TableCell>
-                  <TableCell className="py-4">{admin.username}</TableCell>
+                  <TableCell className="py-4">{admin.firstName} {admin.lastName} </TableCell>
                   <TableCell className="py-4">
                 <div className={`flex rounded-full items-center justify-center w-[100px] 
                 ${admin.status === "Active" ? "bg-green-100 text-green-800" : ""}

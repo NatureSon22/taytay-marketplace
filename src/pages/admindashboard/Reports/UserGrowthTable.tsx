@@ -15,11 +15,11 @@ function UserGrowthTable({ searchQuery }: { searchQuery: string }) {
   );
 
   return (
-      <ScrollArea className="w-full rounded-md border">
+      <ScrollArea className="w-full rounded-[20px] border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="py-3 font-bold">MONTH</TableHead>
+            <TableHead className="py-3 !pl-6 font-bold">MONTH</TableHead>
             <TableHead className="py-3 font-bold">USERS</TableHead>
           </TableRow>
         </TableHeader>

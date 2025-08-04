@@ -8,7 +8,7 @@ function UsersPage() {
         title="Users"
         subtitle="Manage registered users here."
       />
-      <div className="pt-6">
+      <div>
         <UsersTable />
       </div>
     </div>
