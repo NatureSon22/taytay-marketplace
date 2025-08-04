@@ -10,10 +10,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StorePage from "./pages/store/StorePage";
 import ProductsPage from "./pages/products/ProductsPage";
 import AdminLayout from "./pages/admindashboard/AdminLayout";
-import DashboardPage from "./pages/admindashboard/DashboardPage";
-import UsersPage from "./pages/admindashboard/UsersPage";
-import ReportsPage from "./pages/admindashboard/ReportsPage";
-import SettingsPage from "./pages/admindashboard/SettingsPage";
+import DashboardPage from "./pages/admindashboard/Dashboard/DashboardPage";
+import UsersPage from "./pages/admindashboard/Users/UsersPage";
+import ReportsPage from "./pages/admindashboard/Reports/ReportsPage";
+import SettingsPage from "./pages/admindashboard/Settings/SettingsPage";
+import AdminSetting from "./pages/admindashboard/Settings/AdminSetting";
+import CategorySetting from "./pages/admindashboard/Settings/CategorySetting";
+import GeneralInformationSetting from "./pages/admindashboard/Settings/GeneralInformationSetting";
+import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupRestoreSetting";
+import AccountInfoSetting from "./pages/admindashboard/Settings/AccountInfoSetting";
+import ArchiveSetting from "./pages/admindashboard/Settings/ArchiveSetting";
+import TypeSetting from "./pages/admindashboard/Settings/TypeSetting";
+import LinkTypeSetting from "./pages/admindashboard/Settings/LinkTypeSetting";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +83,43 @@ const router = createBrowserRouter([
     {
       path: "/admin/settings",
       element: <SettingsPage />,
+      children: [
+    { 
+      index: true, 
+      element: <AdminSetting /> },
+    { 
+      path: "admin-setting", 
+      element: <AdminSetting /> 
+    },
+    { 
+      path: "category-setting", 
+      element: <CategorySetting /> 
+    },
+    { 
+      path: "product-type-setting", 
+      element: <TypeSetting /> 
+    },
+    { 
+      path: "link-type-setting", 
+      element: <LinkTypeSetting /> 
+    },
+    { 
+      path: "general-information-setting", 
+      element: <GeneralInformationSetting /> 
+    },
+    { 
+      path: "backup-restore-setting", 
+      element: <BackupRestoreSetting /> 
+    },
+    { 
+      path: "account-info-setting", 
+      element: <AccountInfoSetting /> 
+    },
+    { 
+      path: "archive-setting", 
+      element: <ArchiveSetting /> 
+    },
+  ],
     },
   ],
 },
