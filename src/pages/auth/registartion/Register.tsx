@@ -5,7 +5,7 @@ import { useState } from "react";
 import FormWrapper from "./FormWrapper";
 
 function Register() {
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
 
   const handleStep = () => {
     setStep((prev) => prev + 1);

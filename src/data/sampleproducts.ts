@@ -2,13 +2,7 @@ import product1 from "@/assets/Frame 32 (1).png";
 import product2 from "@/assets/Frame 32 (2).png";
 import product3 from "@/assets/Frame 32 (3).png";
 import product4 from "@/assets/Frame 32 (5).png";
-
-type Product = {
-  id: number;
-  productName: string;
-  productPrice: string;
-  productPictures: string[];
-};
+import type { Product } from "@/types";
 
 const sampleProducts: Product[] = [
   {
@@ -31,6 +25,12 @@ const sampleProducts: Product[] = [
   },
   {
     id: 4,
+    productName: "Sleeve Stripped Shirt",
+    productPrice: "180",
+    productPictures: [product4],
+  },
+  {
+    id: 5,
     productName: "Sleeve Stripped Shirt",
     productPrice: "180",
     productPictures: [product4],

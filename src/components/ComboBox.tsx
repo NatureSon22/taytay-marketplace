@@ -53,12 +53,16 @@ function ComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between py-[1.3rem]"
         >
-          {value
-            ? items.find((item) => item.value === value)?.label
-            : `Select ${term}...`}
-          <ChevronsUpDown className="opacity-50" />
+          <p className="flex justify-between flex-1 px-1">
+            {value ? (
+              items.find((item) => item.value === value)?.label
+            ) : (
+              <span className="text-slate-600">{`Select ${term}...`}</span>
+            )}
+            <ChevronsUpDown className="opacity-50" />
+          </p>
         </Button>
       </PopoverTrigger>
       <PopoverContent

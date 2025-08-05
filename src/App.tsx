@@ -9,6 +9,10 @@ import Register from "./pages/auth/registartion/Register";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import StorePage from "./pages/store/StorePage";
 import ProductsPage from "./pages/products/ProductsPage";
+import ProductDetailsPage from "./pages/products/ProductDetailsPage";
+import StoreDetails from "./pages/store/StoreDetails";
+import AccountWrapper from "./pages/account/AccountWrapper";
+import ManageAccount from "./pages/account/ManageAccount";
 
 const router = createBrowserRouter([
   {
@@ -34,9 +38,19 @@ const router = createBrowserRouter([
         element: <ProductsPage />,
       },
       {
+        path: "/product",
+        element: <ProductDetailsPage />,
+      },
+      // store
+      {
         path: "/stores",
         element: <StorePage />,
       },
+      {
+        path: "/store",
+        element: <StoreDetails />,
+      },
+      //
       {
         path: "/contact-us",
         element: <ContactUs />,
@@ -48,6 +62,15 @@ const router = createBrowserRouter([
       {
         path: "/terms-and-conditions",
         element: <TermsOfUse />,
+      },
+      // account
+      {
+        path: "/account",
+        element: <AccountWrapper />,
+
+        children: [
+          { path: "/account/manage",  element: <ManageAccount /> },
+        ],
       },
     ],
   },

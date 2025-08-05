@@ -2,6 +2,7 @@ import img from "@/assets/pic.jpg";
 
 type StoreCardProps = {
   storeName: string;
+  stallNumber?: string;
   profilePicture?: string;
 };
 function StoreCard({ storeName, profilePicture }: StoreCardProps) {

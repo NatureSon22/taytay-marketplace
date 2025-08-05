@@ -1,13 +1,59 @@
 import CenterLayout from "@/layouts/CenterLayout";
 import PadLayout from "@/layouts/PadLayout";
-import ProductList from "./ProductList";
 import sampleProducts from "@/data/sampleproducts";
 import PageLayout from "@/layouts/PageLayout";
 import FilterBar from "./FilterBar";
 import { useState } from "react";
+import type {
+  FilterField,
+  ProductFilterSettings,
+  SortField,
+  SortOrder,
+} from "@/types";
+import ProductList from "@/components/ProductList";
 
 function ProductsPage() {
+  const [filterOptions, setFilterOptions] = useState<ProductFilterSettings>({
+    category: "",
+    apparel: "",
+    sort: [],
+  });
   const [openFilterBar, setOpenFilterBar] = useState(true);
+
+  const handleFilterOptions = (field: FilterField, value: string) => {
+    setFilterOptions((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSortToggle = (
+    field: SortField,
+    order: SortOrder,
+    disableSort = false
+  ) => {
+    setFilterOptions((prev) => {
+      const { sort } = prev;
+      const existingRule = sort.find((rule) => rule.field === field);
+
+      let updatedSort;
+
+      if (disableSort) {
+        updatedSort = sort.filter((rule) => rule.field !== field);
+      } else if (existingRule) {
+        updatedSort = sort.map((rule) =>
+          rule.field === field ? { field, order } : rule
+        );
+      } else {
+        updatedSort = [...sort, { field, order }];
+      }
+
+      return {
+        ...prev,
+        sort: updatedSort,
+      };
+    });
+  };
 
   const handleOpenFilterBar = () => {
     setOpenFilterBar((prev) => !prev);
@@ -17,13 +63,16 @@ function ProductsPage() {
     <PageLayout paddingTopVariant="none">
       <PadLayout>
         <CenterLayout>
-          <div className="w-[90%] flex gap-10">
+          <div className="w-[87%] flex gap-10">
             <FilterBar
+              filterOptions={filterOptions}
+              handleFilterOptions={handleFilterOptions}
+              handleSortToggle={handleSortToggle}
               openFilterBar={openFilterBar}
               handleOpenFilterBar={handleOpenFilterBar}
             />
 
-            <ProductList items={sampleProducts} />
+            <ProductList products={sampleProducts} />
           </div>
         </CenterLayout>
       </PadLayout>
