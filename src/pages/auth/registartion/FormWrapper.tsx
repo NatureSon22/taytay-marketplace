@@ -7,6 +7,7 @@ import InformationForm from "./InformationForm";
 import StoreForm from "./StoreForm";
 import AgreeForm from "./AgreeForm";
 import RegistrationSuccess from "./RegistrationSuccess";
+import { useNavigate } from "react-router-dom";
 
 type FormWrapperProps = {
   step: number;
@@ -14,6 +15,8 @@ type FormWrapperProps = {
 };
 
 function FormWrapper({ step, handleStep }: FormWrapperProps) {
+  const navigate = useNavigate(); 
+
   return (
     <div className="grid gap-10">
       <div className="space-y-1">
@@ -25,15 +28,19 @@ function FormWrapper({ step, handleStep }: FormWrapperProps) {
 
       <CenterLayout>
         <div className="w-full">
-          {step == 0 && <CredentialsForm />}
-          {step == 1 && <InformationForm />}
-          {step == 2 && <StoreForm />}
-          {step == 3 && <AgreeForm />}
-          {step == 4 && <RegistrationSuccess />}
+          {step === 0 && <CredentialsForm />}
+          {step === 1 && <InformationForm />}
+          {step === 2 && <StoreForm />}
+          {step === 3 && <AgreeForm />}
+          {step === 4 && <RegistrationSuccess />}
         </div>
       </CenterLayout>
 
-      <Button className="mx-auto cursor-pointer" variant={"ghost"}>
+      <Button
+        className="mx-auto cursor-pointer"
+        variant={"ghost"}
+        onClick={() => navigate("/")}
+      >
         <ChevronLeft className="size-7" />
         Return to Homepage
       </Button>

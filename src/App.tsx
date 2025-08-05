@@ -13,6 +13,19 @@ import ProductDetailsPage from "./pages/products/ProductDetailsPage";
 import StoreDetails from "./pages/store/StoreDetails";
 import AccountWrapper from "./pages/account/AccountWrapper";
 import ManageAccount from "./pages/account/ManageAccount";
+import AdminLayout from "./pages/admindashboard/AdminLayout";
+import DashboardPage from "./pages/admindashboard/Dashboard/DashboardPage";
+import UsersPage from "./pages/admindashboard/Users/UsersPage";
+import ReportsPage from "./pages/admindashboard/Reports/ReportsPage";
+import SettingsPage from "./pages/admindashboard/Settings/SettingsPage";
+import AdminSetting from "./pages/admindashboard/Settings/AdminSetting";
+import CategorySetting from "./pages/admindashboard/Settings/CategorySetting";
+import GeneralInformationSetting from "./pages/admindashboard/Settings/GeneralInformationSetting";
+import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupRestoreSetting";
+import AccountInfoSetting from "./pages/admindashboard/Settings/AccountInfoSetting";
+import ArchiveSetting from "./pages/admindashboard/Settings/ArchiveSetting";
+import TypeSetting from "./pages/admindashboard/Settings/TypeSetting";
+import LinkTypeSetting from "./pages/admindashboard/Settings/LinkTypeSetting";
 
 const router = createBrowserRouter([
   {
@@ -68,8 +81,66 @@ const router = createBrowserRouter([
         path: "/account",
         element: <AccountWrapper />,
 
+        children: [{ path: "/account/manage", element: <ManageAccount /> }],
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "/admin/dashboard",
+        element: <DashboardPage />,
+      },
+      {
+        path: "/admin/users",
+        element: <UsersPage />,
+      },
+      {
+        path: "/admin/reports",
+        element: <ReportsPage />,
+      },
+      {
+        path: "/admin/settings",
+        element: <SettingsPage />,
         children: [
-          { path: "/account/manage",  element: <ManageAccount /> },
+          {
+            index: true,
+            element: <AdminSetting />,
+          },
+          {
+            path: "admin-setting",
+            element: <AdminSetting />,
+          },
+          {
+            path: "category-setting",
+            element: <CategorySetting />,
+          },
+          {
+            path: "product-type-setting",
+            element: <TypeSetting />,
+          },
+          {
+            path: "link-type-setting",
+            element: <LinkTypeSetting />,
+          },
+          {
+            path: "general-information-setting",
+            element: <GeneralInformationSetting />,
+          },
+          {
+            path: "backup-restore-setting",
+            element: <BackupRestoreSetting />,
+          },
+          {
+            path: "account-info-setting",
+            element: <AccountInfoSetting />,
+          },
+          {
+            path: "archive-setting",
+            element: <ArchiveSetting />,
+          },
         ],
       },
     ],
