@@ -1,5 +1,3 @@
-
-
 function GeneralInformationSetting() {
   return (
     <div>
