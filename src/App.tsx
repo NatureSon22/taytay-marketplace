@@ -18,12 +18,12 @@ import DashboardPage from "./pages/admindashboard/Dashboard/DashboardPage";
 import UsersPage from "./pages/admindashboard/Users/UsersPage";
 import ReportsPage from "./pages/admindashboard/Reports/ReportsPage";
 import SettingsPage from "./pages/admindashboard/Settings/SettingsPage";
-import AdminSetting from "./pages/admindashboard/Settings/AdminSetting";
-import CategorySetting from "./pages/admindashboard/Settings/CategorySetting";
-import GeneralInformationSetting from "./pages/admindashboard/Settings/GeneralInformationSetting";
-import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupRestoreSetting";
-import AccountInfoSetting from "./pages/admindashboard/Settings/AccountInfoSetting";
-import ArchiveSetting from "./pages/admindashboard/Settings/ArchiveSetting";
+import AdminSetting from "./pages/admindashboard/Settings/Admin/AdminSetting";
+import CategorySetting from "./pages/admindashboard/Settings/Category/CategorySetting";
+import GeneralInformationSetting from "./pages/admindashboard/Settings/General/GeneralInformationSetting";
+import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupAndRestore/BackupRestoreSetting";
+import AccountInfoSetting from "./pages/admindashboard/Settings/Account/AccountInfoSetting";
+import ArchiveSetting from "./pages/admindashboard/Settings/Archived/ArchiveSetting";
 import TypeSetting from "./pages/admindashboard/Settings/TypeSetting";
 import LinkTypeSetting from "./pages/admindashboard/Settings/LinkTypeSetting";
 

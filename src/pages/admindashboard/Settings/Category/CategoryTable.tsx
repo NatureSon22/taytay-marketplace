@@ -8,9 +8,9 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FaArchive } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 type Category = {
   id: string;

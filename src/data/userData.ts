@@ -11,7 +11,9 @@ export type Seller = {
 export type Administrator = {
   id: string;
   email: string;
-  username: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   status: "Active" | "Inactive";
 };
 
@@ -142,73 +144,97 @@ export const adminData: Administrator[] = [
   {
     id: "ADM001",
     email: "alex.torres@example.com",
-    username: "alext",
+    firstName: "Alex",
+    middleName: "Gomez",
+    lastName: "Torres",
     status: "Active",
   },
   {
     id: "ADM002",
     email: "bella.martin@example.com",
-    username: "bellam",
+    firstName: "Bella",
+    middleName: "Grace",
+    lastName: "Martin",
     status: "Inactive",
   },
   {
     id: "ADM003",
     email: "carlos.diaz@example.com",
-    username: "carlosd",
+    firstName: "Carlos",
+    middleName: "Ramon",
+    lastName: "Diaz",
     status: "Active",
   },
   {
     id: "ADM004",
     email: "diana.lee@example.com",
-    username: "dianal",
+    firstName: "Diana",
+    middleName: "Marie",
+    lastName: "Lee",
     status: "Inactive",
   },
   {
     id: "ADM005",
     email: "ethan.nguyen@example.com",
-    username: "ethann",
+    firstName: "Ethan",
+    middleName: "Minh",
+    lastName: "Nguyen",
     status: "Active",
   },
   {
     id: "ADM006",
     email: "fiona.kim@example.com",
-    username: "fionak",
+    firstName: "Fiona",
+    middleName: "Eun",
+    lastName: "Kim",
     status: "Inactive",
   },
   {
     id: "ADM007",
     email: "george.brown@example.com",
-    username: "georgeb",
+    firstName: "George",
+    middleName: "Allen",
+    lastName: "Brown",
     status: "Active",
   },
   {
     id: "ADM008",
     email: "hannah.smith@example.com",
-    username: "hannahs",
+    firstName: "Hannah",
+    middleName: "Louise",
+    lastName: "Smith",
     status: "Inactive",
   },
   {
     id: "ADM009",
     email: "ian.jones@example.com",
-    username: "ianj",
+    firstName: "Ian",
+    middleName: "Michael",
+    lastName: "Jones",
     status: "Active",
   },
   {
     id: "ADM010",
     email: "julia.chan@example.com",
-    username: "juliach",
+    firstName: "Julia",
+    middleName: "Mei",
+    lastName: "Chan",
     status: "Inactive",
   },
   {
     id: "ADM011",
     email: "kevin.williams@example.com",
-    username: "kevinw",
+    firstName: "Kevin",
+    middleName: "Lee",
+    lastName: "Williams",
     status: "Active",
   },
   {
     id: "ADM012",
     email: "lisa.moore@example.com",
-    username: "lisam",
+    firstName: "Lisa",
+    middleName: "Ann",
+    lastName: "Moore",
     status: "Inactive",
   },
 ];
