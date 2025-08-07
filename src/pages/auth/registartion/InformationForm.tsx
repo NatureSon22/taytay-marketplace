@@ -17,14 +17,18 @@ import { useQuery } from "@tanstack/react-query";
 import { getBaranggays, getMunicipalities, getProvinces } from "@/api/location";
 import ComboBox from "@/components/ComboBox";
 import { useState } from "react";
+import type { FormStepProps } from "@/types";
+import calculateAge from "@/utils/calculateAge";
 
 const phoneRe = /^(09|\+639)\d{9}$/;
 
 const formSchema = z.object({
-  firstname: z.string().min(1, { message: "Firstname is required" }),
-  middlename: z.string().optional().or(z.literal("")),
-  surname: z.string().min(1, { message: "Surname is required" }),
-  number: z.string().regex(phoneRe, { message: "Valid phone is required" }),
+  firstName: z.string().min(1, { message: "FirstName is required" }),
+  middleName: z.string().optional().or(z.literal("")),
+  lastName: z.string().min(1, { message: "lastName is required" }),
+  contactNumber: z
+    .string()
+    .regex(phoneRe, { message: "Valid phone is required" }),
   birthday: z.coerce.date({
     required_error: "Birthday is required",
     invalid_type_error: "invalid_type_error",
@@ -33,16 +37,22 @@ const formSchema = z.object({
     .number()
     .min(1, { message: "Age is required" })
     .max(120, { message: "Age is too high" })
-    .int({ message: "Age must be a whole number" })
-    .positive({ message: "Age must be a positive number" }),
+    .int({ message: "Age must be a whole contactNumber" })
+    .positive({ message: "Age must be a positive contactNumber" }),
   province: z.string().min(1, { message: "Province is required" }),
   municipality: z.string().min(1, { message: "Municipality is required" }),
-  baranggay: z.string().min(1, { message: "Baranggay is required" }),
+  barangay: z.string().min(1, { message: "Barangay is required" }),
 });
 
 type FormData = z.infer<typeof formSchema>;
+type InformationFormProps = FormStepProps;
 
-function InformationForm() {
+function InformationForm({
+  registrationData,
+  goToNextStep,
+  goToPreviousStep,
+  updateRegistrationData,
+}: InformationFormProps) {
   const [selectedProvinceCode, setSelectedProvinceCode] = useState("");
   const [selectedMunicipalCode, setSelectedMunicipalCode] = useState("");
 
@@ -64,25 +74,27 @@ function InformationForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstname: "",
-      middlename: "",
-      surname: "",
-      number: "",
-      birthday: new Date(),
-      age: 0,
-      province: "",
-      municipality: "",
-      baranggay: "",
+      firstName: registrationData.firstName ?? "",
+      middleName: registrationData.middleName ?? "",
+      lastName: registrationData.lastName ?? "",
+      contactNumber: registrationData.contactNumber ?? "",
+      birthday: registrationData.birthday ?? new Date(),
+      age: registrationData.age ?? 0,
+      province: registrationData.province ?? "",
+      municipality: registrationData.municipality ?? "",
+      barangay: registrationData.barangay ?? "",
     },
   });
-  // const birthdayValue = form.watch("birthday");
 
-  // useEffect(() => {
-  //   const date = new Date(birthdayValue);
-  //   console.log("Date: " + calculateAge(date));
-  // }, [birthdayValue]);
+  const updateAge = (date: Date | null) => {
+    if (!date) return;
+
+    form.setValue("age", calculateAge(date));
+  };
 
   const onSubmit = (values: FormData) => {
+    updateRegistrationData(values);
+    goToNextStep();
     console.log(values);
   };
 
@@ -96,7 +108,7 @@ function InformationForm() {
 
           <FormField
             control={form.control}
-            name="firstname"
+            name="firstName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>First Name</FormLabel>
@@ -110,7 +122,7 @@ function InformationForm() {
 
           <FormField
             control={form.control}
-            name="middlename"
+            name="middleName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -127,10 +139,10 @@ function InformationForm() {
 
           <FormField
             control={form.control}
-            name="surname"
+            name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Surname</FormLabel>
+                <FormLabel>lastName</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -141,10 +153,10 @@ function InformationForm() {
 
           <FormField
             control={form.control}
-            name="number"
+            name="contactNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Number</FormLabel>
+                <FormLabel>Contact contactNumber</FormLabel>
                 <FormControl>
                   <Input type="tel" {...field} />
                 </FormControl>
@@ -170,6 +182,7 @@ function InformationForm() {
                           : field.value
                       }
                       onChange={(e) => {
+                        updateAge(e.target.valueAsDate);
                         field.onChange(e);
                       }}
                     />
@@ -234,12 +247,12 @@ function InformationForm() {
 
           <FormField
             control={form.control}
-            name="baranggay"
+            name="barangay"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Baranggay</FormLabel>
+                <FormLabel>Barangay</FormLabel>
                 <FormControl>
-                  <ComboBox items={barangays} term="baranggay" {...field} />
+                  <ComboBox items={barangays} term="barangay" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -251,6 +264,7 @@ function InformationForm() {
               className="cursor-pointer bg-white text-100 hover:bg-100 hover:text-white"
               variant={"ghost"}
               type="button"
+              onClick={goToPreviousStep}
             >
               Back
             </Button>

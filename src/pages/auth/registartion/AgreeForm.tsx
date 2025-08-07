@@ -3,7 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router";
 
-function AgreeForm() {
+type AgreeFormProps = {
+  goToNextStep: () => void;
+  goToPreviousStep: () => void;
+};
+
+function AgreeForm({ goToNextStep, goToPreviousStep }: AgreeFormProps) {
   return (
     <div className="max-w-[500px] mx-auto shadow-100 py-9 px-7 rounded-xl md:py-14 md:px-12">
       <div className="grid gap-5">
@@ -37,6 +42,7 @@ function AgreeForm() {
             className="cursor-pointer bg-white text-100 hover:bg-100 hover:text-white"
             variant={"ghost"}
             type="button"
+            onClick={goToPreviousStep}
           >
             Back
           </Button>

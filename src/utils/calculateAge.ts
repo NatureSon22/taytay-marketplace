@@ -9,6 +9,7 @@ const calculateAge = (birthday: Date): number => {
   const currentDay = today.getDate();
 
   let age = currentYear - birthYear;
+  console.log("The age: " + age);
 
   if (
     currentMonth < birthMonth ||

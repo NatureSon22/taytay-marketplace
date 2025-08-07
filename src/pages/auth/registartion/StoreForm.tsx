@@ -9,8 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { FormStepProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MoveRight } from "lucide-react";
+import { MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { z } from "zod";
@@ -42,27 +43,54 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+type StoreFormProps = FormStepProps;
 
-function StoreForm() {
+function StoreForm({
+  registrationData,
+  goToNextStep,
+  goToPreviousStep,
+  updateRegistrationData,
+}: StoreFormProps) {
   const [stallNumber, setStallNumber] = useState("");
+  const [stallNumbers, setStallNumbers] = useState<string[]>(
+    registrationData?.stallNumbers ? [...registrationData.stallNumbers] : []
+  );
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      stallNumbers: [],
-      storeName: "",
-      permit: new File([], ""),
+      stallNumbers: registrationData.stallNumbers ?? [],
+      storeName: registrationData.storeName ?? "",
+      permit: registrationData.permit
+        ? new File([registrationData.permit], registrationData.permit.name, {
+            type: registrationData.permit.type,
+          })
+        : new File([], ""),
     },
   });
 
-  const handleAddStallNumber =
+  const addStallNumber =
     (onChange: ControllerRenderProps<FormData, "stallNumbers">["onChange"]) =>
     () => {
       onChange([...form.getValues("stallNumbers"), stallNumber]);
+      setStallNumbers((prev) => {
+        const exists = prev.some((stall) => stall == stallNumber);
+
+        if (exists) return prev;
+
+        return [...prev, stallNumber];
+      });
       setStallNumber("");
     };
 
-  const onSubmit = (values: FormData) => {};
+  const deleteStallNumber = (stallNumber: string) => {
+    setStallNumbers((prev) => prev.filter((stall) => stall != stallNumber));
+  };
+
+  const onSubmit = (values: FormData) => {
+    updateRegistrationData(values);
+    goToNextStep();
+  };
 
   return (
     <div className="max-w-[500px] mx-auto shadow-100 py-9 px-7 rounded-xl md:py-14 md:px-12">
@@ -79,16 +107,46 @@ function StoreForm() {
               <FormItem>
                 <FormLabel>Stall Number</FormLabel>
                 <FormControl>
-                  <div className="flex gap-2">
-                    <Input
-                      value={stallNumber}
-                      onChange={(e) => setStallNumber(e.target.value)}
-                    />
-                    <Button onClick={handleAddStallNumber(field.onChange)}>
-                      Add Stall
-                    </Button>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Input
+                        value={stallNumber}
+                        onChange={(e) => setStallNumber(e.target.value)}
+                      />
+                      <Button
+                        type={"button"}
+                        onClick={addStallNumber(field.onChange)}
+                      >
+                        Add Stall
+                      </Button>
+                    </div>
+
+                    <div className="flex items-center flex-wrap gap-3">
+                      {stallNumbers.map((stallNumber) => {
+                        return (
+                          <div
+                            key={stallNumber}
+                            className="flex items-center gap-2"
+                          >
+                            <p className="text-slate-400 font-semibold text-[0.9rem]">
+                              {stallNumber}
+                            </p>
+
+                            <Button
+                              className="cursor-pointer p-1"
+                              variant={"secondary"}
+                              type="button"
+                              onClick={() => deleteStallNumber(stallNumber)}
+                            >
+                              <X />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </FormControl>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -133,6 +191,7 @@ function StoreForm() {
               className="cursor-pointer bg-white text-100 hover:bg-100 hover:text-white"
               variant={"ghost"}
               type="button"
+              onClick={goToPreviousStep}
             >
               Back
             </Button>

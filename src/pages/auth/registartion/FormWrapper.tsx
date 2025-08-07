@@ -8,14 +8,24 @@ import StoreForm from "./StoreForm";
 import AgreeForm from "./AgreeForm";
 import RegistrationSuccess from "./RegistrationSuccess";
 import { useNavigate } from "react-router-dom";
+import type { RegistrationData } from "@/types/registration";
 
 type FormWrapperProps = {
+  registrationData: RegistrationData;
   step: number;
-  handleStep: () => void;
+  goToNextStep: () => void;
+  goToPreviousStep: () => void;
+  updateRegistrationData: (data: Partial<RegistrationData>) => void;
 };
 
-function FormWrapper({ step, handleStep }: FormWrapperProps) {
-  const navigate = useNavigate(); 
+function FormWrapper({
+  registrationData,
+  step,
+  goToNextStep,
+  goToPreviousStep,
+  updateRegistrationData,
+}: FormWrapperProps) {
+  const navigate = useNavigate();
 
   return (
     <div className="grid gap-10">
@@ -28,10 +38,38 @@ function FormWrapper({ step, handleStep }: FormWrapperProps) {
 
       <CenterLayout>
         <div className="w-full">
-          {step === 0 && <CredentialsForm />}
-          {step === 1 && <InformationForm />}
-          {step === 2 && <StoreForm />}
-          {step === 3 && <AgreeForm />}
+          {step === 0 && (
+            <CredentialsForm
+              registrationData={registrationData}
+              goToNextStep={goToNextStep}
+              updateRegistrationData={updateRegistrationData}
+            />
+          )}
+
+          {step === 1 && (
+            <InformationForm
+              registrationData={registrationData}
+              goToNextStep={goToNextStep}
+              goToPreviousStep={goToPreviousStep}
+              updateRegistrationData={updateRegistrationData}
+            />
+          )}
+
+          {step === 2 && (
+            <StoreForm
+              registrationData={registrationData}
+              goToNextStep={goToNextStep}
+              goToPreviousStep={goToPreviousStep}
+              updateRegistrationData={updateRegistrationData}
+            />
+          )}
+
+          {step === 3 && (
+            <AgreeForm
+              goToNextStep={goToNextStep}
+              goToPreviousStep={goToPreviousStep}
+            />
+          )}
           {step === 4 && <RegistrationSuccess />}
         </div>
       </CenterLayout>

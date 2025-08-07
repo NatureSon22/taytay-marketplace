@@ -11,8 +11,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MoveRight } from "lucide-react";
+import { Eye, EyeOff, MoveRight } from "lucide-react";
 import StyledText from "@/components/StyledText";
+import type { FormStepProps } from "@/types";
+import { useState } from "react";
 
 const formSchema = z
   .object({
@@ -32,19 +34,30 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-function CredentialsForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+type FormData = z.infer<typeof formSchema>;
+type CredentialsFormProps = FormStepProps;
+
+function CredentialsForm({
+  registrationData,
+  goToNextStep,
+  updateRegistrationData,
+}: CredentialsFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      username: registrationData.username ?? "",
+      email: registrationData.email ?? "",
+      password: registrationData.password ?? "",
+      confirmPassword: registrationData.password ?? "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = (values: FormData) => {
+    updateRegistrationData(values);
+    goToNextStep();
   };
 
   return (
@@ -89,9 +102,25 @@ function CredentialsForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
+
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                    />
+                  </FormControl>
+
+                  <Button
+                    className="cursor-pointer"
+                    variant={"secondary"}
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? <Eye /> : <EyeOff />}
+                  </Button>
+                </div>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -103,9 +132,25 @@ function CredentialsForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
+
+                <div className="flex gap-2">
+                  <FormControl>
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      {...field}
+                    />
+                  </FormControl>
+
+                  <Button
+                    className="cursor-pointer"
+                    variant={"secondary"}
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  >
+                    {showConfirmPassword ? <Eye /> : <EyeOff />}
+                  </Button>
+                </div>
+
                 <FormMessage />
               </FormItem>
             )}
