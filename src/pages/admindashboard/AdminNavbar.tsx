@@ -7,21 +7,22 @@ import {
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 function AdminNavbar() {
   return (
     <header className="w-full bg-white shadow-sm border-b px-6 py-4 flex justify-end z-10">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" 
+        <DropdownMenuTrigger className="!outline-none !focus:border-none !focus:outline-none" asChild>
+          <button
            className="flex cursor-pointer border-none gap-4 hover:bg-transparent hover:text-inherit">
             <div className="flex flex-col  text-left gap-1  ">
             <p className="text-[15px] font-roboto">Kenneth San Pedro</p>
             <p className="text-[13px] text-gray-600">Administrator</p>
             </div>
+            <div className="flex justify-center items-center">
             <ChevronDown size={16} />
-          </Button>
+            </div>
+          </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-48 flex items-center flex-col">

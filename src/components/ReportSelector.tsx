@@ -11,7 +11,7 @@ type ReportSelectorProps = {
   onChange: (value: string) => void;
 };
 
-const REPORT_OPTIONS = ["Seller", "Admin", "Activity Log", "User Growth"];
+const REPORT_OPTIONS = ["Seller", "Admin", "Activity Log"];
 
 function ReportSelector({
   selectedReport,

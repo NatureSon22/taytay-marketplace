@@ -11,7 +11,7 @@ function SettingsPage() {
       />
       <div className="flex gap-6 border border-gray-200 bg-white shadow-sm rounded-md">
         <Sidebar />
-        <div className="flex-1 py-6 min-h-[720px] max-h-[720px] overflow-y-auto ">
+        <div className="flex-1 py-6 min-h-[710px] max-h-[710px] overflow-y-auto ">
           <Outlet />
         </div>
       </div>
