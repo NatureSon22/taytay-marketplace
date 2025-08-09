@@ -7,7 +7,14 @@ import { useCreateAdmin } from "@/hooks/useCreateAdmin";
 import AdminTable from "../../Reports/AdminTable";
 
 function AdminSettingForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    adminId: string;
+    email: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    role: "Admin" | "Super Admin" | "";
+  }>({
     adminId: "",
     email: "",
     firstName: "",
@@ -27,26 +34,29 @@ function AdminSettingForm() {
     });
   };
 
-  const { mutate: createAdmin, isLoading, error } = useCreateAdmin(resetForm);
+  const { mutate: createAdmin, status, error } = useCreateAdmin(resetForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleRoleChange = (value: string) => {
+  const handleRoleChange = (value: "" | "Admin" | "Super Admin") => {
     setFormData((prev) => ({ ...prev, role: value }));
   };
 
   const handleCancel = resetForm;
 
   const handleSubmit = () => {
+    if (formData.role === "") {
+      return;
+    }
     createAdmin({
       id: formData.adminId,
       email: formData.email,
       firstName: formData.firstName,
       middleName: formData.middleName,
       lastName: formData.lastName,
-      role: formData.role,
+      role: formData.role as "Admin" | "Super Admin",
     },
     {
       onSuccess: resetForm, 
@@ -149,7 +159,7 @@ function AdminSettingForm() {
           type="button"
           className="text-100 bg-white hover:bg-white shadow-none hover:text-100 cursor-pointer text-md border-none"
           onClick={handleCancel}
-          disabled={isLoading}
+          disabled={status === "pending"}
         >
           Cancel
         </Button>
@@ -157,15 +167,14 @@ function AdminSettingForm() {
           type="button"
           className="bg-100 cursor-pointer text-md hover:bg-100 text-white"
           onClick={handleSubmit}
-          disabled={isLoading}
+          disabled={status === "pending"}
         >
-          {isLoading ? "Adding..." : "Add Admin"}
+          {status === "pending" ? "Adding..." : "Add Admin"}
         </Button>
       </div>
 
-      {/* Admin Table */}
       <div>
-        <AdminTable searchQuery={""} />
+        <AdminTable />
       </div>
 
       {error && <p className="text-red-600 mt-2">{(error as Error).message}</p>}

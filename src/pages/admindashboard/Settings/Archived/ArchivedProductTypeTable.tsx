@@ -18,6 +18,7 @@ const ITEMS_PER_PAGE = 7;
 function ArchivedProductTypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
 
+  const totalPages = Math.ceil(archivedProductTypesData.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentData = archivedProductTypesData.slice(startIndex, endIndex);
@@ -36,7 +37,7 @@ function ArchivedProductTypeTable() {
           <TableBody>
             {currentData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={2} className="py-6 text-center text-gray-500">
+                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
                   No product types found.
                 </TableCell>
               </TableRow>
@@ -49,9 +50,9 @@ function ArchivedProductTypeTable() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="text-wite !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
                     >
-                    <IoReturnUpBack className="text-white" />
+                      <IoReturnUpBack className="text-white" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -64,8 +65,7 @@ function ArchivedProductTypeTable() {
       <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}
-          totalItems={archivedProductTypesData.length}
-          itemsPerPage={ITEMS_PER_PAGE}
+          totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
       </div>

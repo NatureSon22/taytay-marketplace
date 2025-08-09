@@ -6,19 +6,28 @@ import {
   updateAdminStatus as updateAdminStatusApi,
 } from "@/services/admin";
 
-export function useAdmins(enabled: boolean, searchTerm: string) {
+export interface Admin {
+  id: string;
+  email: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  status: "Active" | "Inactive";
+  role: "Admin" | "Super Admin";
+}
+
+export function useAdmins(enabled: boolean, searchTerm?: string) {
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+  
 
-  // Fetch Admins
   const { data: admins = [], isLoading } = useQuery({
-    queryKey: ["admins", searchTerm],
-    queryFn: () => fetchAdmins(searchTerm),
+    queryKey: ["admins"], 
+    queryFn: () => fetchAdmins(),
     enabled,
   });
 
-  // Filtered + Paginated
   const filteredAdmins = useMemo(() => {
     if (!searchTerm) return admins;
     const lower = searchTerm.toLowerCase();
@@ -34,44 +43,44 @@ export function useAdmins(enabled: boolean, searchTerm: string) {
 
   const totalPages = Math.max(1, Math.ceil(filteredAdmins.length / itemsPerPage));
 
-  // Archive Mutation
-  const { mutate: archiveAdmin, isLoading: isArchiving } = useMutation({
+  // Archive Admin
+  const { mutate: archiveAdmin, isPending: isArchiving } = useMutation({
     mutationFn: archiveAdminApi,
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: ["admins", searchTerm] });
-      const prev = queryClient.getQueryData<any[]>(["admins", searchTerm]) || [];
+      await queryClient.cancelQueries({ queryKey: ["admins"] });
+      const prev = queryClient.getQueryData<any[]>(["admins"]) || [];
       queryClient.setQueryData(
-        ["admins", searchTerm],
+        ["admins"],
         prev.filter((a) => a.id !== id)
       );
       return { prev };
     },
     onError: (_err, _id, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(["admins", searchTerm], ctx.prev);
+      if (ctx?.prev) queryClient.setQueryData(["admins"], ctx.prev);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["admins", searchTerm] });
+      queryClient.invalidateQueries({ queryKey: ["admins"] });
     },
   });
 
-  // Status Update Mutation
-  const { mutate: updateAdminStatus, isLoading: isUpdatingStatus } = useMutation({
+  // Update Admin Status
+  const { mutate: updateAdminStatus, isPending: isUpdatingStatus } = useMutation({
     mutationFn: ({ id, status }: { id: string; status: "Active" | "Inactive" }) =>
       updateAdminStatusApi(id, status),
     onMutate: async ({ id, status }) => {
-      await queryClient.cancelQueries({ queryKey: ["admins", searchTerm] });
-      const prev = queryClient.getQueryData<any[]>(["admins", searchTerm]) || [];
+      await queryClient.cancelQueries({ queryKey: ["admins"] });
+      const prev = queryClient.getQueryData<any[]>(["admins"]) || [];
       queryClient.setQueryData(
-        ["admins", searchTerm],
+        ["admins"],
         prev.map((a) => (a.id === id ? { ...a, status } : a))
       );
       return { prev };
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(["admins", searchTerm], ctx.prev);
+      if (ctx?.prev) queryClient.setQueryData(["admins"], ctx.prev);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["admins", searchTerm] });
+      queryClient.invalidateQueries({ queryKey: ["admins"] });
     },
   });
 

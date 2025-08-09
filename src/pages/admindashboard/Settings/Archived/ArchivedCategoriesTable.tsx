@@ -17,10 +17,11 @@ const ITEMS_PER_PAGE = 8;
 
 function ArchivedCategoriesTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const currentData = archivedCategoryData.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(archivedCategoryData.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentData = archivedCategoryData.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-6">
@@ -37,7 +38,7 @@ function ArchivedCategoriesTable() {
             {currentData.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={2}
+                  colSpan={3}
                   className="py-6 text-center text-gray-500"
                 >
                   No categories found.
@@ -48,15 +49,15 @@ function ArchivedCategoriesTable() {
                 <TableRow key={cat.id}>
                   <TableCell className="py-4 !pl-6">{cat.id}</TableCell>
                   <TableCell className="py-4">{cat.label}</TableCell>
-                    <TableCell>
+                  <TableCell>
                     <Button
-                        size="sm"
-                        variant="outline"
-                        className="text-wite !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      size="sm"
+                      variant="outline"
+                      className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
                     >
-                    <IoReturnUpBack className="text-white" />
+                      <IoReturnUpBack className="text-white" />
                     </Button>
-                    </TableCell>
+                  </TableCell>
                 </TableRow>
               ))
             )}
@@ -64,12 +65,13 @@ function ArchivedCategoriesTable() {
         </Table>
       </ScrollArea>
 
-      <Pagination
-        currentPage={currentPage}
-        totalItems={archivedCategoryData.length}
-        itemsPerPage={ITEMS_PER_PAGE}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      <div className="flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Key } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FaArchive } from "react-icons/fa";
@@ -125,7 +125,7 @@ function UsersTable() {
                 <TableCell colSpan={4}>Loading admins...</TableCell>
               </TableRow>
             ) : displayedUsers.length > 0 ? (
-              displayedUsers.map((user: any, index) => (
+              displayedUsers.map((user: any, index: Key | null | undefined) => (
                 <TableRow key={index}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.email}</TableCell>

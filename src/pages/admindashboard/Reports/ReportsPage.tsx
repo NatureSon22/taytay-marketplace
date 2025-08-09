@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import ReportSelector from "@/components/ReportSelector";
 import SearchBar from "./SearchBar";
@@ -6,19 +6,14 @@ import GenerateReportButton from "./GenerateReportButton";
 import UserGrowthTable from "./UserGrowthTable";
 import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
-import ActivityLogTable from "./ActivityLogTable";;
+import ActivityLogTable from "./ActivityLogTable";
 import { sellerData, dummyData, dummyLogs } from "@/data/userData";
-import { fetchAdmins } from "@/services/admin";
-
+import { useAdmins } from "@/hooks/useAdmin";
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
   const [searchQuery, setSearchQuery] = useState("");
-  const [admins, setAdmins] = useState<{ id: number; email: string; firstName: string; lastName: string; status: string; }[]>([]);
-
-  useEffect(() => {
-    fetchAdmins().then(setAdmins);
-  }, []);
+  const { data: admins = [] } = useAdmins(); 
 
   return (
     <div>
@@ -29,9 +24,12 @@ function ReportsPage() {
 
       <div className="space-y-10 bg-white border rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between gap-4">
-
           {selectedReport !== "User Growth" && (
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder={`Search ${selectedReport}...`}
+            />
           )}
 
           <ReportSelector
@@ -51,8 +49,9 @@ function ReportsPage() {
                   )
                 : selectedReport === "Admin"
                 ? admins.filter((a) =>
-                    a.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    a.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+                    `${a.firstName} ${a.lastName}`
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
                   )
                 : selectedReport === "Activity Log"
                 ? dummyLogs.filter((log) =>
@@ -65,16 +64,14 @@ function ReportsPage() {
                 : []
             }
           />
-
-      </div>
+        </div>
 
         {selectedReport === "Seller" && <SellerTable searchQuery={searchQuery} />}
         {selectedReport === "Admin" && <AdminTable searchQuery={searchQuery} />}
         {selectedReport === "User Growth" && <UserGrowthTable searchQuery={searchQuery} />}
         {selectedReport === "Activity Log" && <ActivityLogTable searchQuery={searchQuery} />}
       </div>
-
-  </div>
+    </div>
   );
 }
 
