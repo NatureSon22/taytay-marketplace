@@ -8,21 +8,22 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { archivedAdminsData } from "@/data/archivedData";
+import { useState, useEffect } from "react";
 import Pagination from "@/components/ui/Pagination";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { IoReturnUpBack } from "react-icons/io5";
+import { fetchArchivedAdmins } from "@/services/adminArchivedService";
+import { useArchivedAdmins } from "@/hooks/useArchivedAdmins";
 
 const ITEMS_PER_PAGE = 6;
 
 function AdminArchiveTable() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const { archivedAdmins, isLoading, restoreAdmin } = useArchivedAdmins();
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Filter data based on search term
-  const filteredData = archivedAdminsData.filter((admin) => {
+  const filteredData = archivedAdmins.filter((admin) => {
     const fullName = `${admin.firstName} ${admin.lastName}`.toLowerCase();
     return (
       admin.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,28 +33,26 @@ function AdminArchiveTable() {
   });
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="relative w-full">
-      <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">
-        <Search size={18} />
-      </span>
-      <Input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => {
+        <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">
+          <Search size={18} />
+        </span>
+        <Input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1); // Reset to page 1 when searching
+            setCurrentPage(1);
           }}
-        placeholder="Search..."
-        className="pl-10 w-full !focus:outline-none"
-      />
+          placeholder="Search..."
+          className="pl-10 w-full !focus:outline-none"
+        />
       </div>
 
-      {/* Table */}
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -61,12 +60,19 @@ function AdminArchiveTable() {
               <TableHead className="py-4 !pl-6 font-bold">ID</TableHead>
               <TableHead className="py-4 font-bold">Email</TableHead>
               <TableHead className="py-4 font-bold">Username</TableHead>
+              <TableHead className="py-4 font-bold">Role</TableHead>
               <TableHead className="py-4 font-bold">Status</TableHead>
               <TableHead className="py-4 font-bold">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentData.length === 0 ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="py-6 text-center text-gray-500">
+                  Loading...
+                </TableCell>
+              </TableRow>
+            ) : currentData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="py-6 text-center text-gray-500">
                   No admins found.
@@ -74,12 +80,13 @@ function AdminArchiveTable() {
               </TableRow>
             ) : (
               currentData.map((admin) => (
-                <TableRow key={admin.id}>
+                <TableRow key={admin._id}>
                   <TableCell className="py-4 !pl-6">{admin.id}</TableCell>
                   <TableCell className="py-4">{admin.email}</TableCell>
                   <TableCell className="py-4">
                     {admin.firstName} {admin.lastName}
                   </TableCell>
+                  <TableCell className="py-4">{admin.role}</TableCell>
                   <TableCell className="py-4">
                     <div
                       className={`flex rounded-full items-center justify-center w-[100px]
@@ -93,11 +100,12 @@ function AdminArchiveTable() {
                   </TableCell>
                   <TableCell>
                     <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-wite !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
-                    >
-                      <IoReturnUpBack className="text-white" />
+                        size="sm"
+                        variant="outline"
+                        onClick={() => restoreAdmin(admin.id)}
+                        className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      >
+                        <IoReturnUpBack className="text-white" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -107,7 +115,6 @@ function AdminArchiveTable() {
         </Table>
       </ScrollArea>
 
-      {/* Pagination */}
       <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}

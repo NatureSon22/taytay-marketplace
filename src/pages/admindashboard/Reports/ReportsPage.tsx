@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
 import ReportSelector from "@/components/ReportSelector";
 import SearchBar from "./SearchBar";
@@ -6,12 +6,19 @@ import GenerateReportButton from "./GenerateReportButton";
 import UserGrowthTable from "./UserGrowthTable";
 import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
-import ActivityLogTable from "./ActivityLogTable";
-import { sellerData, adminData, dummyData, dummyLogs } from "@/data/userData"; 
+import ActivityLogTable from "./ActivityLogTable";;
+import { sellerData, dummyData, dummyLogs } from "@/data/userData";
+import { fetchAdmins } from "@/services/admin";
+
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
   const [searchQuery, setSearchQuery] = useState("");
+  const [admins, setAdmins] = useState<{ id: number; email: string; firstName: string; lastName: string; status: string; }[]>([]);
+
+  useEffect(() => {
+    fetchAdmins().then(setAdmins);
+  }, []);
 
   return (
     <div>
@@ -43,7 +50,7 @@ function ReportsPage() {
                     s.fullName.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                 : selectedReport === "Admin"
-                ? adminData.filter((a) =>
+                ? admins.filter((a) =>
                     a.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     a.lastName.toLowerCase().includes(searchQuery.toLowerCase())
                   )
@@ -55,9 +62,10 @@ function ReportsPage() {
                 ? dummyData.filter((dummy) =>
                     dummy.month.toLowerCase().includes(searchQuery.toLowerCase())
                   )
-                : [] 
+                : []
             }
-            />
+          />
+
       </div>
 
         {selectedReport === "Seller" && <SellerTable searchQuery={searchQuery} />}

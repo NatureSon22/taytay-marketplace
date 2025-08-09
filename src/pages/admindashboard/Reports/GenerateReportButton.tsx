@@ -14,7 +14,7 @@ const getColumnHeaders = (type: string) => {
     case "Seller":
       return ["ID", "Email", "Full Name", "Store", "Status"];
     case "Admin":
-      return ["ID", "Email", "Username", "Status"];
+      return ["ID", "Email", "Username", "Role", "Status"];
     case "Activity Log":
       return ["ID", "Email", "Activity", "Date"];
     case "User Growth":
@@ -36,7 +36,7 @@ const getRowData = (type: string, data: any[]) => {
           item.status,
         ];
       case "Admin":
-        return [item.id, item.email, item.username, item.status];
+        return [item.id, item.email, item.firstName + " " + item.lastName, item.role, item.status];
       case "Activity Log":
         return [item.id, item.user, item.action, item.date];
       case "User Growth":
