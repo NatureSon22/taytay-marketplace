@@ -37,7 +37,6 @@ function AdminArchiveTable() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Search bar */}
       <div className="relative w-full">
         <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">
           <Search size={18} />
@@ -47,14 +46,13 @@ function AdminArchiveTable() {
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset to first page when searching
+            setCurrentPage(1); 
           }}
           placeholder="Search..."
           className="pl-10 w-full !focus:outline-none"
         />
       </div>
 
-      {/* Table */}
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -125,7 +123,6 @@ function AdminArchiveTable() {
         </Table>
       </ScrollArea>
 
-      {/* Pagination */}
       <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}

@@ -1,70 +1,85 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import RichTextEditor from "./RichTextEditor";
 import GeneralInfoNavbar from "./GeneralInfoNavbar";
-import {
-  defaultTerms,
-  defaultPrivacy,
-  defaultAbout,
-  defaultContact,
-  defaultHowToGoList,
-  howToGoOptions,
-  editorTabs,
-} from "@/data/generalInformationData";
+import { howToGoOptions, editorTabs } from "@/data/generalInformationData";
+import { useGeneralInformation } from "@/hooks/useGeneralInformation";
+import type { IGeneralInformation } from "@/types/generalInformation";
+import { Button } from "@/components/ui/button";
 
 function GeneralInformationSetting() {
+  const { data, isLoading, isError, saveInfo, isSaving } = useGeneralInformation();
+
   const [selectedHowToGo, setSelectedHowToGo] = useState("UV Express");
   const [activeTab, setActiveTab] = useState("terms");
+  const [formData, setFormData] = useState<IGeneralInformation | null>(null);
 
-  const [terms, setTerms] = useState(defaultTerms);
-  const [privacy, setPrivacy] = useState(defaultPrivacy);
-  const [about, setAbout] = useState(defaultAbout);
-  const [contact, setContact] = useState(defaultContact);
-  const [howToGoList, setHowToGoList] = useState(defaultHowToGoList);
+  useEffect(() => {
+    if (data) setFormData(data);
+  }, [data]);
 
-  const getHowToGoIndex = (label: string) => howToGoOptions.indexOf(label);
+  const howToGoKeyMap: Record<string, keyof IGeneralInformation> = {
+    "UV Express": "uvexpress",
+    "Jeepney": "jeepney",
+    "MRT": "mrt",
+    "UV + Bus": "uvandbus",
+    "Ride Hailing Apps": "ridehailingapps"
+  };
 
   const handleEditorChange = (newValue: string) => {
+    if (!formData) return;
+
+    const updated = { ...formData };
+
     switch (activeTab) {
       case "terms":
-        setTerms(newValue);
+        updated.termsandcondition = newValue;
         break;
       case "privacy":
-        setPrivacy(newValue);
+        updated.privacypolicy = newValue;
         break;
       case "about":
-        setAbout(newValue);
+        updated.about = newValue;
         break;
       case "contact":
-        setContact(newValue);
+        updated.contactinfo = newValue;
         break;
       case "route":
-        const idx = getHowToGoIndex(selectedHowToGo);
-        if (idx !== -1) {
-          const updated = [...howToGoList];
-          updated[idx] = newValue;
-          setHowToGoList(updated);
-        }
+        const key = howToGoKeyMap[selectedHowToGo];
+        if (key) updated[key] = newValue;
         break;
     }
+
+    setFormData(updated);
   };
 
   const getEditorValue = () => {
+    if (!formData) return "";
+
     switch (activeTab) {
       case "terms":
-        return terms;
+        return formData.termsandcondition;
       case "privacy":
-        return privacy;
+        return formData.privacypolicy;
       case "about":
-        return about;
+        return formData.about;
       case "contact":
-        return contact;
+        return formData.contactinfo;
       case "route":
-        const idx = getHowToGoIndex(selectedHowToGo);
-        return idx !== -1 ? howToGoList[idx] : "";
+        const key = howToGoKeyMap[selectedHowToGo];
+        return key ? formData[key] : "";
       default:
         return "";
     }
   };
+
+  const handleSave = () => {
+    if (formData) {
+      saveInfo(formData);
+    }
+  };
+
+  if (isLoading) return <p>Loading general information...</p>;
+  if (isError) return <p>Error loading general information.</p>;
 
   return (
     <div>
@@ -91,6 +106,16 @@ function GeneralInformationSetting() {
           onChange={handleEditorChange}
         />
       </div>
+      <div className="flex justify-end pr-6">
+        <Button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="bg-100 cursor-pointer text-md hover:bg-100 text-white"
+        >
+          Save Changes
+        </Button>
+      </div>
+      
     </div>
   );
 }

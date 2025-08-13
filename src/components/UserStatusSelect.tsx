@@ -1,4 +1,3 @@
-// components/UserStatusSelect.tsx
 import {
   Select,
   SelectTrigger,
@@ -11,12 +10,12 @@ import { getStatusColorClass } from "@/utils/userUtils";
 interface Props {
   value: string;
   options: string[];
-  onChange?: (value: string) => void; // ✅ add this
+  onChange?: (value: string) => void;
 }
 
 export function UserStatusSelect({ value, options, onChange }: Props) {
   return (
-    <Select defaultValue={value} onValueChange={onChange}> {/* ✅ pass here */}
+    <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         className={`cursor-pointer w-[120px] h-8 text-sm ${getStatusColorClass(value)}`}
       >
@@ -32,4 +31,3 @@ export function UserStatusSelect({ value, options, onChange }: Props) {
     </Select>
   );
 }
-

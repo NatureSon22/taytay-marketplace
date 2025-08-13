@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { sellerData } from "@/data/userData"; 
 import { fetchAdmins } from "@/services/admin"; 
-import type { Administrator } from "@/services/admin"; 
 
 const USERS_PER_PAGE = 9;
 

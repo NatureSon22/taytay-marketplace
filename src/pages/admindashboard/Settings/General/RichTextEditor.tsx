@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import ReactQuill from "react-quill";
-import { Label } from "@/components/ui/label";
 import "react-quill/dist/quill.snow.css";
 import "./RichTextEditor.css";
 

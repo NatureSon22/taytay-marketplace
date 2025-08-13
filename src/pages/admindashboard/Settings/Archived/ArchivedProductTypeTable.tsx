@@ -6,25 +6,30 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { useState } from "react";
-import { archivedProductTypesData } from "@/data/archivedData";
 import { IoReturnUpBack } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useState } from "react";
 import Pagination from "@/components/ui/Pagination";
+import { useArchivedProductType, useRetrieveProductType } from "@/hooks/useProductTypes";
 
-const ITEMS_PER_PAGE = 7;
+const ITEMS_PER_PAGE = 8;
 
 function ArchivedProductTypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: archivedProductTypes = [], isLoading } = useArchivedProductType();
+  const retrieveProductType = useRetrieveProductType();
 
-  const totalPages = Math.ceil(archivedProductTypesData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(archivedProductTypes.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentData = archivedProductTypesData.slice(startIndex, endIndex);
+  const currentData = archivedProductTypes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  if (isLoading) {
+    return <div className="text-center py-6">Loading...</div>;
+  }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-6">
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -35,40 +40,44 @@ function ArchivedProductTypeTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
-                  No product types found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              currentData.map((type) => (
-                <TableRow key={type.id}>
-                  <TableCell className="py-4 !pl-6">{type.id}</TableCell>
-                  <TableCell className="py-4">{type.label}</TableCell>
+            {currentData.length > 0 ? (
+              currentData.map((productType) => (
+                <TableRow key={productType.id}>
+                  <TableCell className="py-4 !pl-6">{productType.id}</TableCell>
+                  <TableCell className="py-4">{productType.label}</TableCell>
                   <TableCell>
                     <Button
                       size="sm"
                       variant="outline"
                       className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      onClick={() => retrieveProductType.mutate(productType.id)}
+                      disabled={retrieveProductType.isPending}
                     >
                       <IoReturnUpBack className="text-white" />
                     </Button>
                   </TableCell>
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
+                  No archived product types found.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </ScrollArea>
 
-      <div className="flex justify-end">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -8,12 +8,12 @@ import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
 import ActivityLogTable from "./ActivityLogTable";
 import { sellerData, dummyData, dummyLogs } from "@/data/userData";
-import { useAdmins } from "@/hooks/useAdmin";
+import { useReports } from "@/hooks/useReports";
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: admins = [] } = useAdmins(); 
+  const { data: admins = [] } = useReports(); 
 
   return (
     <div>

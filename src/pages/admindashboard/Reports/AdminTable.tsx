@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useAdmins } from "@/hooks/useAdmin";
+import { useReports } from "@/hooks/useReports";
 import Pagination from "@/components/ui/Pagination";
 import {
   Table,
@@ -12,7 +12,7 @@ import {
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 export default function AdminTable({ searchQuery = "" }: { searchQuery?: string }) {
-  const { data: admins = [], isLoading, isError } = useAdmins();
+  const { data: admins = [], isLoading, isError } = useReports();
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
 
@@ -78,15 +78,15 @@ export default function AdminTable({ searchQuery = "" }: { searchQuery?: string 
                 </TableCell>
                 <TableCell>{admin.role}</TableCell>
                 <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      admin.status === "Active"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {admin.status}
-                  </span>
+                  <div
+                      className={`flex rounded-full items-center justify-center w-[100px]
+                        ${admin.status === "Active" ? "bg-green-100 text-green-800" : ""}
+                        ${admin.status === "Inactive" ? "bg-red-100 text-red-800" : ""}`}
+                    >
+                      <span className="px-3 py-1 rounded-full text-sm font-medium">
+                        {admin.status}
+                      </span>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

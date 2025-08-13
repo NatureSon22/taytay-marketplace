@@ -5,22 +5,25 @@ import {
   archiveAdmin as archiveAdminApi,
   updateAdminStatus as updateAdminStatusApi,
 } from "@/services/admin";
+import type { Admin } from "@/types/admin";
 
-export interface Admin {
-  id: string;
-  email: string;
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  status: "Active" | "Inactive";
-  role: "Admin" | "Super Admin";
-}
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function useAdmins(enabled: boolean, searchTerm?: string) {
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
   
+  useQuery<Admin[]>({
+    queryKey: ["admins"],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/admins`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch admins");
+      }
+      return res.json();
+    },
+  });
 
   const { data: admins = [], isLoading } = useQuery({
     queryKey: ["admins"], 

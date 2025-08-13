@@ -32,7 +32,6 @@ function UsersTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
 
-  // Hook for sellers
   const {
     paginatedUsers,
     currentPage,
@@ -40,12 +39,11 @@ function UsersTable() {
     setCurrentPage,
   } = useUsers("Seller", searchTerm);
 
-  // Hook for admins
   const {
     admins,
     isLoading: isAdminsLoading,
     archiveAdmin,
-    updateAdminStatus, // ✅ Add this
+    updateAdminStatus, 
     isArchiving,
     currentPage: adminPage,
     totalPages: adminTotalPages,
@@ -62,7 +60,6 @@ function UsersTable() {
 
   return (
     <div className="bg-white border rounded-xl p-6 shadow-sm">
-      {/* Search + Filter */}
       <div className="flex justify-between items-center mb-4 gap-2">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />

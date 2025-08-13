@@ -66,11 +66,9 @@ function AdminSettingForm() {
 
   return (
     <div className="max-w-full space-y-8">
-      {/* Account Information */}
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Account Information</h3>
         <div className="flex gap-4">
-          {/* Admin ID */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="adminId" className="text-md">
               Admin ID
@@ -82,7 +80,6 @@ function AdminSettingForm() {
               onChange={handleChange}
             />
           </div>
-          {/* Email */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="email" className="text-md">
               Email
@@ -95,7 +92,6 @@ function AdminSettingForm() {
               onChange={handleChange}
             />
           </div>
-          {/* Role */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="role" className="text-md">
               Role
@@ -113,7 +109,6 @@ function AdminSettingForm() {
         </div>
       </div>
 
-      {/* Personal Information */}
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Personal Information</h3>
         <div className="flex gap-4">
@@ -153,7 +148,6 @@ function AdminSettingForm() {
         </div>
       </div>
 
-      {/* Buttons */}
       <div className="flex gap-4 justify-end mt-6">
         <Button
           type="button"
