@@ -24,8 +24,8 @@ import GeneralInformationSetting from "./pages/admindashboard/Settings/General/G
 import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupAndRestore/BackupRestoreSetting";
 import AccountInfoSetting from "./pages/admindashboard/Settings/Account/AccountInfoSetting";
 import ArchiveSetting from "./pages/admindashboard/Settings/Archived/ArchiveSetting";
-import TypeSetting from "./pages/admindashboard/Settings/TypeSetting";
-import LinkTypeSetting from "./pages/admindashboard/Settings/LinkTypeSetting";
+import TypeSetting from "./pages/admindashboard/Settings/Product/TypeSetting";
+import LinkTypeSetting from "./pages/admindashboard/Settings/Link/LinkTypeSetting";
 
 const router = createBrowserRouter([
   {
