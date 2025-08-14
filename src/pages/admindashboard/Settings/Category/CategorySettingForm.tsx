@@ -2,12 +2,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreateCategory } from "@/hooks/useCategories";
 
 function CategorySettingForm() {
-  const [category, setCategory] = useState("");
+  const [formData, setFormData] = useState({ id: "", label: "" });
+  const createCategory = useCreateCategory();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleCancel = () => {
-    setCategory("");
+    setFormData({ id: "", label: "" });
+  };
+
+  const handleSubmit = () => {
+    if (!formData.id || !formData.label) return;
+    createCategory.mutate(formData, {
+      onSuccess: () => {
+        setFormData({ id: "", label: "" });
+      },
+    });
   };
 
   return (
@@ -15,13 +30,22 @@ function CategorySettingForm() {
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Product Category</h3>
         <div className="flex gap-4">
-          <div className="flex flex-col gap-1 w-[100%]">
-            <Label htmlFor="category" className="text-md">Category Label</Label>
+          <div className="flex flex-col gap-1 w-full">
+            <Label htmlFor="id" className="text-md">Category ID</Label>
             <Input
-              id="category"
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              id="id"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex flex-col gap-1 w-full">
+            <Label htmlFor="label" className="text-md">Category Label</Label>
+            <Input
+              id="label"
+              name="label"
+              value={formData.label}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -38,8 +62,10 @@ function CategorySettingForm() {
         <Button
           type="button"
           className="bg-100 cursor-pointer text-md hover:bg-100 text-white"
+          onClick={handleSubmit}
+          disabled={createCategory.isPending}
         >
-          Add Category
+          {createCategory.isPending ? "Adding..." : "Add Category"}
         </Button>
       </div>
     </div>

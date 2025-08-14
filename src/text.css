@@ -39,7 +39,7 @@
 }
 
 .quill-content h1{
-  font-family: 'Kenzoestic', sans-serif;
+  font-family: 'kenzoestic', sans-serif;
 }
 
 .quill-content p {
@@ -47,3 +47,21 @@
   line-height: 1.6;
 }
 
+.about-section h1,
+.about-section h2 {
+  font-family: 'kenzoestic black', sans-serif;
+  color:#0033a0;
+}
+
+.ql-align-center {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 0 !important;
+  font-family: 'Kenzoestic Black', sans-serif;
+  text-transform: uppercase;
+}
+
+.ql-align-justify {
+  text-align: justify;
+  margin-bottom: 0 !important;
+}

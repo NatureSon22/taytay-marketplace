@@ -8,19 +8,25 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { useState } from "react";
-import { archivedCategoryData } from "@/data/archivedData";
-import Pagination from "@/components/ui/Pagination";
 import { IoReturnUpBack } from "react-icons/io5";
+import { useState } from "react";
+import Pagination from "@/components/ui/Pagination";
+import { useArchivedCategories, useRetrieveCategory } from "@/hooks/useCategories";
 
 const ITEMS_PER_PAGE = 8;
 
 function ArchivedCategoriesTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const currentData = archivedCategoryData.slice(startIndex, endIndex);
+  const { data: archivedCategories = [], isLoading } = useArchivedCategories();
+  const retrieveCategory = useRetrieveCategory();
+
+  const totalPages = Math.ceil(archivedCategories.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentData = archivedCategories.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  if (isLoading) {
+    return <div className="text-center py-6">Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -34,42 +40,44 @@ function ArchivedCategoriesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentData.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={2}
-                  className="py-6 text-center text-gray-500"
-                >
-                  No categories found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              currentData.map((cat) => (
-                <TableRow key={cat.id}>
-                  <TableCell className="py-4 !pl-6">{cat.id}</TableCell>
-                  <TableCell className="py-4">{cat.label}</TableCell>
-                    <TableCell>
+            {currentData.length > 0 ? (
+              currentData.map((category) => (
+                <TableRow key={category.id}>
+                  <TableCell className="py-4 !pl-6">{category.id}</TableCell>
+                  <TableCell className="py-4">{category.label}</TableCell>
+                  <TableCell>
                     <Button
-                        size="sm"
-                        variant="outline"
-                        className="text-wite !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      size="sm"
+                      variant="outline"
+                      className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
+                      onClick={() => retrieveCategory.mutate(category.id)}
+                      disabled={retrieveCategory.isPending}
                     >
-                    <IoReturnUpBack className="text-white" />
+                      <IoReturnUpBack className="text-white" />
                     </Button>
-                    </TableCell>
+                  </TableCell>
                 </TableRow>
               ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
+                  No archived categories found.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </ScrollArea>
 
-      <Pagination
-        currentPage={currentPage}
-        totalItems={archivedCategoryData.length}
-        itemsPerPage={ITEMS_PER_PAGE}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      {totalPages > 1 && (
+        <div className="flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }
