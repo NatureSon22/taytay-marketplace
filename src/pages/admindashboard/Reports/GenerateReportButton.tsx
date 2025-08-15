@@ -3,6 +3,7 @@ import autoTable from "jspdf-autotable";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { vectorUrl, logoUrl, taglineUrl } from "./info.ts";
+import { formatDate } from "@/utils/formatDate";
 
 type GenerateReportButtonProps = {
   data: any[];
@@ -16,7 +17,7 @@ const getColumnHeaders = (type: string) => {
     case "Admin":
       return ["ID", "Email", "Username", "Role", "Status"];
     case "Activity Log":
-      return ["ID", "Email", "Activity", "Date"];
+      return ["Username", "Action", "Date"];
     case "User Growth":
       return ["Month", "Users"];
     default:
@@ -38,7 +39,7 @@ const getRowData = (type: string, data: any[]) => {
       case "Admin":
         return [item.id, item.email, item.firstName + " " + item.lastName, item.role, item.status];
       case "Activity Log":
-        return [item.id, item.user, item.action, item.date];
+        return [item.username, item.action, formatDate(item.createdAt)];
       case "User Growth":
         return [item.month, item.users];
       default:

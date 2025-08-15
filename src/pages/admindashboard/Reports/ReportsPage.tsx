@@ -7,13 +7,15 @@ import UserGrowthTable from "./UserGrowthTable";
 import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
 import ActivityLogTable from "./ActivityLogTable";
-import { sellerData, dummyData, dummyLogs } from "@/data/userData";
+import { sellerData, dummyLogs } from "@/data/userData";
 import { useReports } from "@/hooks/useReports";
+import { useActLogs } from "@/hooks/useActLogs";
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: admins = [] } = useReports(); 
+  const { data: logs = [] } = useActLogs(); 
 
   return (
     <div>
@@ -54,12 +56,8 @@ function ReportsPage() {
                       .includes(searchQuery.toLowerCase())
                   )
                 : selectedReport === "Activity Log"
-                ? dummyLogs.filter((log) =>
-                    log.user.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
-                : selectedReport === "User Growth"
-                ? dummyData.filter((dummy) =>
-                    dummy.month.toLowerCase().includes(searchQuery.toLowerCase())
+                ? logs.filter((log) =>
+                    log.username.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                 : []
             }
