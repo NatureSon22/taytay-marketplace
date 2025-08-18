@@ -30,8 +30,7 @@ const formSchema = z.object({
     .string()
     .regex(phoneRe, { message: "Valid phone is required" }),
   birthday: z.coerce.date({
-    required_error: "Birthday is required",
-    invalid_type_error: "invalid_type_error",
+    error: "Birthday is required",
   }),
   age: z.coerce
     .number()
@@ -218,7 +217,8 @@ function InformationForm({
                     items={provinces}
                     term="province"
                     selectItem={setSelectedProvinceCode}
-                    {...field}
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -252,7 +252,7 @@ function InformationForm({
               <FormItem>
                 <FormLabel>Barangay</FormLabel>
                 <FormControl>
-                  <ComboBox items={barangays} term="barangay" {...field} />
+                  <ComboBox  items={barangays} term="barangay" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

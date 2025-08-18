@@ -26,6 +26,7 @@ import AccountInfoSetting from "./pages/admindashboard/Settings/Account/AccountI
 import ArchiveSetting from "./pages/admindashboard/Settings/Archived/ArchiveSetting";
 import TypeSetting from "./pages/admindashboard/Settings/Product/TypeSetting";
 import LinkTypeSetting from "./pages/admindashboard/Settings/Link/LinkTypeSetting";
+import AuthLayer from "./components/layer/AuthLayer";
 
 const router = createBrowserRouter([
   {
@@ -79,8 +80,11 @@ const router = createBrowserRouter([
       // account
       {
         path: "/account",
-        element: <AccountWrapper />,
-
+        element: (
+          <AuthLayer>
+            <AccountWrapper />
+          </AuthLayer>
+        ),
         children: [{ path: "/account/manage", element: <ManageAccount /> }],
       },
     ],

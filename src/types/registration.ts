@@ -18,7 +18,7 @@ export type UserProfile = {
 
 export type StoreDetails = {
   stallNumbers: string[];
-  permit: File;
+  permit?: File;
   storeName: string;
 };
 
