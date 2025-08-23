@@ -16,3 +16,13 @@ export type UserCredentials = {
 };
 
 export type UserAccount = UserProfile & UserCredentials;
+
+export type UserAccountMetadata = {
+  status: string;
+  isVerified: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FullUserAccount = UserAccount & UserAccountMetadata;

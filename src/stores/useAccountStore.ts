@@ -1,15 +1,15 @@
-import type { UserAccount } from "@/types/account";
+import type { FullUserAccount } from "@/types/account";
 import { create } from "zustand";
 
 type AccountState = {
-  account: UserAccount | null;
-  setAccount: (account: UserAccount | null) => void;
+  account: FullUserAccount | null;
+  setAccount: (account: FullUserAccount | null) => void;
   resetAccount: () => void;
 };
 
 const useAccountStore = create<AccountState>((set) => ({
   account: null,
-  setAccount: (account: UserAccount | null) => set(() => ({ account })),
+  setAccount: (account: FullUserAccount | null) => set(() => ({ account })),
   resetAccount: () => set(() => ({ account: null })),
 }));
 
