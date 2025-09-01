@@ -6,6 +6,8 @@ import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
 import SideBar from "./SideBar";
 import navLabels from "@/data/navigation";
+import Authenticated from "./layer/Authenticated";
+import ProfileDropDownMenu from "./ProfileDropDownMenu";
 
 function NavBar() {
   const location = useLocation();
@@ -51,13 +53,17 @@ function NavBar() {
                 <div
                   className={
                     selectedPath === el.path
-                      ? "absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-full py-[3px] rounded-full bg-100"
+                      ? "absolute left-1/2 transform -translate-x-1/2 w-full py-[3px] rounded-full bg-100"
                       : ""
                   }
                 ></div>
               </Link>
             );
           })}
+
+          <Authenticated>
+            <ProfileDropDownMenu />
+          </Authenticated>
         </div>
 
         <Button

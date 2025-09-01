@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import LandingPage from "./pages/landingpage/LandingPage";
 import AboutPage from "./pages/aboutpage/AboutPage";
@@ -12,7 +12,7 @@ import ProductsPage from "./pages/products/ProductsPage";
 import ProductDetailsPage from "./pages/products/ProductDetailsPage";
 import StoreDetails from "./pages/store/StoreDetails";
 import AccountWrapper from "./pages/account/AccountWrapper";
-import ManageAccount from "./pages/account/ManageAccount";
+import ManageAccount from "./pages/account/info/ManageAccount";
 import AdminLayout from "./pages/admindashboard/AdminLayout";
 import DashboardPage from "./pages/admindashboard/Dashboard/DashboardPage";
 import UsersPage from "./pages/admindashboard/Users/UsersPage";
@@ -27,6 +27,10 @@ import ArchiveSetting from "./pages/admindashboard/Settings/Archived/ArchiveSett
 import TypeSetting from "./pages/admindashboard/Settings/Product/TypeSetting";
 import LinkTypeSetting from "./pages/admindashboard/Settings/Link/LinkTypeSetting";
 import AuthLayer from "./components/layer/AuthLayer";
+import ManageStore from "./pages/account/store/ManageStore";
+import CreateProduct from "./pages/account/store/CreateProduct";
+import Login from "./pages/auth/login/Login";
+import StoreInfo from "./pages/account/store/StoreInfo";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
       {
         path: "/",
@@ -85,7 +93,13 @@ const router = createBrowserRouter([
             <AccountWrapper />
           </AuthLayer>
         ),
-        children: [{ path: "/account/manage", element: <ManageAccount /> }],
+        children: [
+          { index: true, element: <Navigate to="/account/manage" replace /> },
+          { path: "/account/manage", element: <ManageAccount /> },
+          { path: "/account/store", element: <ManageStore /> },
+          { path: "/account/store/edit", element: <StoreInfo /> },
+          { path: "/account/store/product/new", element: <CreateProduct /> },
+        ],
       },
     ],
   },

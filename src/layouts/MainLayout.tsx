@@ -4,16 +4,20 @@ import Authenticated from "@/components/layer/Authenticated";
 import NavBar from "@/components/NavBar";
 import SellerNav from "@/components/RegisterNav";
 import ScrollUpButton from "@/components/ScrollUpButton";
-import { useBreadCrumbStore } from "@/states/breadCrumbStore";
+import { Toaster } from "sonner";
 import { Outlet, useLocation } from "react-router";
+import useAuth from "@/hooks/useAuth";
 
 function MainLayout() {
+  useAuth();
   const location = useLocation();
-  const setPath = useBreadCrumbStore((state) => state.setPath);
+  // const setPath = useBreadCrumbStore((state) => state.setPath);
+  const showNav =
+    location.pathname !== "/login" && location.pathname !== "/register";
 
   return (
     <main className="min-h-screen flex flex-col">
-      {location.pathname !== "/register" && (
+      {showNav && (
         <>
           <Authenticated renderIfAuthenticated={false}>
             <SellerNav />
@@ -22,6 +26,8 @@ function MainLayout() {
           <NavBar />
         </>
       )}
+
+      <Toaster position="top-right" />
 
       <div className="flex-1 flex flex-col">
         <BreadCrumbNav />

@@ -3,10 +3,15 @@ import CenterLayout from "@/layouts/CenterLayout";
 import PageLayout from "@/layouts/PageLayout";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
+
+const BASE_ROUTE = "/account";
 
 function AccountWrapper() {
-  const [selectedTab, setSelectedTab] = useState(accountTabs[0].path);
+  const location = useLocation();
+  const [selectedTab, setSelectedTab] = useState(
+    location.pathname === BASE_ROUTE ? accountTabs[0].path : location.pathname
+  );
 
   const handleSelectTab = (path: string) => {
     setSelectedTab(path);

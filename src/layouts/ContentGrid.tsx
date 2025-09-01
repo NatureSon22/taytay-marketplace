@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 type ContentGridProps = {
   children: ReactNode;
-  
 };
 
 function ContentGrid({ children }: ContentGridProps) {

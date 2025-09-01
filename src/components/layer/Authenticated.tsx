@@ -1,4 +1,4 @@
-import useAuth from "@/hooks/useAuth";
+import useAccountStore from "@/stores/useAccountStore";
 import type { ReactNode } from "react";
 
 type AuthenticatedProps = {
@@ -7,21 +7,15 @@ type AuthenticatedProps = {
 };
 
 const Authenticated = ({
-  renderIfAuthenticated = true,
   children,
-}: AuthenticatedProps) => {
-  const { account, isPending } = useAuth();
+  renderIfAuthenticated = true,
+}: AuthenticatedProps): JSX.Element | null => {
+  const { account } = useAccountStore((state) => state);
 
-  if (isPending) return null;
-
-  const isAuthenticated = !!account;
-  const shouldRenderChildren = renderIfAuthenticated
-    ? isAuthenticated
-    : !isAuthenticated;
-
-  if (shouldRenderChildren) return children;
-
-  return null;
+  const isAuthenticated = account != null;
+  console.log(isAuthenticated);
+  console.log("account: " + account);
+  return renderIfAuthenticated === isAuthenticated ? <>{children}</> : null;
 };
 
 export default Authenticated;

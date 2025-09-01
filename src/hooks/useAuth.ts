@@ -4,32 +4,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const useAuth = () => {
-  const { account, setAccount } = useAccountStore();
-  const { data, isPending, isSuccess, isError } = useQuery({
+  const { setAccount } = useAccountStore();
+
+  const { data, status } = useQuery({
     queryKey: ["authenticated"],
     queryFn: getLoggedInUser,
-    refetchOnWindowFocus: false,
-    enabled: !account,
   });
 
   useEffect(() => {
-    if (isPending) return;
-
-    if (isSuccess && data) {
-      if (
-        !account ||
-        ("accountId" in account &&
-          "accountId" in data &&
-          account.accountId !== data.accountId)
-      ) {
-        setAccount(data);
-      }
-    } else if (isError) {
+    if (status === "success") {
+      setAccount(data);
+    } else if (status === "error") {
       setAccount(null);
     }
-  }, [isPending, isSuccess, data, isError, setAccount, account]);
-
-  return { account, isPending };
+  }, [status, data, setAccount]);
 };
 
 export default useAuth;

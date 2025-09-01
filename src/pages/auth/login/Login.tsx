@@ -48,9 +48,10 @@ function Login() {
     },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: login,
     onSuccess: (data: FullUserAccount) => {
+      console.log("Logged in data: " + data);
       setAccount(data);
       navigate("/");
     },
@@ -78,8 +79,6 @@ function Login() {
           </div>
 
           <div className="flex flex-col">
-            <div className="flex-2"></div>
-
             <div className="flex-1 grid place-items-center">
               <div className="w-full max-w-[500px] shadow-200 py-12 px-5 sm:px-16 sm:py-20">
                 <Form {...form}>
@@ -88,7 +87,12 @@ function Login() {
                     className="grid gap-6"
                     noValidate
                   >
-                    <div className="text-center space-y-[1px] mb-3 sm:mb-4">
+                    <div
+                      className={cn(
+                        "text-center space-y-[1px]",
+                        isError ? "" : "mb-3 sm:mb-4"
+                      )}
+                    >
                       <p className="font-extrabold text-[1.7rem] text-100 sm:text-[2rem]">
                         Welcome
                       </p>
@@ -96,6 +100,14 @@ function Login() {
                         Log in to discover exclusive products
                       </p>
                     </div>
+
+                    {isError && error?.message && (
+                      <div className="text-center bg-red-200 px-6 py-5 mb-3 rounded-xs">
+                        <p className="text-[0.8rem] md:text-[0.85rem] text-red-600">
+                          {error?.message}
+                        </p>
+                      </div>
+                    )}
 
                     <FormField
                       control={form.control}
