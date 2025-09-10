@@ -1,3 +1,8 @@
+export type LoginCredentials = {
+  email: string;
+  password: string;
+};
+
 export type AccountCredentials = {
   username: string;
   email: string;
@@ -18,7 +23,7 @@ export type UserProfile = {
 
 export type StoreDetails = {
   stallNumbers: string[];
-  permit: File;
+  permit?: File;
   storeName: string;
 };
 

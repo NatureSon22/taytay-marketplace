@@ -10,8 +10,7 @@ const formSchema = z.object({
   surname: z.string().min(1, { message: "Surname is required" }),
   number: z.string().regex(phoneRe, { message: "Valid phone is required" }),
   birthday: z.coerce.date({
-    required_error: "Birthday is required",
-    invalid_type_error: "invalid_type_error",
+    message: "invalid_type_error",
   }),
   age: z.coerce
     .number()

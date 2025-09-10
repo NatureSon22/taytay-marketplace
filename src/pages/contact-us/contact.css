@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'Kenzoestic Black'; 
+  src: url('./assets/kenzoestic/KenzoesticBlack.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; 
+}
+
+.ql-container {
+  border: 1px solid #d1d5db; 
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  min-height: 440px;
+  background-color: #ffffff;
+}
+
+.ql-editor{
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  border-radius: 0.375rem;  
+}
+
+.ql-toolbar {
+  border: 1px solid #d1d5db;
+}
+
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-justify {
+  text-align: justify;
+}
+
+.quill-content h1, 
+.quill-content h2, 
+.quill-content h3 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.quill-content h1{
+  font-family: 'Kenzoestic', sans-serif;
+}
+
+.contact p {
+  margin-bottom: 0px !important;
+  line-height: 1.6;
+}
+
+.about-section h1,
+.about-section h2 {
+  font-family: 'Kenzoestic Black', sans-serif;
+  color:#0033a0;
+}
+
+.ql-align-center {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 0px !important;
+  font-family: 'Kenzoestic Black', sans-serif;
+  text-transform: uppercase;
+}
+
+.ql-align-justify {
+  text-align: justify;
+  margin-bottom: 0 !important;
+}

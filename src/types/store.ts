@@ -16,6 +16,6 @@ export type Store = {
   contactNo: string;
   email: string;
   stallNumbers: string[];
-  linkedAccounts: Accounts[];
-  paymentMode: Payment[];
+  linkedAccounts?: Accounts[];
+  paymentMode?: Payment[];
 };

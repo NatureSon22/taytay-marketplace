@@ -1,0 +1,24 @@
+import type { Product } from "@/types";
+import { createFetchOptions } from "./fetchOptions";
+
+export type CreateProductResponse = {
+  data: Product;
+  message: string;
+};
+
+export const createProduct = async (
+  formData: FormData
+): Promise<CreateProductResponse> => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/`,
+    createFetchOptions({ method: "POST", body: formData, stringifyBody: false })
+  );
+
+  if (!res.ok) {
+    const { message } = await res.json();
+    throw new Error(message);
+  }
+
+  const { data, message } = await res.json();
+  return { data, message };
+};

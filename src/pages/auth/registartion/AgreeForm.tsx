@@ -6,9 +6,10 @@ import { Link } from "react-router";
 type AgreeFormProps = {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
+  registerAccount: () => void;
 };
 
-function AgreeForm({ goToNextStep, goToPreviousStep }: AgreeFormProps) {
+function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
   return (
     <div className="max-w-[500px] mx-auto shadow-100 py-9 px-7 rounded-xl md:py-14 md:px-12">
       <div className="grid gap-5">
@@ -47,7 +48,11 @@ function AgreeForm({ goToNextStep, goToPreviousStep }: AgreeFormProps) {
             Back
           </Button>
 
-          <Button className="cursor-pointer bg-100 text-white" type="submit">
+          <Button
+            className="cursor-pointer bg-100 text-white"
+            type="submit"
+            onClick={registerAccount}
+          >
             Submit
           </Button>
         </div>

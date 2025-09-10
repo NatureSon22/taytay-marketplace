@@ -1,37 +1,39 @@
 import { Button } from "@/components/ui/button";
 
-type PaginationProps = {
+interface PaginationProps {
   currentPage: number;
-  totalItems: number;
-  itemsPerPage?: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
-};
+}
 
 export default function Pagination({
   currentPage,
-  totalItems,
-  itemsPerPage = 12,
+  totalPages,
   onPageChange,
 }: PaginationProps) {
-  const pageCount = Math.ceil(totalItems / itemsPerPage);
+  const handlePrev = () => {
+    if (currentPage > 1) onPageChange(currentPage - 1);
+  };
 
-  if (pageCount <= 1) return null;
+  const handleNext = () => {
+    if (currentPage < totalPages) onPageChange(currentPage + 1);
+  };
+
+  if (totalPages <= 1) return null;
 
   return (
-    <div className="flex justify-end gap-2 mt-4">
+    <div className="flex items-center justify-end gap-4 mt-4">
       <Button
-        size="sm"
         variant="outline"
-        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        onClick={handlePrev}
         disabled={currentPage === 1}
       >
         Previous
       </Button>
       <Button
-        size="sm"
         variant="outline"
-        onClick={() => onPageChange(Math.min(currentPage + 1, pageCount))}
-        disabled={currentPage === pageCount}
+        onClick={handleNext}
+        disabled={currentPage === totalPages}
       >
         Next
       </Button>

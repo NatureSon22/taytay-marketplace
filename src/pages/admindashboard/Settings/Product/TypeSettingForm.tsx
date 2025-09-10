@@ -2,12 +2,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreateProductType } from "@/hooks/useProductTypes";
 
-function TypeSettingForm() {
-  const [type, setType] = useState("");
+function ProductTypeSettingForm() {
+  const [formData, setFormData] = useState({ id: "", label: "" });
+  const createProductType = useCreateProductType();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleCancel = () => {
-    setType("");
+    setFormData({ id: "", label: "" });
+  };
+
+  const handleSubmit = () => {
+    if (!formData.id || !formData.label) return;
+    createProductType.mutate(formData, {
+      onSuccess: () => {
+        setFormData({ id: "", label: "" });
+      },
+    });
   };
 
   return (
@@ -15,13 +30,22 @@ function TypeSettingForm() {
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Product Type</h3>
         <div className="flex gap-4">
-          <div className="flex flex-col gap-1 w-[100%]">
-            <Label htmlFor="category" className="text-md">Product Type Label</Label>
+          <div className="flex flex-col gap-1 w-full">
+            <Label htmlFor="id" className="text-md">Type ID</Label>
             <Input
-              id="type"
-              name="type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
+              id="id"
+              name="id"
+              value={formData.id}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex flex-col gap-1 w-full">
+            <Label htmlFor="label" className="text-md">Product Type Label</Label>
+            <Input
+              id="label"
+              name="label"
+              value={formData.label}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -38,12 +62,14 @@ function TypeSettingForm() {
         <Button
           type="button"
           className="bg-100 cursor-pointer text-md hover:bg-100 text-white"
+          onClick={handleSubmit}
+          disabled={createProductType.isPending}
         >
-          Add Product Type
+          {createProductType.isPending ? "Adding..." : "Add Product Type"}
         </Button>
       </div>
     </div>
   );
 }
 
-export default TypeSettingForm;
+export default ProductTypeSettingForm;
