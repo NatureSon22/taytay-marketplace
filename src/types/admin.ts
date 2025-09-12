@@ -4,6 +4,7 @@ export interface Admin {
   firstName: string;
   middleName?: string;
   lastName: string;
+  password: string;
   status: "Active" | "Inactive";
   role: "Admin" | "Super Admin";
 }
