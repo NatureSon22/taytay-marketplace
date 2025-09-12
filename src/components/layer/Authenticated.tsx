@@ -1,4 +1,4 @@
-import useAccountStore from "@/stores/useAccountStore";
+import useAccountStore from "@/stores/useAccountState";
 import type { ReactNode } from "react";
 
 type AuthenticatedProps = {
@@ -13,8 +13,6 @@ const Authenticated = ({
   const { account } = useAccountStore((state) => state);
 
   const isAuthenticated = account != null;
-  console.log(isAuthenticated);
-  console.log("account: " + account);
   return renderIfAuthenticated === isAuthenticated ? <>{children}</> : null;
 };
 

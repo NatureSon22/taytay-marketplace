@@ -1,7 +1,16 @@
 import type { LoginCredentials } from "@/types/registration";
 import { createFetchOptions } from "./fetchOptions";
+import type { FullUserAccount } from "@/types/account";
+import type { Store } from "@/types";
 
-export const login = async (credentials: LoginCredentials) => {
+type Response = {
+  publicUser: FullUserAccount;
+  store: Store;
+};
+
+export const login = async (
+  credentials: LoginCredentials
+): Promise<Response> => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -14,8 +23,11 @@ export const login = async (credentials: LoginCredentials) => {
     throw new Error(message);
   }
 
-  const { data } = await res.json();
-  return data;
+  const {
+    data: { publicUser, store },
+  } = await res.json();
+
+  return { publicUser, store };
 };
 
 export const register = async (form: FormData) => {
@@ -49,7 +61,7 @@ export const logout = async () => {
   return message;
 };
 
-export const getLoggedInUser = async () => {
+export const getLoggedInUser = async (): Promise<Response> => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
     method: "GET",
     credentials: "include",
@@ -60,6 +72,9 @@ export const getLoggedInUser = async () => {
     throw new Error(message);
   }
 
-  const { data } = await res.json();
-  return data;
+  const {
+    data: { publicUser, store },
+  } = await res.json();
+
+  return { publicUser, store };
 };

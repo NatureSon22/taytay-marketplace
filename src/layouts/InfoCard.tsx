@@ -8,6 +8,7 @@ type InfoCardProps = {
   enableEditing: () => void;
   disableEditing: () => void;
   isSaving?: boolean;
+  disableActions?: () => void;
   children: ReactNode;
 };
 
@@ -17,8 +18,14 @@ function InfoCard({
   enableEditing,
   disableEditing,
   isSaving = false,
+  disableActions = () => {},
   children,
 }: InfoCardProps) {
+  const clickCancel = () => {
+    disableEditing();
+    disableActions();
+  };
+
   return (
     <div className="px-5 py-6 space-y-5 border border-slate-300 rounded-xl lg:px-6">
       <div className="flex items-center justify-between">
@@ -28,7 +35,7 @@ function InfoCard({
           <Button
             variant={"secondary"}
             disabled={isSaving}
-            onClick={disableEditing}
+            onClick={clickCancel}
           >
             Cancel
           </Button>

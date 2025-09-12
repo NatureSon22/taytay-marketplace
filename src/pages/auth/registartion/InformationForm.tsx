@@ -252,7 +252,7 @@ function InformationForm({
               <FormItem>
                 <FormLabel>Barangay</FormLabel>
                 <FormControl>
-                  <ComboBox  items={barangays} term="barangay" {...field} />
+                  <ComboBox items={barangays} term="barangay" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

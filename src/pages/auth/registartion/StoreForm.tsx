@@ -144,7 +144,7 @@ function StoreForm({
                         );
                       })}
                     </div>
-                  </div>
+                  </div> 
                 </FormControl>
 
                 <FormMessage />

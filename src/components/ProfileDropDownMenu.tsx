@@ -1,4 +1,4 @@
-import useAccountStore from "@/stores/useAccountStore";
+import useAccountStore from "@/stores/useAccountState";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +13,18 @@ import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/api/auth";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import useStoreState from "@/stores/useStoreState";
 
 function ProfileDropDownMenu() {
   const { resetAccount } = useAccountStore((state) => state);
+  const { store, resetStore } = useStoreState();
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       resetAccount();
+      resetStore();
       navigate("/");
     },
     onError: () => {
@@ -39,7 +42,7 @@ function ProfileDropDownMenu() {
         <div className="size-11 border rounded-full cursor-pointer overflow-hidden transition-all duration-200 hover:scale-105 hover:ring-2 hover:ring-500">
           <img
             className="h-full w-full object-cover rounded-full"
-            src={personIcon}
+            src={store?.profilePicture || personIcon}
             alt="profile"
           />
         </div>

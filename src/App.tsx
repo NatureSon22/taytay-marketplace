@@ -30,7 +30,7 @@ import AuthLayer from "./components/layer/AuthLayer";
 import ManageStore from "./pages/account/store/ManageStore";
 import CreateProduct from "./pages/account/store/CreateProduct";
 import Login from "./pages/auth/login/Login";
-import StoreInfo from "./pages/account/store/StoreInfo";
+import StoreInfo from "./pages/account/store/ManageStoreInfo";
 
 const router = createBrowserRouter([
   {

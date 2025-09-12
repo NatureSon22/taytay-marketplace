@@ -1,6 +1,6 @@
 import { useEditableState } from "@/hooks/useEditableState";
 import InfoCard from "@/layouts/InfoCard";
-import useAccountStore from "@/stores/useAccountStore";
+import useAccountStore from "@/stores/useAccountState";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
+import { Eye, EyeClosed } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { updateAccount } from "@/api/account";
 import type { FullUserAccount, UserCredentials } from "@/types/account";
 import { toast } from "sonner";
+import SaveButton from "@/components/SaveButton";
 
 const formSchema = z
   .object({
@@ -66,12 +66,11 @@ const formSchema = z
 export type FormData = z.infer<typeof formSchema>;
 
 function AccountInfo() {
-  const { account } = useAccountStore((state) => state);
+  const { account, setAccount } = useAccountStore();
   const { isEditing, enableEditing, disableEditing, toggleEditing } =
     useEditableState();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { setAccount } = useAccountStore((state) => state);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -144,11 +143,11 @@ function AccountInfo() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-10"
+          className="flex flex-col gap-5"
         >
           <div
             className={cn(
-              "flex-1 flex items-center justify-between",
+              "flex-1 flex flex-col justify-between space-y-5 md:flex-row md:items-center md:space-y-0",
               isEditing ? "max-w-[550px]" : "max-w-[700px]"
             )}
           >
@@ -191,7 +190,7 @@ function AccountInfo() {
 
           <div
             className={cn(
-              "flex-1 flex items-center justify-between",
+              "flex-1 flex flex-col justify-between space-y-5 md:flex-row md:items-center md:space-y-0",
               isEditing ? "max-w-[600px]" : "max-w-[700px]"
             )}
           >
@@ -203,7 +202,9 @@ function AccountInfo() {
                   <FormLabel className="text-[1rem]">Password</FormLabel>
                   <FormControl>
                     {!isEditing ? (
-                      <p className="select-none">{account?.password}</p>
+                      <p className="select-none break-all">
+                        {account?.password}
+                      </p>
                     ) : (
                       <Input
                         type={showPassword ? "text" : "password"}
@@ -266,22 +267,7 @@ function AccountInfo() {
             )}
           </div>
 
-          {isEditing && (
-            <Button
-              type="submit"
-              disabled={isSaving}
-              className="bg-100 ml-auto py-5 px-6"
-            >
-              {isSaving ? (
-                <>
-                  <LoaderCircle className="animate-spin" />
-                  <p>Saving...</p>
-                </>
-              ) : (
-                <p>Save</p>
-              )}
-            </Button>
-          )}
+          <SaveButton isEditing={isEditing} isSaving={isSaving} />
         </form>
       </Form>
     </InfoCard>

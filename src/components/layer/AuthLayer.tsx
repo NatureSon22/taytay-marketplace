@@ -1,5 +1,6 @@
 import { getLoggedInUser } from "@/api/auth";
-import useAccountStore from "@/stores/useAccountStore";
+import useAccountStore from "@/stores/useAccountState";
+import useStoreState from "@/stores/useStoreState";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { type ReactNode, useEffect } from "react";
@@ -11,6 +12,7 @@ type AuthLayerProps = {
 
 function AuthLayer({ children }: AuthLayerProps) {
   const { account, setAccount } = useAccountStore();
+  const { setStore } = useStoreState();
   const { data, isPending, isError } = useQuery({
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
@@ -19,8 +21,11 @@ function AuthLayer({ children }: AuthLayerProps) {
   });
 
   useEffect(() => {
-    if (data) setAccount(data);
-  }, [data, setAccount]);
+    if (data) {
+      setAccount(data.publicUser);
+      setStore(data.store);
+    }
+  }, [data, setAccount, setStore]);
 
   if (account) return children;
 

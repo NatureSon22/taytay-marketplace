@@ -7,7 +7,8 @@ import type { IGeneralInformation } from "@/types/generalInformation";
 import { Button } from "@/components/ui/button";
 
 function GeneralInformationSetting() {
-  const { data, isLoading, isError, saveInfo, isSaving } = useGeneralInformation();
+  const { data, isLoading, isError, saveInfo, isSaving } =
+    useGeneralInformation();
 
   const [selectedHowToGo, setSelectedHowToGo] = useState("UV Express");
   const [activeTab, setActiveTab] = useState("terms");
@@ -19,10 +20,10 @@ function GeneralInformationSetting() {
 
   const howToGoKeyMap: Record<string, keyof IGeneralInformation> = {
     "UV Express": "uvexpress",
-    "Jeepney": "jeepney",
-    "MRT": "mrt",
+    Jeepney: "jeepney",
+    MRT: "mrt",
     "UV + Bus": "uvandbus",
-    "Ride Hailing Apps": "ridehailingapps"
+    "Ride Hailing Apps": "ridehailingapps",
   };
 
   const handleEditorChange = (newValue: string) => {
@@ -43,10 +44,11 @@ function GeneralInformationSetting() {
       case "contact":
         updated.contactinfo = newValue;
         break;
-      case "route":
+      case "route": {
         const key = howToGoKeyMap[selectedHowToGo];
         if (key) updated[key] = newValue;
         break;
+      }
     }
 
     setFormData(updated);
@@ -64,9 +66,10 @@ function GeneralInformationSetting() {
         return formData.about;
       case "contact":
         return formData.contactinfo;
-      case "route":
+      case "route": {
         const key = howToGoKeyMap[selectedHowToGo];
         return key ? formData[key] : "";
+      }
       default:
         return "";
     }
@@ -115,7 +118,6 @@ function GeneralInformationSetting() {
           Save Changes
         </Button>
       </div>
-      
     </div>
   );
 }

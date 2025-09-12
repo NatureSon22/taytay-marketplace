@@ -1,4 +1,4 @@
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css";
 import "./RichTextEditor.css";
 
@@ -14,12 +14,12 @@ const modules = {
 };
 
 type RichTextEditorProps = {
-  label: string;
+  label?: string;
   value: string;
   onChange: (value: string) => void;
 };
 
-function RichTextEditor({ label, value, onChange }: RichTextEditorProps) {
+function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   return (
     <div className="mb-6">
       <ReactQuill

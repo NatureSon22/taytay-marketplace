@@ -27,7 +27,7 @@ function MainLayout() {
         </>
       )}
 
-      <Toaster position="top-right" />
+      <Toaster position="top-right" richColors />
 
       <div className="flex-1 flex flex-col">
         <BreadCrumbNav />

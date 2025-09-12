@@ -8,12 +8,12 @@ type Payment = {
 };
 
 export type Store = {
-  id: string;
+  _id: string;
   profilePicture?: string;
   description: string;
   storeName: string;
   joinedDate: string;
-  contactNo: string;
+  contactNumber: string;
   email: string;
   stallNumbers: string[];
   linkedAccounts?: Accounts[];
