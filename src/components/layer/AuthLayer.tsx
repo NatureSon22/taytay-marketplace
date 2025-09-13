@@ -8,11 +8,13 @@ import { Navigate } from "react-router-dom";
 
 type AuthLayerProps = {
   children: ReactNode;
+  allowedUserType: "account" | "admin";
 };
 
-function AuthLayer({ children }: AuthLayerProps) {
+function AuthLayer({ children, allowedUserType }: AuthLayerProps) {
   const { account, setAccount } = useAccountStore();
   const { setStore } = useStoreState();
+
   const { data, isPending, isError } = useQuery({
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
@@ -27,7 +29,13 @@ function AuthLayer({ children }: AuthLayerProps) {
     }
   }, [data, setAccount, setStore]);
 
-  if (account) return children;
+  if (account) {
+    if (account.userType !== allowedUserType) {
+      if (account.userType === "account") return <Navigate to="/account" replace />;
+      else return <Navigate to="/admin" replace />;
+    }
+    return children;
+  }
 
   if (isPending) {
     return (
@@ -38,7 +46,7 @@ function AuthLayer({ children }: AuthLayerProps) {
   }
 
   if (isError || !data) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />; 
   }
 
   return children;

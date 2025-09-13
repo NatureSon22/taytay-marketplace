@@ -37,127 +37,148 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      // auth
-      {
-        path: "/register",
-        element: <Register />,
+      { 
+        path: "/", 
+        element: <LandingPage /> 
       },
-      {
-        path: "/login",
-        element: <Login />,
+      { path: "/about", 
+        element: <AboutPage /> 
       },
-      {
-        path: "/",
-        element: <LandingPage />,
+      { 
+        path: "/contact-us", 
+        element: <ContactUs /> 
       },
-      {
-        path: "/about",
-        element: <AboutPage />,
+      { 
+        path: "/privacy-policy", 
+        element: <Privacy /> 
       },
+      { 
+        path: "/terms-and-conditions", 
+        element: <TermsOfUse /> 
+      },
+      { 
+        path: "/register", 
+        element: <Register /> 
+      },
+      { 
+        path: "/login", 
+        element: <Login /> 
+      },
+
       // products
-      {
-        path: "/products",
-        element: <ProductsPage />,
+      { 
+        path: "/products", 
+        element: <ProductsPage /> 
       },
-      {
-        path: "/product",
-        element: <ProductDetailsPage />,
+      { 
+        path: "/product", 
+        element: <ProductDetailsPage /> 
       },
+
       // store
-      {
-        path: "/stores",
-        element: <StorePage />,
+      { 
+        path: "/stores", 
+        element: <StorePage /> 
       },
-      {
-        path: "/store",
-        element: <StoreDetails />,
+      { 
+        path: "/store", 
+        element: <StoreDetails /> 
       },
-      //
-      {
-        path: "/contact-us",
-        element: <ContactUs />,
-      },
-      {
-        path: "/privacy-policy",
-        element: <Privacy />,
-      },
-      {
-        path: "/terms-and-conditions",
-        element: <TermsOfUse />,
-      },
+
       // account
       {
         path: "/account",
         element: (
-          <AuthLayer>
+          <AuthLayer allowedUserType="account">
             <AccountWrapper />
           </AuthLayer>
         ),
         children: [
-          { index: true, element: <Navigate to="/account/manage" replace /> },
-          { path: "/account/manage", element: <ManageAccount /> },
-          { path: "/account/store", element: <ManageStore /> },
-          { path: "/account/store/edit", element: <StoreInfo /> },
-          { path: "/account/store/product/new", element: <CreateProduct /> },
+          { 
+            index: true, 
+            element: <Navigate to="/account/manage" replace /> 
+          },
+          { 
+            path: "manage", 
+            element: <ManageAccount /> 
+          },
+          { 
+            path: "store", 
+            element: <ManageStore /> 
+          },
+          { 
+            path: "store/edit", 
+            element: <StoreInfo /> 
+          },
+          { 
+            path: "store/product/new", 
+            element: <CreateProduct /> 
+          },
         ],
       },
     ],
   },
+
+  // admin 
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <AuthLayer allowedUserType="admin">
+        <AdminLayout />
+      </AuthLayer>
+    ),
     children: [
-      {
-        path: "/admin/dashboard",
-        element: <DashboardPage />,
+      { 
+        path: "dashboard", 
+        element: <DashboardPage /> 
+      },
+      { 
+        path: "users", 
+        element: <UsersPage /> 
+      },
+      { 
+        path: "reports", 
+        element: <ReportsPage /> 
       },
       {
-        path: "/admin/users",
-        element: <UsersPage />,
-      },
-      {
-        path: "/admin/reports",
-        element: <ReportsPage />,
-      },
-      {
-        path: "/admin/settings",
+        path: "settings",
         element: <SettingsPage />,
         children: [
-          {
-            index: true,
-            element: <AdminSetting />,
+          { 
+            index: true, 
+            element: <AdminSetting /> 
           },
-          {
-            path: "admin-setting",
-            element: <AdminSetting />,
+          { 
+            path: "admin-setting", 
+            element: <AdminSetting /> 
           },
-          {
-            path: "category-setting",
-            element: <CategorySetting />,
+          { 
+            path: "category-setting", 
+            element: <CategorySetting /> 
           },
-          {
-            path: "product-type-setting",
-            element: <TypeSetting />,
+          { 
+            path: "product-type-setting", 
+            element: <TypeSetting /> 
           },
-          {
-            path: "link-type-setting",
-            element: <LinkTypeSetting />,
+          { 
+            path: "link-type-setting", 
+            element: <LinkTypeSetting /> 
           },
-          {
-            path: "general-information-setting",
-            element: <GeneralInformationSetting />,
+          { 
+            path: "general-information-setting", 
+            element: <GeneralInformationSetting /> 
           },
-          {
-            path: "backup-restore-setting",
-            element: <BackupRestoreSetting />,
+          { 
+            path: "backup-restore-setting", 
+            element: <BackupRestoreSetting /> 
           },
-          {
-            path: "account-info-setting",
-            element: <AccountInfoSetting />,
+          { 
+            path: "account-info-setting", 
+            element: <AccountInfoSetting /> 
           },
-          {
-            path: "archive-setting",
-            element: <ArchiveSetting />,
+          { 
+            path: "archive-setting", 
+            element: <ArchiveSetting /> 
           },
         ],
       },
