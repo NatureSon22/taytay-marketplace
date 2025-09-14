@@ -27,4 +27,5 @@ export type UserAccountMetadata = {
 
 export type FullUserAccount = UserAccount & UserAccountMetadata & {
   userType: "account" | "admin";
+  role: "Admin" | "Super Admin";
 };

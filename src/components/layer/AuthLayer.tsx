@@ -1,6 +1,5 @@
 import { getLoggedInUser } from "@/api/auth";
 import useAccountStore from "@/stores/useAccountState";
-import useStoreState from "@/stores/useStoreState";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { type ReactNode, useEffect } from "react";
@@ -8,13 +7,10 @@ import { Navigate } from "react-router-dom";
 
 type AuthLayerProps = {
   children: ReactNode;
-  allowedUserType: "account" | "admin";
 };
 
-function AuthLayer({ children, allowedUserType }: AuthLayerProps) {
+function AuthLayer({ children }: AuthLayerProps) {
   const { account, setAccount } = useAccountStore();
-  const { setStore } = useStoreState();
-
   const { data, isPending, isError } = useQuery({
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
@@ -23,19 +19,10 @@ function AuthLayer({ children, allowedUserType }: AuthLayerProps) {
   });
 
   useEffect(() => {
-    if (data) {
-      setAccount(data.publicUser);
-      setStore(data.store);
-    }
-  }, [data, setAccount, setStore]);
+    if (data) setAccount(data);
+  }, [data, setAccount]);
 
-  if (account) {
-    if (account.userType !== allowedUserType) {
-      if (account.userType === "account") return <Navigate to="/account" replace />;
-      else return <Navigate to="/admin" replace />;
-    }
-    return children;
-  }
+  if (account) return children;
 
   if (isPending) {
     return (
@@ -46,7 +33,7 @@ function AuthLayer({ children, allowedUserType }: AuthLayerProps) {
   }
 
   if (isError || !data) {
-    return <Navigate to="/login" replace />; 
+    return <Navigate to="/" replace />;
   }
 
   return children;

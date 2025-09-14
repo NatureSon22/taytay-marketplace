@@ -3,13 +3,19 @@ import type { IActLog } from "@/types/actlog";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchActLogs = async (): Promise<IActLog[]> => {
-  const res = await fetch(`${API_URL}/logs`);
+  const res = await fetch(`${API_URL}/logs`, {
+    method: "GET",
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("Failed to fetch logs");
   return res.json();
 };
 
 export const fetchActLogById = async (id: string): Promise<IActLog> => {
-  const res = await fetch(`${API_URL}/logs/${id}`);
+  const res = await fetch(`${API_URL}/logs/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("Failed to fetch log");
   return res.json();
 };
@@ -29,7 +35,8 @@ export const createActLog = async (
 
 export const deleteActLog = async (id: string): Promise<{ message: string }> => {
   const res = await fetch(`${API_URL}/logs/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to delete log");
   return res.json();

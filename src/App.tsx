@@ -37,149 +37,67 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      { 
-        path: "/", 
-        element: <LandingPage /> 
-      },
-      { path: "/about", 
-        element: <AboutPage /> 
-      },
-      { 
-        path: "/contact-us", 
-        element: <ContactUs /> 
-      },
-      { 
-        path: "/privacy-policy", 
-        element: <Privacy /> 
-      },
-      { 
-        path: "/terms-and-conditions", 
-        element: <TermsOfUse /> 
-      },
-      { 
-        path: "/register", 
-        element: <Register /> 
-      },
-      { 
-        path: "/login", 
-        element: <Login /> 
-      },
+      // public routes
+      { path: "/", element: <LandingPage /> },
+      { path: "/about", element: <AboutPage /> },
+      { path: "/contact-us", element: <ContactUs /> },
+      { path: "/privacy-policy", element: <Privacy /> },
+      { path: "/terms-and-conditions", element: <TermsOfUse /> },
+      { path: "/register", element: <Register /> },
+      { path: "/login", element: <Login /> },
 
       // products
-      { 
-        path: "/products", 
-        element: <ProductsPage /> 
-      },
-      { 
-        path: "/product", 
-        element: <ProductDetailsPage /> 
-      },
+      { path: "/products", element: <ProductsPage /> },
+      { path: "/product", element: <ProductDetailsPage /> },
 
       // store
-      { 
-        path: "/stores", 
-        element: <StorePage /> 
-      },
-      { 
-        path: "/store", 
-        element: <StoreDetails /> 
-      },
+      { path: "/stores", element: <StorePage /> },
+      { path: "/store", element: <StoreDetails /> },
 
-      // account
+      // account routes (protected)
       {
         path: "/account",
         element: (
-          <AuthLayer allowedUserType="account">
+          <AuthLayer>
             <AccountWrapper />
           </AuthLayer>
         ),
         children: [
-          { 
-            index: true, 
-            element: <Navigate to="/account/manage" replace /> 
-          },
-          { 
-            path: "manage", 
-            element: <ManageAccount /> 
-          },
-          { 
-            path: "store", 
-            element: <ManageStore /> 
-          },
-          { 
-            path: "store/edit", 
-            element: <StoreInfo /> 
-          },
-          { 
-            path: "store/product/new", 
-            element: <CreateProduct /> 
-          },
+          { index: true, element: <Navigate to="/account/manage" replace /> },
+          { path: "manage", element: <ManageAccount /> },
+          { path: "store", element: <ManageStore /> },
+          { path: "store/edit", element: <StoreInfo /> },
+          { path: "store/product/new", element: <CreateProduct /> },
         ],
       },
     ],
   },
 
-  // admin 
+  // admin routes (protected)
   {
     path: "/admin",
     element: (
-      <AuthLayer allowedUserType="admin">
+      <AuthLayer>
         <AdminLayout />
       </AuthLayer>
     ),
     children: [
-      { 
-        path: "dashboard", 
-        element: <DashboardPage /> 
-      },
-      { 
-        path: "users", 
-        element: <UsersPage /> 
-      },
-      { 
-        path: "reports", 
-        element: <ReportsPage /> 
-      },
+      { path: "dashboard", element: <DashboardPage /> },
+      { path: "users", element: <UsersPage /> },
+      { path: "reports", element: <ReportsPage /> },
       {
         path: "settings",
         element: <SettingsPage />,
         children: [
-          { 
-            index: true, 
-            element: <AdminSetting /> 
-          },
-          { 
-            path: "admin-setting", 
-            element: <AdminSetting /> 
-          },
-          { 
-            path: "category-setting", 
-            element: <CategorySetting /> 
-          },
-          { 
-            path: "product-type-setting", 
-            element: <TypeSetting /> 
-          },
-          { 
-            path: "link-type-setting", 
-            element: <LinkTypeSetting /> 
-          },
-          { 
-            path: "general-information-setting", 
-            element: <GeneralInformationSetting /> 
-          },
-          { 
-            path: "backup-restore-setting", 
-            element: <BackupRestoreSetting /> 
-          },
-          { 
-            path: "account-info-setting", 
-            element: <AccountInfoSetting /> 
-          },
-          { 
-            path: "archive-setting", 
-            element: <ArchiveSetting /> 
-          },
+          { index: true, element: <AdminSetting /> },
+          { path: "admin-setting", element: <AdminSetting /> },
+          { path: "category-setting", element: <CategorySetting /> },
+          { path: "product-type-setting", element: <TypeSetting /> },
+          { path: "link-type-setting", element: <LinkTypeSetting /> },
+          { path: "general-information-setting", element: <GeneralInformationSetting /> },
+          { path: "backup-restore-setting", element: <BackupRestoreSetting /> },
+          { path: "account-info-setting", element: <AccountInfoSetting /> },
+          { path: "archive-setting", element: <ArchiveSetting /> },
         ],
       },
     ],

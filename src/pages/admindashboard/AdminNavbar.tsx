@@ -7,8 +7,25 @@ import {
 import { FaUser } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import { ChevronDown } from "lucide-react";
+import useAccountStore from "@/stores/useAccountState";
+import { useNavigate } from "react-router-dom";
+import { logout } from "@/api/auth"; 
 
 function AdminNavbar() {
+  const { account, setAccount } = useAccountStore();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+  try {
+    await logout();
+  } catch (err) {
+    console.error("Logout failed", err);
+  } finally {
+    setAccount(null);
+    navigate("/login");
+  }
+}
+
   return (
     <header className="w-full bg-white shadow-sm border-b px-6 py-4 flex justify-end z-10">
       <DropdownMenu>
@@ -16,8 +33,12 @@ function AdminNavbar() {
           <button
            className="flex cursor-pointer border-none gap-4 hover:bg-transparent hover:text-inherit">
             <div className="flex flex-col  text-left gap-1  ">
-            <p className="text-[15px] font-roboto">Kenneth San Pedro</p>
-            <p className="text-[13px] text-gray-600">Administrator</p>
+            <p className="text-[15px] font-roboto">
+              {account?.firstName} {account?.lastName}
+            </p>
+            <p className="text-[13px] text-gray-600">
+              {account?.role}
+            </p>
             </div>
             <div className="flex justify-center items-center">
             <ChevronDown size={16} />
@@ -27,21 +48,20 @@ function AdminNavbar() {
 
         <DropdownMenuContent align="end" className="w-48 flex items-center flex-col">
           <DropdownMenuItem
-            onClick={() => {
-            }}
+            onClick={() => navigate("/admin/settings/account-info-setting")}
             className="cursor-pointer hover:bg-gray-100 w-full h-[40px] text-gray-800 group transition-colors"
             >
             <FaUser className="mr-2 text-[50px] text-gray-600 group-hover:text-black" />
             <span className="group-hover:text-black text-[15px]">Manage Profile</span>
             </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => {
-            }}
+            onClick={handleLogout}
             className="cursor-pointer bg-red-100 w-full h-[40px] hover:bg-red-500 focus:bg-red-500 text-red-600 group transition-colors"
-            >
+          >
             <MdLogout className="mr-2 h-4 w-4 text-red-500 group-hover:text-white" />
             <span className="group-hover:text-white">Logout Account</span>
-           </DropdownMenuItem>
+          </DropdownMenuItem>
+
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

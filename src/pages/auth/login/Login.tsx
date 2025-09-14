@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import CenterLayout from "@/layouts/CenterLayout";
 import ContentGrid from "@/layouts/ContentGrid";
 import PadLayout from "@/layouts/PadLayout";
-import { ChevronLeft, LoaderCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,12 +22,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
+import { LoaderCircle } from "lucide-react";
 import useAccountStore from "@/stores/useAccountState";
-import useStoreState from "@/stores/useStoreState";
+import type { FullUserAccount } from "@/types/account";
 
 const formSchema = z.object({
   email: z.email({ message: "Invalid email" }),
-  password: z.string().min(8, { message: "Password must be 8 characters long" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be 8 characters long" }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -36,25 +39,28 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { setAccount } = useAccountStore();
-  const { setStore } = useStoreState();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: login,
-    onSuccess: ({ publicUser, store }) => {
-      setAccount(publicUser);
-      setStore(store);
-
-      if (publicUser.userType === "account") navigate("/account");
-      else if (publicUser.userType === "admin") navigate("/admin/dashboard");
+    onSuccess: (data: FullUserAccount) => {
+      console.log("Logged in data: " + data);
+      setAccount(data);
+      navigate("/");
     },
   });
 
-  const onSubmit = (data: FormData) => mutate(data);
+  const onSubmit = (data: FormData) => {
+    mutate(data);
+    console.log("submit", data);
+  };
 
   return (
     <PadLayout>
@@ -63,7 +69,7 @@ function Login() {
           <div>
             <Link to="/">
               <Button
-                variant="ghost"
+                variant={"ghost"}
                 className="cursor-pointer flex items-center gap-2"
               >
                 <ChevronLeft />
@@ -145,7 +151,9 @@ function Login() {
                           }
                         />
                         <Label
-                          className={cn(showPassword ? "text-200" : "text-slate-400")}
+                          className={cn(
+                            showPassword ? "text-200" : "text-slate-400"
+                          )}
                         >
                           Show Password
                         </Label>

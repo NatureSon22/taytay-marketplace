@@ -7,16 +7,6 @@ export type Seller = {
   image: string; 
 };
 
-
-export type Administrator = {
-  id: string;
-  email: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  status: "Active" | "Inactive";
-};
-
 export const sellerData = [
   {
     id: "SELL001",
@@ -137,105 +127,6 @@ export const sellerData = [
     email: "olivia.torres@example.com",
     storeName: "Torres Trade Hub",
     status: "Pending",
-  },
-];
-
-export const adminData: Administrator[] = [
-  {
-    id: "ADM001",
-    email: "alex.torres@example.com",
-    firstName: "Alex",
-    middleName: "Gomez",
-    lastName: "Torres",
-    status: "Active",
-  },
-  {
-    id: "ADM002",
-    email: "bella.martin@example.com",
-    firstName: "Bella",
-    middleName: "Grace",
-    lastName: "Martin",
-    status: "Inactive",
-  },
-  {
-    id: "ADM003",
-    email: "carlos.diaz@example.com",
-    firstName: "Carlos",
-    middleName: "Ramon",
-    lastName: "Diaz",
-    status: "Active",
-  },
-  {
-    id: "ADM004",
-    email: "diana.lee@example.com",
-    firstName: "Diana",
-    middleName: "Marie",
-    lastName: "Lee",
-    status: "Inactive",
-  },
-  {
-    id: "ADM005",
-    email: "ethan.nguyen@example.com",
-    firstName: "Ethan",
-    middleName: "Minh",
-    lastName: "Nguyen",
-    status: "Active",
-  },
-  {
-    id: "ADM006",
-    email: "fiona.kim@example.com",
-    firstName: "Fiona",
-    middleName: "Eun",
-    lastName: "Kim",
-    status: "Inactive",
-  },
-  {
-    id: "ADM007",
-    email: "george.brown@example.com",
-    firstName: "George",
-    middleName: "Allen",
-    lastName: "Brown",
-    status: "Active",
-  },
-  {
-    id: "ADM008",
-    email: "hannah.smith@example.com",
-    firstName: "Hannah",
-    middleName: "Louise",
-    lastName: "Smith",
-    status: "Inactive",
-  },
-  {
-    id: "ADM009",
-    email: "ian.jones@example.com",
-    firstName: "Ian",
-    middleName: "Michael",
-    lastName: "Jones",
-    status: "Active",
-  },
-  {
-    id: "ADM010",
-    email: "julia.chan@example.com",
-    firstName: "Julia",
-    middleName: "Mei",
-    lastName: "Chan",
-    status: "Inactive",
-  },
-  {
-    id: "ADM011",
-    email: "kevin.williams@example.com",
-    firstName: "Kevin",
-    middleName: "Lee",
-    lastName: "Williams",
-    status: "Active",
-  },
-  {
-    id: "ADM012",
-    email: "lisa.moore@example.com",
-    firstName: "Lisa",
-    middleName: "Ann",
-    lastName: "Moore",
-    status: "Inactive",
   },
 ];
 
