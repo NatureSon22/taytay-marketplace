@@ -4,7 +4,10 @@ const API_URL = `${import.meta.env.VITE_API_URL}/links`;
 
 export const linkService = {
     getLinks: async (): Promise<LinkType[]> => {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+            method: "GET",
+            credentials: "include",
+        });
         if (!res.ok) throw new Error("Failed to fetch links");
         return res.json();
     },
@@ -12,7 +15,8 @@ export const linkService = {
     createLink: async (formData: FormData): Promise<LinkType> => {
     const res = await fetch(API_URL, {
         method: "POST",
-        body: formData, 
+        body: formData,
+        credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to create link");
     return res.json();
@@ -21,6 +25,7 @@ export const linkService = {
     archiveLink: async (id: string): Promise<{ message: string }> => {
         const res = await fetch(`${API_URL}/${id}`, {
         method: "DELETE",
+        credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to archive link");
         return res.json();

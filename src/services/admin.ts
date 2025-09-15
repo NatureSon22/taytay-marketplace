@@ -13,13 +13,17 @@ export type Administrator = {
 export async function archiveAdmin(id: string): Promise<{ message: string }> {
   const res = await fetch(`${API_URL}/admins/${id}/archive`, {
     method: "DELETE",
+    credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to archive admin");
   return res.json();
 }
 
 export async function fetchAdmins(): Promise<Administrator[]> {
-  const res = await fetch(`${API_URL}/admins`);
+  const res = await fetch(`${API_URL}/admins`, {
+    method: "GET",
+    credentials: "include",
+  });
   if (!res.ok) throw new Error(`Failed to fetch admins: ${res.statusText}`);
   return res.json();
 }
@@ -34,6 +38,7 @@ export async function createAdmin(data: {
 }) {
   const response = await fetch(`${API_URL}/admins`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -53,6 +58,7 @@ export async function updateAdminStatus(id: string, status: "Active" | "Inactive
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status }),
+    credentials: "include",
   });
   if (!res.ok) throw new Error("Failed to update admin status");
   return res.json();

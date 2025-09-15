@@ -24,7 +24,7 @@ import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
 import { LoaderCircle } from "lucide-react";
 import useAccountStore from "@/stores/useAccountState";
-import useStoreState from "@/stores/useStoreState";
+import type { FullUserAccount } from "@/types/account";
 
 const formSchema = z.object({
   email: z.email({ message: "Invalid email" }),
@@ -39,7 +39,6 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { setAccount } = useAccountStore();
-  const { setStore } = useStoreState();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -51,15 +50,16 @@ function Login() {
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: login,
-    onSuccess: ({ publicUser, store }) => {
-      setAccount(publicUser);
-      setStore(store);
+    onSuccess: (data: FullUserAccount) => {
+      console.log("Logged in data: " + data);
+      setAccount(data);
       navigate("/");
     },
   });
 
   const onSubmit = (data: FormData) => {
     mutate(data);
+    console.log("submit", data);
   };
 
   return (

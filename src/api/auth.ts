@@ -1,16 +1,7 @@
 import type { LoginCredentials } from "@/types/registration";
 import { createFetchOptions } from "./fetchOptions";
-import type { FullUserAccount } from "@/types/account";
-import type { Store } from "@/types";
 
-type Response = {
-  publicUser: FullUserAccount;
-  store: Store;
-};
-
-export const login = async (
-  credentials: LoginCredentials
-): Promise<Response> => {
+export const login = async (credentials: LoginCredentials) => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -58,7 +49,7 @@ export const logout = async (): Promise<string> => {
   return body.message as string;
 };
 
-export const getLoggedInUser = async (): Promise<Response> => {
+export const getLoggedInUser = async () => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
     method: "GET",
     credentials: "include",

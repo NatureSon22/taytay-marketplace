@@ -20,7 +20,7 @@ function AdminSettingForm() {
     firstName: "",
     middleName: "",
     lastName: "",
-    role: "", 
+    role: "",
   });
 
   const resetForm = () => {

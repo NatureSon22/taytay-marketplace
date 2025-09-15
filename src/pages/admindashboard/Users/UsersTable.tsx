@@ -226,8 +226,6 @@ function UsersTable() {
         </div>
       )}
 
-
-      {/* Permit Modal */}
       <PermitModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

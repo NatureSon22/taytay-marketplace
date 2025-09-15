@@ -17,7 +17,7 @@ export function useAdmins(enabled: boolean, searchTerm?: string) {
   useQuery<Admin[]>({
     queryKey: ["admins"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/admins`);
+      const res = await fetch(`${API_URL}/admins`);
       if (!res.ok) {
         throw new Error("Failed to fetch admins");
       }
