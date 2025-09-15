@@ -13,11 +13,11 @@ export const updateAccount = async (
     }
   );
 
+  const body = await res.json();
+
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message);
   }
 
-  const { data } = await res.json();
-  return data;
+  return body.data;
 };

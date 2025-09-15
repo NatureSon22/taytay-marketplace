@@ -1,6 +1,9 @@
-type Accounts = {
-  logo: string;
+export type Accounts = {
+  logo?: string;
   url: string;
+  platform: string;
+  isDeleted?: boolean;
+  platformName?: string;
 };
 
 type Payment = {
