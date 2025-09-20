@@ -14,8 +14,8 @@ export const login = async (credentials: LoginCredentials) => {
     throw new Error(message);
   }
 
-  const { data } = await res.json();
-  return data;
+  const result = await res.json();
+  return result;
 };
 
 export const register = async (form: FormData) => {
@@ -60,6 +60,6 @@ export const getLoggedInUser = async () => {
     throw new Error(message);
   }
 
-  const { data } = await res.json();
-  return data;
+const result = await res.json();
+return result; 
 };

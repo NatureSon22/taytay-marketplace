@@ -10,9 +10,10 @@ const Authenticated = ({
   children,
   renderIfAuthenticated = true,
 }: AuthenticatedProps): JSX.Element | null => {
-  const { account } = useAccountStore((state) => state);
+  const { sellerAccount, adminAccount } = useAccountStore((state) => state);
 
-  const isAuthenticated = account != null;
+  const isAuthenticated = sellerAccount != null || adminAccount != null;
+
   return renderIfAuthenticated === isAuthenticated ? <>{children}</> : null;
 };
 

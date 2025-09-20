@@ -19,8 +19,9 @@ import calculateAge from "@/utils/calculateAge";
 import { useMutation } from "@tanstack/react-query";
 import { updateAccount } from "@/api/account";
 import type { FullUserAccount, UserProfile } from "@/types/account";
+import { Button } from "@/components/ui/button";
+import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
-import SaveButton from "@/components/SaveButton";
 
 const phoneRe = /^(09|\+639)\d{9}$/;
 
@@ -46,9 +47,12 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 function PersonalInfo() {
-  const { account, setAccount } = useAccountStore((state) => state);
+  const sellerAccount = useAccountStore((state) => state.sellerAccount);
+  const setSellerAccount = useAccountStore((state) => state.setSellerAccount);
   const { isEditing, enableEditing, disableEditing, toggleEditing } =
     useEditableState();
+
+   const account = sellerAccount; 
 
   const toFormValues = useCallback(
     () => ({
@@ -71,7 +75,7 @@ function PersonalInfo() {
   const { mutate, isPending: isSaving } = useMutation({
     mutationFn: updateAccount,
     onSuccess: (data: FullUserAccount) => {
-      setAccount(data);
+      setSellerAccount(data);
       toast.success("Account updated successfully!");
     },
     onError: (error: Error) => {
@@ -119,13 +123,11 @@ function PersonalInfo() {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-10">
-          <div className="grid gap-5">
+          <div className="flex gap-24">
             <div
               className={cn(
-                "flex-1 flex gap-5 border",
-                isEditing
-                  ? "flex-col max-w-[500px]"
-                  : "flex-row justify-between max-w-[350px] md:max-w-[220px]"
+                "space-y-3 flex-1",
+                isEditing ? "max-w-[300px]" : "max-w-[220px]"
               )}
             >
               <FormField
@@ -166,14 +168,64 @@ function PersonalInfo() {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="birthday"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[1rem]">Birthday</FormLabel>
+                    <FormControl>
+                      {!isEditing ? (
+                        <p>
+                          {account?.birthday
+                            ? new Date(account?.birthday).toLocaleDateString()
+                            : ""}
+                        </p>
+                      ) : (
+                        <Input
+                          type="date"
+                          {...field}
+                          value={
+                            field.value instanceof Date
+                              ? field.value.toISOString().split("T")[0]
+                              : field.value
+                          }
+                          onChange={(e) => {
+                            updateAge(e.target.valueAsDate);
+                            field.onChange(e);
+                          }}
+                        />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-[1rem]">Address</FormLabel>
+                    <FormControl>
+                      {!isEditing ? (
+                        <p>{account?.address}</p>
+                      ) : (
+                        <Input {...field} />
+                      )}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div
               className={cn(
-                "flex-1 flex gap-5 border",
-                isEditing
-                  ? "flex-col max-w-[500px]"
-                  : "flex-row justify-between max-w-[350px] md:max-w-[220px]"
+                "space-y-3 flex-1",
+                isEditing ? "max-w-[300px]" : "max-w-[220px]"
               )}
             >
               <FormField
@@ -213,49 +265,6 @@ function PersonalInfo() {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div
-              className={cn(
-                "flex-1 flex gap-5 border",
-                isEditing
-                  ? "flex-col max-w-[500px]"
-                  : "flex-row justify-between max-w-[350px] md:max-w-[220px]"
-              )}
-            >
-              <FormField
-                control={form.control}
-                name="birthday"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[1rem]">Birthday</FormLabel>
-                    <FormControl>
-                      {!isEditing ? (
-                        <p>
-                          {account?.birthday
-                            ? new Date(account?.birthday).toLocaleDateString()
-                            : ""}
-                        </p>
-                      ) : (
-                        <Input
-                          type="date"
-                          {...field}
-                          value={
-                            field.value instanceof Date
-                              ? field.value.toISOString().split("T")[0]
-                              : field.value
-                          }
-                          onChange={(e) => {
-                            updateAge(e.target.valueAsDate);
-                            field.onChange(e);
-                          }}
-                        />
-                      )}
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}
@@ -275,36 +284,24 @@ function PersonalInfo() {
                 )}
               />
             </div>
-
-            <div
-              className={cn(
-                "flex-1 flex gap-5 border",
-                isEditing
-                  ? "flex-col max-w-[500px]"
-                  : "flex-row justify-between max-w-[350px] md:max-w-[220px]"
-              )}
-            >
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[1rem]">Address</FormLabel>
-                    <FormControl>
-                      {!isEditing ? (
-                        <p>{account?.address}</p>
-                      ) : (
-                        <Input {...field} />
-                      )}
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
           </div>
 
-          <SaveButton isEditing={isEditing} isSaving={isSaving} />
+9          {isEditing && (
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="bg-100 ml-auto py-5 px-6"
+            >
+              {isSaving ? (
+                <>
+                  <LoaderCircle className="animate-spin" />
+                  <p>Saving...</p>
+                </>
+              ) : (
+                <p>Save</p>
+              )}
+            </Button>
+          )}
         </form>
       </Form>
     </InfoCard>
