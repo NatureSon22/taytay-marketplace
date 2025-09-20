@@ -9,44 +9,45 @@ export const login = async (credentials: LoginCredentials) => {
     body: JSON.stringify(credentials),
   });
 
+  const body = await res.json();
+
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message || "Login failed");
   }
 
   const result = await res.json();
   return result;
 };
 
-export const register = async (form: FormData) => {
+export const register = async (form: FormData): Promise<string> => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
     method: "POST",
     body: form,
     credentials: "include",
   });
 
+  const body = await res.json();
+
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message || "Registration failed");
   }
 
-  const { message } = await res.json();
-  return message;
+  return body.message as string;
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<string> => {
   const res = await fetch(
     `${import.meta.env.VITE_API_URL}/auth/logout`,
     createFetchOptions({ method: "POST" })
   );
 
+  const body = await res.json();
+
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message || "Logout failed");
   }
 
-  const { message } = await res.json();
-  return message;
+  return body.message as string;
 };
 
 export const getLoggedInUser = async () => {
@@ -55,9 +56,10 @@ export const getLoggedInUser = async () => {
     credentials: "include",
   });
 
+  const body = await res.json();
+
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message || "Failed to fetch user");
   }
 
 const result = await res.json();
