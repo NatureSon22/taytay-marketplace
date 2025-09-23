@@ -25,7 +25,8 @@ export type UserAccountMetadata = {
   updatedAt: string;
 };
 
-export type FullUserAccount = UserAccount & UserAccountMetadata & {
-  userType: "account" | "admin";
-  role: "Admin" | "Super Admin";
-};
+export type FullUserAccount = UserAccount &
+  UserAccountMetadata & {
+    userType: "account" | "admin";
+    role: "Admin" | "Super Admin" | null;
+  };

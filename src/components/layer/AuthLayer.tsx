@@ -19,7 +19,7 @@ function AuthLayer({ children }: AuthLayerProps) {
   });
 
   useEffect(() => {
-    if (data) setAccount(data);
+    if (data) setAccount(data.publicUser);
   }, [data, setAccount]);
 
   if (account) return children;

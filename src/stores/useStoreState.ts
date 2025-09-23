@@ -1,5 +1,4 @@
 import type { Store } from "@/types";
-
 import { create } from "zustand";
 
 type StoreState = {

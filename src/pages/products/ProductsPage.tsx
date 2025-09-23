@@ -1,6 +1,5 @@
 import CenterLayout from "@/layouts/CenterLayout";
 import PadLayout from "@/layouts/PadLayout";
-import sampleProducts from "@/data/sampleproducts";
 import PageLayout from "@/layouts/PageLayout";
 import FilterBar from "./FilterBar";
 import { useState } from "react";
@@ -11,6 +10,8 @@ import type {
   SortOrder,
 } from "@/types";
 import ProductList from "@/components/ProductList";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "@/api/products";
 
 function ProductsPage() {
   const [filterOptions, setFilterOptions] = useState<ProductFilterSettings>({
@@ -19,6 +20,11 @@ function ProductsPage() {
     sort: [],
   });
   const [openFilterBar, setOpenFilterBar] = useState(true);
+
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
   const handleFilterOptions = (field: FilterField, value: string) => {
     setFilterOptions((prev) => ({
@@ -72,7 +78,7 @@ function ProductsPage() {
               handleOpenFilterBar={handleOpenFilterBar}
             />
 
-            <ProductList products={sampleProducts} />
+            <ProductList products={products} isLoading={isLoading} />
           </div>
         </CenterLayout>
       </PadLayout>

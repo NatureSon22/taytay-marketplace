@@ -4,13 +4,17 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type ListItemProps = React.HTMLAttributes<HTMLDivElement> & {
-  label: React.ReactNode;
+  label: string;
   onPrimary?: () => void;
-  onRemove?: () => void;
+  onRemove?: (val?: unknown) => void;
+  disabled?: boolean;
 };
 
 export const ListItem = React.forwardRef<HTMLDivElement, ListItemProps>(
-  ({ label, onPrimary, onRemove, className, ...rest }, ref) => {
+  (
+    { label, onPrimary, onRemove, disabled = false, className, ...rest },
+    ref
+  ) => {
     return (
       <div
         ref={ref}
@@ -33,6 +37,7 @@ export const ListItem = React.forwardRef<HTMLDivElement, ListItemProps>(
               e.stopPropagation();
               onRemove();
             }}
+            disabled={disabled}
           >
             <X size={16} />
           </Button>

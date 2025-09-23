@@ -1,5 +1,12 @@
 import type { LoginCredentials } from "@/types/registration";
 import { createFetchOptions } from "./fetchOptions";
+import type { FullUserAccount } from "@/types/account";
+import type { Store } from "@/types";
+
+type Response = {
+  publicUser: FullUserAccount;
+  store: Store;
+};
 
 export const login = async (credentials: LoginCredentials) => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
