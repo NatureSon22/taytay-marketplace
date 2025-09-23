@@ -16,8 +16,14 @@ const storedetail: Store = {
   email: "store@email.com",
   stallNumbers: ["000", "001"],
   linkedAccounts: [
-    { logo: lazada, url: "" },
-    { logo: shopee, url: "" },
+    {
+      logo: lazada, url: "",
+      platform: ""
+    },
+    {
+      logo: shopee, url: "",
+      platform: ""
+    },
   ],
   paymentMode: [{ logo: paymaya }, { logo: gcash }],
 };

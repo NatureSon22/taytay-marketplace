@@ -36,3 +36,18 @@ export const updateStoreData = async (
   const { data } = await res.json();
   return data;
 };
+
+export const getStoreProducts = async (id: string) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/store/${id}/products`,
+    createFetchOptions({ method: "GET" })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    throw new Error(body.message);
+  }
+
+  return body.data;
+};

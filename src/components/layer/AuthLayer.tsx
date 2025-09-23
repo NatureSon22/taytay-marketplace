@@ -10,7 +10,8 @@ type AuthLayerProps = {
 };
 
 function AuthLayer({ children }: AuthLayerProps) {
-  const { sellerAccount, adminAccount, setSellerAccount, setAdminAccount } = useAccountStore();
+  const { sellerAccount, adminAccount, setSellerAccount, setAdminAccount } =
+    useAccountStore();
 
   const hasAccount = sellerAccount || adminAccount;
 
@@ -29,7 +30,7 @@ function AuthLayer({ children }: AuthLayerProps) {
         setAdminAccount(data.data);
       }
     }
-  }, [data, setSellerAccount, setAdminAccount]);
+  }, [data, setAdminAccount, setSellerAccount]);
 
   if (hasAccount) return children;
 

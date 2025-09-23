@@ -11,18 +11,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import ComboBox from "@/components/ComboBox";
+import ComboBox, { type SelectOption } from "@/components/ComboBox";
 import { useRef, useState } from "react";
 import { ImageUpIcon, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ListItem } from "@/components/ListItem";
 import ProductImagePreview from "./ProductImagePreview";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { createProduct } from "@/api/products";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { ChevronLeft } from "lucide-react";
+import { getCategories } from "@/api/categories";
+import useStoreState from "@/stores/useStoreState";
+import formatComboBoxItem from "@/utils/formatComboBoxItem";
+import { getProductTypes } from "@/api/productTypes";
 
 const formSchema = z.object({
   productName: z.string().min(1, { message: "Product name is required" }),
@@ -36,8 +40,14 @@ const formSchema = z.object({
   productPictures: z
     .array(z.instanceof(File))
     .min(1, { message: "At least one picture is required" }),
-  categories: z.array(z.string()).optional(),
-  types: z.array(z.string()).optional(),
+  categories: z
+    .array(z.string())
+    .min(1, "At least one category is required")
+    .max(5, "You can select up to 5 categories"),
+  types: z
+    .array(z.string())
+    .min(1, "At least one type is required")
+    .max(5, "You can select up to 5 types"),
   links: z
     .array(
       z.object({
@@ -53,9 +63,10 @@ const MAX_IMAGES_COUNT = 4;
 
 function CreateProduct() {
   const navigate = useNavigate();
+  const { store } = useStoreState();
+  const [images, setImages] = useState<File[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [types, setTypes] = useState<string[]>([]);
-  const [images, setImages] = useState<File[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [prevImageURL, setPrevImageURL] = useState("");
   const [isMaxImagesReached, setIsMaxImagesReached] = useState(false);
@@ -69,8 +80,37 @@ function CreateProduct() {
       productPrice: 0,
       categories: [],
       types: [],
+      productPictures: [],
     },
   });
+
+  const [{ data: productCategories = [] }, { data: productTypes = [] }] =
+    useQueries({
+      queries: [
+        {
+          queryKey: ["product-categories", store?._id],
+          queryFn: () => getCategories(store!._id),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+          enabled: !!store,
+        },
+        {
+          queryKey: ["product-types", store?._id],
+          queryFn: () => getProductTypes(store!._id),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+          enabled: !!store,
+        },
+      ],
+    });
 
   const { mutate, isPending } = useMutation({
     mutationFn: createProduct,
@@ -83,24 +123,12 @@ function CreateProduct() {
     },
   });
 
-  const selectCategory = (category: string) => {
-    // const formCategories = form.getValues("categories") ?? [];
-    // form.setValue("categories", [...formCategories, category], {
-    //   shouldValidate: true,
-    // });
-    setCategories((prev) => [...prev, category]);
-  };
-
-  const selectType = (type: string) => {
-    // const formTypes = form.getValues("types") ?? [];
-    // form.setValue("types", [...formTypes, category], {
-    //   shouldValidate: true,
-    // });
-    setTypes((prev) => [...prev, type]);
+  const clickBackButton = () => {
+    navigate(-1);
   };
 
   const clickUploadImage = () => {
-    if (inputRef.current) {
+    if (inputRef.current && !isPending) {
       inputRef.current.click();
     }
   };
@@ -126,7 +154,51 @@ function CreateProduct() {
     }
   };
 
+  const addCategory = ({ id, label }: SelectOption) => {
+    const existing = categories.some((category) => category === label);
+
+    if (existing) return;
+
+    form.setValue("categories", [...form.getValues("categories"), id]);
+    form.trigger("categories");
+    setCategories((prev) => [...prev, label]);
+  };
+
+  const removeCategory = (id: string, label: string) => {
+    const updatedIds = form
+      .getValues("categories")
+      .filter((categoryId) => categoryId !== id);
+    const updatedLabels = categories.filter(
+      (categoryLabel) => categoryLabel !== label
+    );
+
+    form.setValue("categories", updatedIds);
+    setCategories(updatedLabels);
+  };
+
+  const addType = ({ id, label }: SelectOption) => {
+    const existing = types.some((type) => type === label);
+
+    if (existing) return;
+
+    form.setValue("types", [...form.getValues("types"), id]);
+    form.trigger("types");
+    setTypes((prev) => [...prev, label]);
+  };
+
+  const removeType = (id: string, label: string) => {
+    const updatedIds = form
+      .getValues("types")
+      .filter((typeId) => typeId !== id);
+    const updatedLabels = types.filter((typeLabel) => typeLabel !== label);
+
+    form.setValue("types", updatedIds);
+    setTypes(updatedLabels);
+  };
+
   const previewImage = (image: File) => {
+    if (isPending) return;
+
     setPrevImageURL(URL.createObjectURL(image));
     setIsPreviewOpen(true);
   };
@@ -137,29 +209,33 @@ function CreateProduct() {
   };
 
   const onSubmit = (data: FormDataType) => {
+    if (!store) return;
+
     const payload = new FormData();
 
     payload.append("productName", data.productName);
     payload.append("productPrice", String(data.productPrice));
     payload.append("productDescription", data.productDescription);
+    payload.append("storeId", store._id);
 
     images.map((image: File) => {
       payload.append("images[]", image);
     });
 
-    // categories.map((category: string) => {
-    //   form.append("categories[]", category);
-    // });
+    data.categories.map((category: string) => {
+      payload.append("categories[]", category);
+    });
 
-    // types.map((type: string) => {
-    //   form.append("types[]", type);
-    // });
+    data.types.map((type: string) => {
+      payload.append("types[]", type);
+    });
+
     mutate(payload);
   };
 
   return (
     <div className="flex-1 space-y-5">
-      <Button variant={"secondary"}>
+      <Button variant={"secondary"} onClick={clickBackButton}>
         <ChevronLeft />
         Back
       </Button>
@@ -173,7 +249,7 @@ function CreateProduct() {
               <FormItem>
                 <FormLabel>Product name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input disabled={isPending} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,7 +263,11 @@ function CreateProduct() {
               <FormItem>
                 <FormLabel>Product description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} className="resize-none h-[150px]" />
+                  <Textarea
+                    disabled={isPending}
+                    {...field}
+                    className="resize-none h-[150px]"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -201,7 +281,7 @@ function CreateProduct() {
               <FormItem>
                 <FormLabel>Product price</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Input disabled={isPending} type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -211,16 +291,35 @@ function CreateProduct() {
           <FormField
             control={form.control}
             name="categories"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Product category</FormLabel>
                 <FormControl>
-                  <ComboBox
-                    items={[]}
-                    term="category"
-                    selectItem={selectCategory}
-                    enableSearch={false}
-                  />
+                  <div className="space-y-3">
+                    <ComboBox
+                      items={productCategories}
+                      term="category"
+                      selectItem={addCategory}
+                      enableSearch={false}
+                      selectionType="pair"
+                      disabled={isPending}
+                    />
+
+                    <div className="flex items-center flex-wrap gap-3">
+                      {categories.map((category) => {
+                        return (
+                          <ListItem
+                            key={category}
+                            label={category}
+                            onRemove={() =>
+                              removeCategory(field.value[0], category)
+                            }
+                            disabled={isPending}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -230,16 +329,38 @@ function CreateProduct() {
           <FormField
             control={form.control}
             name="types"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Product type</FormLabel>
                 <FormControl>
-                  <ComboBox
-                    items={[]}
-                    term="type"
-                    selectItem={selectType}
-                    enableSearch={false}
-                  />
+                  <div className="">
+                    <ComboBox
+                      items={productTypes}
+                      term="type"
+                      selectItem={addType}
+                      enableSearch={false}
+                      selectionType="pair"
+                      disabled={isPending}
+                    />
+
+                    <div
+                      className={cn(
+                        "flex items-center flex-wrap gap-3",
+                        types.length > 0 ? "mt-2" : ""
+                      )}
+                    >
+                      {types.map((type) => {
+                        return (
+                          <ListItem
+                            key={type}
+                            label={type}
+                            onRemove={() => removeType(field.value[0], type)}
+                            disabled={isPending}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -301,6 +422,7 @@ function CreateProduct() {
                   label={image.name}
                   onPrimary={() => previewImage(image)}
                   onRemove={() => removeImage(image.name)}
+                  disabled={isPending}
                 />
               ))}
             </div>

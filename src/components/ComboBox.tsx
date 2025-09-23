@@ -28,12 +28,26 @@ type RHFFieldProps = Pick<
   "value" | "onChange" | "onBlur" | "name" | "ref"
 >;
 
-type ComboBoxProps = {
+export type SelectOption = { id: string; label: string };
+
+type BaseProps = {
   items: ComboBoxItem[];
   term: "province" | "municipality" | "baranggay" | string;
-  selectItem?: (val: string) => void;
   enableSearch?: boolean;
+  disabled?: boolean;
 } & Partial<RHFFieldProps>;
+
+type SingleSelectProps = {
+  selectionType?: "single";
+  selectItem?: (val: string) => void;
+};
+
+type PairSelectProps = {
+  selectionType: "pair";
+  selectItem?: (val: SelectOption) => void;
+};
+
+type ComboBoxProps = BaseProps & (SingleSelectProps | PairSelectProps);
 
 const ComboBox = forwardRef<HTMLButtonElement, ComboBoxProps>(
   (
@@ -42,6 +56,8 @@ const ComboBox = forwardRef<HTMLButtonElement, ComboBoxProps>(
       term,
       selectItem,
       enableSearch = true,
+      selectionType = "single",
+      disabled = false,
       value,
       onChange,
       onBlur,
@@ -62,15 +78,16 @@ const ComboBox = forwardRef<HTMLButtonElement, ComboBoxProps>(
             role="combobox"
             aria-expanded={open}
             className="w-full justify-between py-[1.3rem]"
+            disabled={disabled}
           >
-            <p className="flex justify-between flex-1 px-1">
+            <span className="flex justify-between flex-1 px-1 truncate">
               {value ? (
                 items.find((item) => item.value === value)?.label
               ) : (
                 <span className="text-slate-600">{`Select ${term}...`}</span>
               )}
-              <ChevronsUpDown className="opacity-50" />
-            </p>
+              <ChevronsUpDown className="opacity-50 ml-2 shrink-0" />
+            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -90,9 +107,21 @@ const ComboBox = forwardRef<HTMLButtonElement, ComboBoxProps>(
                     key={item.value}
                     value={item.value}
                     onSelect={(currentValue) => {
-                      if (onChange)
-                        onChange(currentValue === value ? "" : currentValue);
-                      if (selectItem) selectItem(item.code || item.value);
+                      onChange?.(currentValue);
+
+                      if (selectItem) {
+                        if (selectionType === "pair") {
+                          (selectItem as (val: SelectOption) => void)({
+                            id: item.value,
+                            label: item.label,
+                          });
+                        } else {
+                          (selectItem as (val: string) => void)(
+                            item.code || item.value
+                          );
+                        }
+                      }
+
                       setOpen(false);
                     }}
                   >
@@ -113,8 +142,6 @@ const ComboBox = forwardRef<HTMLButtonElement, ComboBoxProps>(
     );
   }
 );
-
-ComboBox.displayName = "ComboBox";
 
 export type { ComboBoxItem };
 export default ComboBox;

@@ -10,7 +10,7 @@ function Footer() {
       <div className="bg-200 grid place-items-center py-14 lg:py-20">
         <div className="w-[80%] flex flex-col gap-16 items-center md:justify-between lg:flex-row lg:w-[70%]">
           <div className="mx-auto space-y-5 max-w-[300px] flex flex-col items-center md:mx-0 md:items-start">
-            <img src={footerMainLogo} />
+            <img className="w-min h-min" src={footerMainLogo} />
             <p className="text-white font-light text-[0.9rem] text-center md:text-left md:font-normal lg:text-[0.95rem]">
               Find quality clothes and garments in Taytay Tiangge anytime and
               anywhere you are!

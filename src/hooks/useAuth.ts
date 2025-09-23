@@ -4,13 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const useAuth = () => {
-  const { setSellerAccount, setAdminAccount, resetSellerAccount, resetAdminAccount } =
-    useAccountStore();
+  const {
+    setSellerAccount,
+    setAdminAccount,
+    resetSellerAccount,
+    resetAdminAccount,
+  } = useAccountStore();
 
   const { data, status } = useQuery({
     queryKey: ["authenticated"],
     queryFn: getLoggedInUser,
-    retry: false, 
+    retry: false,
   });
 
   useEffect(() => {
@@ -26,7 +30,14 @@ const useAuth = () => {
       resetSellerAccount();
       resetAdminAccount();
     }
-  }, [status, data, setSellerAccount, setAdminAccount, resetSellerAccount, resetAdminAccount]);
+  }, [
+    status,
+    data,
+    setSellerAccount,
+    setAdminAccount,
+    resetSellerAccount,
+    resetAdminAccount,
+  ]);
 };
 
 export default useAuth;
