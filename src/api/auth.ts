@@ -22,8 +22,8 @@ export const login = async (credentials: LoginCredentials) => {
     throw new Error(body.message || "Login failed");
   }
 
-  const result = await res.json();
-  return result;
+  const { publicUser, store } = body.data;
+  return publicUser && store ? { publicUser, store } : body.data;
 };
 
 export const register = async (form: FormData): Promise<string> => {
@@ -69,6 +69,6 @@ export const getLoggedInUser = async () => {
     throw new Error(body.message || "Failed to fetch user");
   }
 
-const result = await res.json();
-return result; 
+  const { publicUser, store } = body.data;
+  return publicUser && store ? { publicUser, store } : body.data;
 };

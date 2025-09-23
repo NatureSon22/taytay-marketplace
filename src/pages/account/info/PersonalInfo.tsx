@@ -52,7 +52,7 @@ function PersonalInfo() {
   const { isEditing, enableEditing, disableEditing, toggleEditing } =
     useEditableState();
 
-   const account = sellerAccount; 
+  const account = sellerAccount;
 
   const toFormValues = useCallback(
     () => ({
@@ -286,7 +286,7 @@ function PersonalInfo() {
             </div>
           </div>
 
-9          {isEditing && (
+          {isEditing && (
             <Button
               type="submit"
               disabled={isSaving}

@@ -6,33 +6,22 @@ import storeFilters from "@/data/filter";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import PageLayout from "@/layouts/PageLayout";
+import { useQuery } from "@tanstack/react-query";
+import { getStores } from "@/api/store";
+import type { Store } from "@/types";
 
 type StoreCard = {
   storeName: string;
   profilePicture?: string;
 };
 
-const stores: StoreCard[] = [
-  { storeName: "Jio's Store" },
-  { storeName: "The Trendy Cart" },
-  { storeName: "Urban Finds" },
-  { storeName: "Bargain Haven" },
-  { storeName: "Style Central" },
-  { storeName: "Market Vibe" },
-  { storeName: "The Daily Deal" },
-  { storeName: "Chic Picks" },
-  { storeName: "ValueMart" },
-  { storeName: "The Closet Rack" },
-  { storeName: "Tiangge Treasures" },
-  { storeName: "Bazaar Bliss" },
-  { storeName: "Shop & Save" },
-  { storeName: "Pinoy Picks" },
-  { storeName: "Budget Box" },
-  { storeName: "The Local Shelf" },
-];
-
 function StorePage() {
   const [filter, setFilter] = useState("");
+
+  const { data: stores = [], isLoading } = useQuery({
+    queryKey: ["stores"],
+    queryFn: getStores,
+  });
 
   return (
     <PageLayout paddingTopVariant="none">
@@ -61,8 +50,13 @@ function StorePage() {
 
         <CenterLayout>
           <div className="w-[80%] mt-12 grid gap-x-10 gap-y-10 place-items-center sm:grid-cols-3 md:gap-y-14 lg:gap-y-20 lg:grid-cols-4 xl:grid-cols-5 ">
-            {stores.map((store) => (
-              <StoreCard key={store.storeName} storeName={store.storeName} />
+            {stores.map((store: Store) => (
+              <StoreCard
+                key={store.storeName}
+                storeName={store.storeName}
+                profilePicture={store.profilePicture}
+                isLoading={isLoading}
+              />
             ))}
           </div>
         </CenterLayout>
