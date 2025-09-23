@@ -66,17 +66,20 @@ const formSchema = z
 export type FormData = z.infer<typeof formSchema>;
 
 function AccountInfo() {
-  const { account, setAccount } = useAccountStore();
+  const sellerAccount = useAccountStore((state) => state.sellerAccount);
+  const setSellerAccount = useAccountStore((state) => state.setSellerAccount);
+
   const { isEditing, enableEditing, disableEditing, toggleEditing } =
     useEditableState();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: account?.username ?? "",
-      email: account?.email ?? "",
+      username: sellerAccount?.username ?? "",
+      email: sellerAccount?.email ?? "",
       password: "",
       confirmPassword: "",
     },
@@ -86,7 +89,7 @@ function AccountInfo() {
   const { mutate, isPending: isSaving } = useMutation({
     mutationFn: updateAccount,
     onSuccess: (data: FullUserAccount) => {
-      setAccount(data);
+      setSellerAccount(data);
       toast.success("Account updated successfully!");
     },
     onError: (error: Error) => {
@@ -98,15 +101,15 @@ function AccountInfo() {
   });
 
   useEffect(() => {
-    if (!isEditing && account) {
+    if (!isEditing && sellerAccount) {
       form.reset({
-        username: account.username,
-        email: account.email,
+        username: sellerAccount.username,
+        email: sellerAccount.email,
         password: "",
         confirmPassword: "",
       });
     }
-  }, [isEditing, account, form]);
+  }, [isEditing, sellerAccount, form]);
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -117,10 +120,10 @@ function AccountInfo() {
   };
 
   const onSubmit = (data: FormData) => {
-    if (!account || !account._id) return;
+    if (!sellerAccount || !sellerAccount._id) return;
 
     const payload: UserCredentials & { id: string } = {
-      id: account._id,
+      id: sellerAccount._id,
       username: data.username,
       email: data.email,
     };
@@ -159,7 +162,7 @@ function AccountInfo() {
                   <FormLabel className="text-[1rem]">Username</FormLabel>
                   <FormControl>
                     {!isEditing ? (
-                      <p>{account?.username}</p>
+                      <p>{sellerAccount?.username}</p>
                     ) : (
                       <Input {...field} />
                     )}
@@ -177,7 +180,7 @@ function AccountInfo() {
                   <FormLabel className="text-[1rem]">Email</FormLabel>
                   <FormControl>
                     {!isEditing ? (
-                      <p>{account?.email}</p>
+                      <p>{sellerAccount?.email}</p>
                     ) : (
                       <Input {...field} />
                     )}
@@ -203,7 +206,7 @@ function AccountInfo() {
                   <FormControl>
                     {!isEditing ? (
                       <p className="select-none break-all">
-                        {account?.password}
+                        {sellerAccount?.password}
                       </p>
                     ) : (
                       <Input

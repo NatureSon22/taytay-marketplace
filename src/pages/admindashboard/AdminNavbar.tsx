@@ -9,59 +9,65 @@ import { MdLogout } from "react-icons/md";
 import { ChevronDown } from "lucide-react";
 import useAccountStore from "@/stores/useAccountState";
 import { useNavigate } from "react-router-dom";
-import { logout } from "@/api/auth"; 
+import { logout } from "@/api/auth";
 
 function AdminNavbar() {
-  const { account, setAccount } = useAccountStore();
+  const adminAccount = useAccountStore((state) => state.adminAccount);
+  const resetAdminAccount = useAccountStore((state) => state.resetAdminAccount);
   const navigate = useNavigate();
 
   async function handleLogout() {
-  try {
-    await logout();
-  } catch (err) {
-    console.error("Logout failed", err);
-  } finally {
-    setAccount(null);
-    navigate("/login");
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout failed", err);
+    } finally {
+      resetAdminAccount(); // 👈 clear only the admin state
+      navigate("/login");
+    }
   }
-}
 
   return (
     <header className="w-full bg-white shadow-sm border-b px-6 py-4 flex justify-end z-10">
       <DropdownMenu>
-        <DropdownMenuTrigger className="!outline-none !focus:border-none !focus:outline-none" asChild>
-          <button
-           className="flex cursor-pointer border-none gap-4 hover:bg-transparent hover:text-inherit">
-            <div className="flex flex-col  text-left gap-1  ">
-            <p className="text-[15px] font-roboto">
-              {account?.firstName} {account?.lastName}
-            </p>
-            <p className="text-[13px] text-gray-600">
-              {account?.role}
-            </p>
+        <DropdownMenuTrigger
+          className="!outline-none !focus:outline-none"
+          asChild
+        >
+          <button className="flex cursor-pointer gap-4 items-center hover:bg-transparent">
+            <div className="flex flex-col text-left">
+              <p className="text-[15px] font-roboto">
+                {adminAccount?.firstName} {adminAccount?.lastName}
+              </p>
+              <p className="text-[13px] text-gray-600">
+                {adminAccount?.role}
+              </p>
             </div>
-            <div className="flex justify-center items-center">
             <ChevronDown size={16} />
-            </div>
           </button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-48 flex items-center flex-col">
+        <DropdownMenuContent
+          align="end"
+          className="w-48 py-2 rounded-md shadow-md"
+        >
           <DropdownMenuItem
             onClick={() => navigate("/admin/settings/account-info-setting")}
-            className="cursor-pointer hover:bg-gray-100 w-full h-[40px] text-gray-800 group transition-colors"
-            >
-            <FaUser className="mr-2 text-[50px] text-gray-600 group-hover:text-black" />
-            <span className="group-hover:text-black text-[15px]">Manage Profile</span>
-            </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handleLogout}
-            className="cursor-pointer bg-red-100 w-full h-[40px] hover:bg-red-500 focus:bg-red-500 text-red-600 group transition-colors"
+            className="cursor-pointer w-full h-[40px] text-gray-700 group transition-colors"
           >
-            <MdLogout className="mr-2 h-4 w-4 text-red-500 group-hover:text-white" />
-            <span className="group-hover:text-white">Logout Account</span>
+            <FaUser className="mr-2 h-4 w-4 text-gray-600 group-hover:text-black" />
+            <span className="group-hover:text-black text-[15px]">
+              Manage Profile
+            </span>
           </DropdownMenuItem>
 
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="cursor-pointer w-full h-[40px] text-red-600 bg-red-50 hover:bg-red-500 hover:text-white transition-colors"
+          >
+            <MdLogout className="mr-2 h-4 w-4" />
+            <span>Logout Account</span>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

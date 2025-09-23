@@ -1,4 +1,4 @@
-import useAccountStore from "@/stores/useAccountState";
+import useAccountStore from "@/stores/useAccountState"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +16,14 @@ import { LoaderCircle } from "lucide-react";
 import useStoreState from "@/stores/useStoreState";
 
 function ProfileDropDownMenu() {
-  const { resetAccount } = useAccountStore((state) => state);
+  const { resetSellerAccount } = useAccountStore((state) => state);
   const { store, resetStore } = useStoreState();
   const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      resetAccount();
+      resetSellerAccount();
       resetStore();
       navigate("/");
     },

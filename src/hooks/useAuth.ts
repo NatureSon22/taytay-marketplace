@@ -1,27 +1,43 @@
 import { getLoggedInUser } from "@/api/auth";
 import useAccountStore from "@/stores/useAccountState";
-import useStoreState from "@/stores/useStoreState";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const useAuth = () => {
-  const { setAccount } = useAccountStore();
-  const { setStore } = useStoreState();
+  const {
+    setSellerAccount,
+    setAdminAccount,
+    resetSellerAccount,
+    resetAdminAccount,
+  } = useAccountStore();
 
   const { data, status } = useQuery({
     queryKey: ["authenticated"],
     queryFn: getLoggedInUser,
+    retry: false,
   });
 
   useEffect(() => {
-    if (status === "success") {
-      setAccount(data.publicUser);
-      setStore(data.store);
+    if (status === "success" && data) {
+      if (data.type === "account") {
+        setSellerAccount(data.data);
+        resetAdminAccount();
+      } else if (data.type === "admin") {
+        setAdminAccount(data.data);
+        resetSellerAccount();
+      }
     } else if (status === "error") {
-      setAccount(null);
-      setStore(null);
+      resetSellerAccount();
+      resetAdminAccount();
     }
-  }, [status, data, setAccount, setStore]);
+  }, [
+    status,
+    data,
+    setSellerAccount,
+    setAdminAccount,
+    resetSellerAccount,
+    resetAdminAccount,
+  ]);
 };
 
 export default useAuth;

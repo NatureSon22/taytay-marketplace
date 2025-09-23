@@ -43,7 +43,7 @@ function StoreDetails() {
   const { isEditing, enableEditing, disableEditing, toggleEditing } =
     useEditableState();
   const { store, setStore } = useStoreState();
-  const { account } = useAccountStore();
+  const { sellerAccount } = useAccountStore();
   const [stallNumber, setStallNumber] = useState("");
 
   const form = useForm<FormData>({
@@ -244,7 +244,7 @@ function StoreDetails() {
             />
           </div>
 
-          {account?.isVerified && !isEditing && (
+          {sellerAccount?.isVerified && !isEditing && (
             <FormItem>
               <FormLabel className="text-[1rem]">Business Permit</FormLabel>
               <p className="text-300 font-semibold">Verified</p>

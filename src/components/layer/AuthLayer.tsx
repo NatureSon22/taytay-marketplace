@@ -10,19 +10,29 @@ type AuthLayerProps = {
 };
 
 function AuthLayer({ children }: AuthLayerProps) {
-  const { account, setAccount } = useAccountStore();
+  const { sellerAccount, adminAccount, setSellerAccount, setAdminAccount } =
+    useAccountStore();
+
+  const hasAccount = sellerAccount || adminAccount;
+
   const { data, isPending, isError } = useQuery({
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
     refetchOnWindowFocus: false,
-    enabled: !account,
+    enabled: !hasAccount,
   });
 
   useEffect(() => {
-    if (data) setAccount(data.publicUser);
-  }, [data, setAccount]);
+    if (data) {
+      if (data.type === "account") {
+        setSellerAccount(data.data);
+      } else if (data.type === "admin") {
+        setAdminAccount(data.data);
+      }
+    }
+  }, [data, setAdminAccount, setSellerAccount]);
 
-  if (account) return children;
+  if (hasAccount) return children;
 
   if (isPending) {
     return (
