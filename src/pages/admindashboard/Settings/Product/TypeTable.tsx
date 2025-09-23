@@ -31,7 +31,7 @@ function TypeTable() {
           <TableHeader>
             <TableRow>
               <TableHead className="!pl-6 font-bold">ID</TableHead>
-              <TableHead className="font-bold">Category Label</TableHead>
+              <TableHead className="font-bold">Product Type Label</TableHead>
               <TableHead className="font-bold">Action</TableHead>
             </TableRow>
           </TableHeader>

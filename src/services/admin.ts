@@ -1,3 +1,4 @@
+import type { Admin } from "@/types/admin";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -62,4 +63,23 @@ export async function updateAdminStatus(id: string, status: "Active" | "Inactive
   });
   if (!res.ok) throw new Error("Failed to update admin status");
   return res.json();
+}
+
+export async function updateAdmin(
+  id: string,
+  data: Partial<Admin> & { currentPassword?: string; newPassword?: string }
+): Promise<Admin> {
+  const res = await fetch(`${API_URL}/admins/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update admin");
+  }
+
+  const json = await res.json();
+  return json.admin; 
 }

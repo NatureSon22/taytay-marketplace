@@ -28,8 +28,20 @@ export async function createProductType(data: { id: string; label: string }) {
     },
     credentials: "include",
     body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create category");
+  });  
+  
+  if (!res.ok) {
+    let errorMessage = "Failed to create type";
+    try {
+      const errorData = await res.json();
+      if (errorData?.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // ignore JSON parse errors, keep default
+    }
+    throw new Error(errorMessage);
+  }
   return res.json();
 }
 

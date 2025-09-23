@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IoMdAdd } from "react-icons/io";
 import { useCreateLink } from "@/hooks/useLinks";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifySuccess, notifyError } from "@/utils/toast";
 
 function LinkTypeSettingForm() {
   const [id, setId] = useState("");
@@ -34,18 +37,25 @@ function LinkTypeSettingForm() {
   };
 
   const handleSubmit = () => {
-    if (!file) return alert("Please select an image");
-    if (!id.trim() || !label.trim()) return alert("Please fill out all fields");
+    if (!id || !label) {
+      notifyError("Validation Error", "Both ID and Label are required.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("id", id);
     formData.append("label", label);
-    formData.append("image", file); 
-
+    if (file) {
+      formData.append("image", file);
+    }
 
     createLink(formData, {
       onSuccess: () => {
+        notifySuccess("Link Added", "The link type was successfully added.");
         handleCancel();
+      },
+      onError: (err: any) => {
+        notifyError("Failed to Add", err?.message || "Something went wrong.");
       },
     });
   };
@@ -62,6 +72,7 @@ function LinkTypeSettingForm() {
               name="id"
               value={id}
               onChange={(e) => setId(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col gap-1 w-[50%]">
@@ -71,6 +82,7 @@ function LinkTypeSettingForm() {
               name="label"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
+              required
             />
           </div>
         </div>
@@ -84,6 +96,7 @@ function LinkTypeSettingForm() {
               ref={inputRef}
               className="hidden"
               onChange={handleFileChange}
+              required
             />
             <div
               className="grid w-[250px] h-[100px] cursor-pointer place-items-center rounded-md border border-dashed"
@@ -121,6 +134,9 @@ function LinkTypeSettingForm() {
           {isPending ? "Adding..." : "Add Link"}
         </Button>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer hideProgressBar/>
     </div>
   );
 }

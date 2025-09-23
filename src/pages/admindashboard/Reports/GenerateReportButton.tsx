@@ -13,9 +13,9 @@ type GenerateReportButtonProps = {
 const getColumnHeaders = (type: string) => {
   switch (type) {
     case "Seller":
-      return ["ID", "Email", "Full Name", "Store", "Status"];
+      return ["Email", "Full Name", "Store", "Status"];
     case "Admin":
-      return ["ID", "Email", "Username", "Role", "Status"];
+      return ["Email", "Username", "Role", "Status"];
     case "Activity Log":
       return ["Username", "Action", "Date"];
     case "User Growth":
@@ -30,9 +30,8 @@ const getRowData = (type: string, data: any[]) => {
     switch (type) {
       case "Seller":
         return [
-          item.id,
           item.email,
-          item.fullName,
+          item.firstName + " " + item.lastName,
           item.storeName,
           item.status,
         ];

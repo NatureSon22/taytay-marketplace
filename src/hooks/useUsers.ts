@@ -1,41 +1,65 @@
-import { useEffect, useState } from "react";
-import { sellerData } from "@/data/userData"; 
-import { fetchAdmins } from "@/services/admin"; 
+// hooks/useUsers.ts
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-const USERS_PER_PAGE = 9;
+const API_URL = import.meta.env.VITE_API_URL;
 
-export function useUsers(userType: "Seller" | "Administrator", searchTerm: string) {
-  const [rawUsers, setRawUsers] = useState<any[]>([]);
+export type Seller = {
+  id: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  birthday: string;
+  age: string;
+  contactNumber: string;
+  address?: string;
+  username: string;
+  email: string;
+  status: "Pending" | "Verified" | "Blocked";
+  isVerified: boolean;
+  isDeleted: boolean;
+};
+
+export function useUsers(userType: "Seller" | "Administrator", searchTerm?: string) {
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7; // ✅ Sellers table uses 7 per page (like your design)
 
-  useEffect(() => {
-    async function loadUsers() {
-      if (userType === "Seller") {
-        setRawUsers(sellerData);
-      } else {
-        const admins = await fetchAdmins();
-        setRawUsers(admins);
-      }
-      setCurrentPage(1);
-    }
-    loadUsers();
-  }, [userType]);
+  // Only fetch if Seller tab is active
+  const { data: users = [], isLoading } = useQuery<Seller[]>({
+    queryKey: ["sellers"],
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/accounts`, {
+        credentials: "include",
+      });
 
-  const filteredUsers = rawUsers.filter((user) =>
-    Object.values(user).some((value) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+      if (!res.ok) throw new Error("Failed to fetch sellers");
 
-  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+      const body = await res.json();
+      return body.data; // ✅ unwrap { message, data }
+    },
+    enabled: userType === "Seller",
+  });
 
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * USERS_PER_PAGE,
-    currentPage * USERS_PER_PAGE
-  );
+  // Filtering
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm) return users;
+    const lower = searchTerm.toLowerCase();
+    return users.filter((u) =>
+      `${u.firstName} ${u.lastName} ${u.email}`.toLowerCase().includes(lower)
+    );
+  }, [users, searchTerm]);
+
+  // Pagination
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredUsers, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage));
 
   return {
     paginatedUsers,
+    isLoading,
     currentPage,
     totalPages,
     setCurrentPage,

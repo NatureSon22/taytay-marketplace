@@ -37,7 +37,6 @@ export default function AdminTable({ searchQuery = "" }: { searchQuery?: string 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="py-4 !pl-6 font-bold">ID</TableHead>
               <TableHead className="py-4 font-bold">EMAIL</TableHead>
               <TableHead className="py-4 font-bold">USERNAME</TableHead>
               <TableHead className="py-4 font-bold">ROLE</TableHead>
@@ -71,7 +70,6 @@ export default function AdminTable({ searchQuery = "" }: { searchQuery?: string 
 
             {paginatedAdmins.map((admin) => (
               <TableRow key={admin.id}>
-                <TableCell className="py-4">{admin.id}</TableCell>
                 <TableCell>{admin.email}</TableCell>
                 <TableCell>
                   {admin.firstName} {admin.middleName ?? ""} {admin.lastName}

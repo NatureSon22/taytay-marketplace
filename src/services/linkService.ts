@@ -17,8 +17,16 @@ export const linkService = {
         method: "POST",
         body: formData,
         credentials: "include",
-    });
-    if (!res.ok) throw new Error("Failed to create link");
+    });  
+    if (!res.ok) {
+    let errorMessage = "Failed to create link";
+    try {
+      const errorData = await res.json();
+      if (errorData?.message) errorMessage = errorData.message;
+    } catch {
+    }
+    throw new Error(errorMessage);
+  }
     return res.json();
     },
 

@@ -9,15 +9,15 @@ export const login = async (credentials: LoginCredentials) => {
     body: JSON.stringify(credentials),
   });
 
-  const body = await res.json();
+  const data = await res.json(); 
 
   if (!res.ok) {
-    throw new Error(body.message || "Login failed");
+    throw new Error(data.message || "Login failed");
   }
 
-  const result = await res.json();
-  return result;
+  return data;
 };
+
 
 export const register = async (form: FormData): Promise<string> => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {

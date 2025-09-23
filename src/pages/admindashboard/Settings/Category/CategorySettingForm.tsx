@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateCategory } from "@/hooks/useCategories";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifySuccess, notifyError } from "@/utils/toast";
 
 function CategorySettingForm() {
   const [formData, setFormData] = useState({ id: "", label: "" });
-  const createCategory = useCreateCategory();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,11 +18,21 @@ function CategorySettingForm() {
     setFormData({ id: "", label: "" });
   };
 
+  const { mutate: createCategory, status } = useCreateCategory();
+
   const handleSubmit = () => {
-    if (!formData.id || !formData.label) return;
-    createCategory.mutate(formData, {
+    if (!formData.id || !formData.label) {
+      notifyError("Validation Error", "Both ID and Label are required.");
+      return;
+    }
+
+    createCategory(formData, {
       onSuccess: () => {
+        notifySuccess("Category Added", "The product category was successfully added.");
         setFormData({ id: "", label: "" });
+      },
+      onError: (err: any) => {
+        notifyError("Failed to Add", err?.message || "Something went wrong.");
       },
     });
   };
@@ -63,11 +75,14 @@ function CategorySettingForm() {
           type="button"
           className="bg-100 cursor-pointer text-md hover:bg-100 text-white"
           onClick={handleSubmit}
-          disabled={createCategory.isPending}
+          disabled={status === "pending"}
         >
-          {createCategory.isPending ? "Adding..." : "Add Category"}
+          {status === "pending" ? "Adding..." : "Add Category"}
         </Button>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer hideProgressBar/>
     </div>
   );
 }

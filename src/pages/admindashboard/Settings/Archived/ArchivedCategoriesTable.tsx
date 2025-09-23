@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -12,6 +12,9 @@ import { IoReturnUpBack } from "react-icons/io5";
 import { useState } from "react";
 import Pagination from "@/components/ui/Pagination";
 import { useArchivedCategories, useRetrieveCategory } from "@/hooks/useCategories";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifySuccess, notifyError } from "@/utils/toast";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -23,6 +26,15 @@ function ArchivedCategoriesTable() {
   const totalPages = Math.ceil(archivedCategories.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentData = archivedCategories.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleRetrieve = async (id: string) => {
+    try {
+      await retrieveCategory.mutateAsync(id);
+      notifySuccess("Restored!", "Category has been successfully restored.");
+    } catch (err: any) {
+      notifyError("Failed!", err?.message || "Unable to restore category.");
+    }
+  };
 
   if (isLoading) {
     return <div className="text-center py-6">Loading...</div>;
@@ -50,7 +62,7 @@ function ArchivedCategoriesTable() {
                       size="sm"
                       variant="outline"
                       className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
-                      onClick={() => retrieveCategory.mutate(category.id)}
+                      onClick={() => handleRetrieve(category.id)}
                       disabled={retrieveCategory.isPending}
                     >
                       <IoReturnUpBack className="text-white" />
@@ -78,6 +90,9 @@ function ArchivedCategoriesTable() {
           />
         </div>
       )}
+
+      {/* Toast Container */}
+      <ToastContainer hideProgressBar/>
     </div>
   );
 }

@@ -11,6 +11,7 @@ interface Props {
   value: string;
   options: string[];
   onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 export function UserStatusSelect({ value, options, onChange }: Props) {

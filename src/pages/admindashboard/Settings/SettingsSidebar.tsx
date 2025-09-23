@@ -6,7 +6,6 @@ const sidebarItems = [
   { label: "Product Type", href: "/admin/settings/product-type-setting" },
   { label: "Link Type", href: "/admin/settings/link-type-setting" },
   { label: "General Information", href: "/admin/settings/general-information-setting" },
-  { label: "Backup & Restore", href: "/admin/settings/backup-restore-setting" },
   { label: "Account Information", href: "/admin/settings/account-info-setting" },
   { label: "Archives", href: "/admin/settings/archive-setting" },
 ];

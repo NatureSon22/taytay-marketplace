@@ -50,7 +50,6 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="py-4 !pl-6 font-bold">ID</TableHead>
               <TableHead className="py-4 font-bold">USER</TableHead>
               <TableHead className="py-4 font-bold">ACTION</TableHead>
               <TableHead className="py-4 font-bold">DATE</TableHead>
@@ -66,7 +65,6 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
             ) : (
               paginatedLog.map((log) => (
                 <TableRow key={log._id}>
-                  <TableCell className="py-4 !pl-6">{log._id}</TableCell>
                   <TableCell className="py-4">{log.username}</TableCell>
                   <TableCell className="py-4">{log.action}</TableCell>
                   <TableCell className="py-4">{formatDate(log.createdAt)}</TableCell>

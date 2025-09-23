@@ -12,19 +12,29 @@ import Pagination from "@/components/ui/Pagination";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useArchivedLinks, useRestoreArchivedLink } from "@/hooks/useArchivedLinks";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifySuccess, notifyError } from "@/utils/toast";
 
 const ITEMS_PER_PAGE = 4;
 
 function ArchivedLinkTypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  
   const { data: archivedLinks = [], isLoading } = useArchivedLinks();
-  
-  const { mutate: restoreLink, isPending } = useRestoreArchivedLink();
+  const restoreLink = useRestoreArchivedLink();
 
   const totalPages = Math.ceil(archivedLinks.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentData = archivedLinks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleRestore = async (id: string) => {
+    try {
+      await restoreLink.mutateAsync(id);
+      notifySuccess("Restored!", "Link type has been successfully restored.");
+    } catch (err: any) {
+      notifyError("Failed!", err?.message || "Unable to restore link type.");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -69,8 +79,8 @@ function ArchivedLinkTypeTable() {
                     <Button
                       size="sm"
                       variant="outline"
-                      disabled={isPending}
-                      onClick={() => restoreLink(link.id)}
+                      disabled={restoreLink.isPending}
+                      onClick={() => handleRestore(link.id)}
                       className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
                     >
                       <IoReturnUpBack className="text-white" />
@@ -92,6 +102,9 @@ function ArchivedLinkTypeTable() {
           />
         </div>
       )}
+
+      {/* Toast Container */}
+      <ToastContainer hideProgressBar/>
     </div>
   );
 }

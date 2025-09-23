@@ -19,12 +19,12 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { useUsers } from "@/hooks/useUsers";
 import { UserStatusSelect } from "@/components/UserStatusSelect";
-import type { Seller } from "@/data/userData";
 import PermitModal from "@/components/PermitModal";
 import type { Administrator } from "@/services/admin";
+import type { Seller } from "@/services/seller"; // ✅ real seller type
 import { useAdmins } from "@/hooks/useAdmins";
+import { useSellers } from "@/hooks/useSellers"; // ✅ real seller hook
 
 function UsersTable() {
   const [userType, setUserType] = useState<"Seller" | "Administrator">("Seller");
@@ -32,18 +32,21 @@ function UsersTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSeller, setSelectedSeller] = useState<Seller | null>(null);
 
-  const {
-    paginatedUsers,
-    currentPage,
-    totalPages,
-    setCurrentPage,
-  } = useUsers("Seller", searchTerm);
+const {
+  sellers,
+  isLoading: isSellersLoading,
+  currentPage,
+  totalPages,
+  setCurrentPage,
+  updateStatus: updateSellerStatus,   
+  isUpdatingStatus: isUpdatingSeller, 
+} = useSellers(userType === "Seller", searchTerm);
 
   const {
     admins,
     isLoading: isAdminsLoading,
     archiveAdmin,
-    updateAdminStatus, 
+    updateAdminStatus,
     isArchiving,
     currentPage: adminPage,
     totalPages: adminTotalPages,
@@ -55,11 +58,11 @@ function UsersTable() {
     setIsModalOpen(true);
   };
 
-  const displayedUsers =
-    userType === "Administrator" ? admins : paginatedUsers;
+  const displayedUsers = userType === "Administrator" ? admins : sellers;
 
   return (
     <div className="bg-white border rounded-xl p-6 shadow-sm">
+      {/* Search + Filter */}
       <div className="flex justify-between items-center mb-4 gap-2">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -69,6 +72,7 @@ function UsersTable() {
             onChange={(e) => {
               setSearchTerm(e.target.value);
               if (userType === "Seller") setCurrentPage(1);
+              else setAdminPage(1);
             }}
             className="pl-9"
           />
@@ -97,7 +101,6 @@ function UsersTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="font-bold">ID</TableHead>
               <TableHead className="font-bold">EMAIL</TableHead>
               {userType === "Seller" ? (
                 <>
@@ -117,25 +120,36 @@ function UsersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isAdminsLoading && userType === "Administrator" ? (
+            {userType === "Seller" && isSellersLoading ? (
+              <TableRow>
+                <TableCell colSpan={6}>Loading sellers...</TableCell>
+              </TableRow>
+            ) : userType === "Administrator" && isAdminsLoading ? (
               <TableRow>
                 <TableCell colSpan={4}>Loading admins...</TableCell>
               </TableRow>
             ) : displayedUsers.length > 0 ? (
-              displayedUsers.map((user: any, index: Key | null | undefined) => (
+              displayedUsers.map((user: any, index: Key) => (
                 <TableRow key={index}>
-                  <TableCell>{user.id}</TableCell>
                   <TableCell>{user.email}</TableCell>
 
                   {userType === "Seller" ? (
                     <>
-                      <TableCell>{(user as Seller).fullName}</TableCell>
-                      <TableCell>{(user as Seller).storeName}</TableCell>
+                      <TableCell>{(user as Seller).firstName}</TableCell>
+                      <TableCell>{(user as Seller).storeName ?? "No Store"}</TableCell>
                       <TableCell>
                         <UserStatusSelect
                           value={(user as Seller).status}
-                          options={["Pending", "Verified"]}
+                          options={["Pending", "Verified", "Blocked"]}
+                          onChange={(newStatus) =>
+                            updateSellerStatus({
+                              _id: (user as Seller)._id,   // <-- use _id if your DB uses that
+                              status: newStatus as "Pending" | "Verified" | "Blocked",
+                            })
+                          }
+                          disabled={isUpdatingSeller}
                         />
+
                       </TableCell>
                       <TableCell>
                         <Button
@@ -160,7 +174,10 @@ function UsersTable() {
                           value={user.status}
                           options={["Active", "Inactive"]}
                           onChange={(newStatus) =>
-                            updateAdminStatus({ id: user.id, status: newStatus as "Active" | "Inactive" })
+                            updateAdminStatus({
+                              id: user.id,
+                              status: newStatus as "Active" | "Inactive",
+                            })
                           }
                         />
                       </TableCell>
@@ -169,7 +186,9 @@ function UsersTable() {
                           size="sm"
                           variant="outline"
                           className="text-100 !border-100 border rounded-full w-10 h-10"
-                          onClick={() => archiveAdmin((user as Administrator).id)}
+                          onClick={() =>
+                            archiveAdmin((user as Administrator).id)
+                          }
                           disabled={isArchiving}
                         >
                           <FaArchive />
@@ -193,7 +212,8 @@ function UsersTable() {
         </Table>
       </ScrollArea>
 
-      {totalPages > 1 && (
+      {/* Pagination */}
+      {(totalPages > 1 || adminTotalPages > 1) && (
         <div className="flex justify-end mt-4 gap-2">
           <Button
             size="sm"
@@ -203,7 +223,11 @@ function UsersTable() {
                 ? setCurrentPage(currentPage - 1)
                 : setAdminPage(adminPage - 1)
             }
-            disabled={userType === "Seller" ? currentPage === 1 : adminPage === 1}
+            disabled={
+              userType === "Seller"
+                ? currentPage === 1
+                : adminPage === 1
+            }
           >
             Previous
           </Button>
@@ -226,6 +250,7 @@ function UsersTable() {
         </div>
       )}
 
+      {/* Seller Permit Modal */}
       <PermitModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

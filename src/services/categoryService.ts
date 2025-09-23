@@ -29,9 +29,23 @@ export async function createCategory(data: { id: string; label: string }) {
     },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to create category");
+
+  if (!res.ok) {
+    let errorMessage = "Failed to create category";
+    try {
+      const errorData = await res.json();
+      if (errorData?.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      // ignore JSON parse errors, keep default
+    }
+    throw new Error(errorMessage);
+  }
+
   return res.json();
 }
+
 
 export async function getArchivedCategories() {
   const res = await fetch(`${API_URL}/archive-categories`, {

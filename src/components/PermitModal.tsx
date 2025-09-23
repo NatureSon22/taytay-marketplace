@@ -1,13 +1,11 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import type { Seller } from "@/data/userData";
-import { Button } from "@/components/ui/button";
+import type { Seller } from "@/services/seller";
 
 type PermitModalProps = {
   open: boolean;
   onClose: () => void;
   seller: Seller | null;
 };
-
 export default function PermitModal({ open, onClose, seller }: PermitModalProps) {
   if (!seller) return null;
 
@@ -16,12 +14,11 @@ export default function PermitModal({ open, onClose, seller }: PermitModalProps)
       <DialogContent className="pt-6">
         <div className="flex pt-6 flex-col items-center gap-4">
           <img
-            src={seller.image}
-            alt={seller.fullName}
+            alt={seller.firstName}
             className="w-100 h-100 border rounded-md object-cover"
           />
           <div className="text-center">
-            <h3 className="text-lg font-semibold">{seller.fullName}</h3>
+            <h3 className="text-lg font-semibold">{seller.firstName}</h3>
             <p className="text-sm text-muted-foreground">{seller.email}</p>
             <p className="text-sm font-medium mt-1">{seller.storeName}</p>
             <p

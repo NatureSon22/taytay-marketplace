@@ -1,11 +1,13 @@
 import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateAdmin as updateAdminApi } from "@/services/admin";
 import {
   fetchAdmins,
   archiveAdmin as archiveAdminApi,
   updateAdminStatus as updateAdminStatusApi,
 } from "@/services/admin";
 import type { Admin } from "@/types/admin";
+import useAccountStore from "@/stores/useAccountState";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +15,7 @@ export function useAdmins(enabled: boolean, searchTerm?: string) {
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+  const setAdminAccount = useAccountStore((state) => state.setAdminAccount);
   
   useQuery<Admin[]>({
     queryKey: ["admins"],
@@ -86,6 +89,18 @@ export function useAdmins(enabled: boolean, searchTerm?: string) {
       queryClient.invalidateQueries({ queryKey: ["admins"] });
     },
   });
+  
+  const { mutateAsync: updateAdmin, isPending: isUpdatingAdmin } = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => updateAdminApi(id, data),
+    onSuccess: (updatedAdmin) => {
+      queryClient.setQueryData<Admin[]>(["admins"], (old) =>
+        old ? old.map((a) => (a.id === updatedAdmin.id ? updatedAdmin : a)) : []
+      );
+
+    // Update Zustand store
+    setAdminAccount(updatedAdmin);
+  },
+  });
 
   return {
     admins: paginatedAdmins,
@@ -94,6 +109,8 @@ export function useAdmins(enabled: boolean, searchTerm?: string) {
     isArchiving,
     updateAdminStatus,
     isUpdatingStatus,
+    updateAdmin,
+    isUpdatingAdmin,
     currentPage,
     totalPages,
     setCurrentPage,
