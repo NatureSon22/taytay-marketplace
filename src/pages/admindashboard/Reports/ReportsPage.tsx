@@ -7,15 +7,21 @@ import UserGrowthTable from "./UserGrowthTable";
 import SellerTable from "./SellerTable";
 import AdminTable from "./AdminTable";
 import ActivityLogTable from "./ActivityLogTable";
-import { sellerData, dummyLogs } from "@/data/userData";
 import { useReports } from "@/hooks/useReports";
 import { useActLogs } from "@/hooks/useActLogs";
+import { useUsers } from "@/hooks/useUsers"; // ✅ import hook
 
 function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState("Seller");
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: admins = [] } = useReports(); 
-  const { data: logs = [] } = useActLogs(); 
+
+  const { data: admins = [] } = useReports();
+  const { data: logs = [] } = useActLogs();
+
+  const {
+    paginatedUsers: sellers,
+    isLoading: sellersLoading,
+  } = useUsers("Seller", searchQuery);
 
   return (
     <div>
@@ -46,9 +52,7 @@ function ReportsPage() {
             reportTitle={selectedReport}
             data={
               selectedReport === "Seller"
-                ? sellerData.filter((s) =>
-                    s.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
+                ? sellers 
                 : selectedReport === "Admin"
                 ? admins.filter((a) =>
                     `${a.firstName} ${a.lastName}`
@@ -64,10 +68,18 @@ function ReportsPage() {
           />
         </div>
 
-        {selectedReport === "Seller" && <SellerTable searchQuery={searchQuery} />}
-        {selectedReport === "Admin" && <AdminTable searchQuery={searchQuery} />}
-        {selectedReport === "User Growth" && <UserGrowthTable searchQuery={searchQuery} />}
-        {selectedReport === "Activity Log" && <ActivityLogTable searchQuery={searchQuery} />}
+        {selectedReport === "Seller" && (
+          <SellerTable searchQuery={searchQuery} />
+        )}
+        {selectedReport === "Admin" && (
+          <AdminTable searchQuery={searchQuery} />
+        )}
+        {selectedReport === "User Growth" && (
+          <UserGrowthTable searchQuery={searchQuery} />
+        )}
+        {selectedReport === "Activity Log" && (
+          <ActivityLogTable searchQuery={searchQuery} />
+        )}
       </div>
     </div>
   );

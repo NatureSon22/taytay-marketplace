@@ -2,25 +2,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { notifyError, notifySuccess } from "@/utils/toast.tsx";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useCreateAdmin } from "@/hooks/useCreateAdmin";
 import AdminTable from "../../Reports/AdminTable";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AdminSettingForm() {
-  const [formData, setFormData] = useState<{
-    adminId: string;
-    email: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    role: "Admin" | "Super Admin" | "";
-  }>({
+  const [formData, setFormData] = useState({
     adminId: "",
     email: "",
     firstName: "",
     middleName: "",
     lastName: "",
-    role: "",
+    role: "" as "" | "Admin" | "Super Admin",
   });
 
   const resetForm = () => {
@@ -30,7 +32,7 @@ function AdminSettingForm() {
       firstName: "",
       middleName: "",
       lastName: "",
-      role: "", 
+      role: "",
     });
   };
 
@@ -44,31 +46,42 @@ function AdminSettingForm() {
     setFormData((prev) => ({ ...prev, role: value }));
   };
 
-  const handleCancel = resetForm;
-
   const handleSubmit = () => {
     if (formData.role === "") {
+      notifyError("Warning", "Please select a role");
       return;
     }
-    createAdmin({
-      id: formData.adminId,
-      email: formData.email,
-      firstName: formData.firstName,
-      middleName: formData.middleName,
-      lastName: formData.lastName,
-      role: formData.role as "Admin" | "Super Admin",
-    },
-    {
-      onSuccess: resetForm, 
-    }
-);
+
+    createAdmin(
+      {
+        id: formData.adminId,
+        email: formData.email,
+        firstName: formData.firstName,
+        middleName: formData.middleName,
+        lastName: formData.lastName,
+        role: formData.role as "Admin" | "Super Admin",
+      },
+      {
+        onSuccess: () => {
+          resetForm();
+          notifySuccess("Success", "Admin added successfully!");
+        },
+        onError: (err: any) => {
+          notifyError("Error", err?.message || "Something went wrong!");
+        },
+      }
+    );
   };
+
+  const handleCancel = resetForm;
 
   return (
     <div className="max-w-full space-y-8">
+      {/* Form Fields */}
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Account Information</h3>
         <div className="flex gap-4">
+          {/* Admin ID */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="adminId" className="text-md">
               Admin ID
@@ -80,6 +93,7 @@ function AdminSettingForm() {
               onChange={handleChange}
             />
           </div>
+          {/* Email */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="email" className="text-md">
               Email
@@ -92,6 +106,7 @@ function AdminSettingForm() {
               onChange={handleChange}
             />
           </div>
+          {/* Role */}
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="role" className="text-md">
               Role
@@ -109,6 +124,7 @@ function AdminSettingForm() {
         </div>
       </div>
 
+      {/* Personal Info */}
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Personal Information</h3>
         <div className="flex gap-4">
@@ -148,6 +164,7 @@ function AdminSettingForm() {
         </div>
       </div>
 
+      {/* Buttons */}
       <div className="flex gap-4 justify-end mt-6">
         <Button
           type="button"
@@ -167,11 +184,13 @@ function AdminSettingForm() {
         </Button>
       </div>
 
+      {/* Admin Table */}
       <div>
         <AdminTable />
       </div>
 
-      {error && <p className="text-red-600 mt-2">{(error as Error).message}</p>}
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 }

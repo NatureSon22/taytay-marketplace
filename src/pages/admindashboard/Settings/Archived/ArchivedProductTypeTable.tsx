@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { IoReturnUpBack } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useState } from "react";
 import Pagination from "@/components/ui/Pagination";
 import { useArchivedProductType, useRetrieveProductType } from "@/hooks/useProductTypes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { notifySuccess, notifyError } from "@/utils/toast";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -23,6 +26,15 @@ function ArchivedProductTypeTable() {
   const totalPages = Math.ceil(archivedProductTypes.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentData = archivedProductTypes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleRestore = async (id: string) => {
+    try {
+      await retrieveProductType.mutateAsync(id);
+      notifySuccess("Restored!", "Product type has been successfully restored.");
+    } catch (err: any) {
+      notifyError("Failed!", err?.message || "Unable to restore product type.");
+    }
+  };
 
   if (isLoading) {
     return <div className="text-center py-6">Loading...</div>;
@@ -50,8 +62,8 @@ function ArchivedProductTypeTable() {
                       size="sm"
                       variant="outline"
                       className="text-white !border-100 bg-100 hover:bg-100 border rounded-full h-[30px] w-[60px]"
-                      onClick={() => retrieveProductType.mutate(productType.id)}
                       disabled={retrieveProductType.isPending}
+                      onClick={() => handleRestore(productType.id)}
                     >
                       <IoReturnUpBack className="text-white" />
                     </Button>
@@ -78,6 +90,9 @@ function ArchivedProductTypeTable() {
           />
         </div>
       )}
+
+      {/* Toast Container */}
+      <ToastContainer hideProgressBar/>
     </div>
   );
 }
