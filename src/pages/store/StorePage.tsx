@@ -9,19 +9,21 @@ import PageLayout from "@/layouts/PageLayout";
 import { useQuery } from "@tanstack/react-query";
 import { getStores } from "@/api/store";
 import type { Store } from "@/types";
-
-type StoreCard = {
-  storeName: string;
-  profilePicture?: string;
-};
+import { useNavigate } from "react-router";
 
 function StorePage() {
   const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const { data: stores = [], isLoading } = useQuery({
     queryKey: ["stores"],
     queryFn: getStores,
   });
+
+  const viewStore = (storeId: string) => {
+    navigate(`/stores/${storeId}`);
+  };
 
   return (
     <PageLayout paddingTopVariant="none">
@@ -30,11 +32,13 @@ function StorePage() {
           <div className="flex flex-col w-[80%] gap-5 justify-between items-center sm:flex-row">
             <Input
               className="flex-1 py-5 px-5 sm:max-w-80"
-              placeholder="Seach store..."
+              placeholder="Search store..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
             <div className="flex items-center gap-5 ml-auto">
-              <p className="hidden">Filter:</p>
+              <p className="hidden sm:block">Filter:</p>
               <div className="w-52">
                 <ComboBox
                   items={storeFilters}
@@ -49,15 +53,25 @@ function StorePage() {
         </CenterLayout>
 
         <CenterLayout>
-          <div className="w-[80%] mt-12 grid gap-x-10 gap-y-10 place-items-center sm:grid-cols-3 md:gap-y-14 lg:gap-y-20 lg:grid-cols-4 xl:grid-cols-5 ">
-            {stores.map((store: Store) => (
-              <StoreCard
-                key={store.storeName}
-                storeName={store.storeName}
-                profilePicture={store.profilePicture}
-                isLoading={isLoading}
-              />
-            ))}
+          <div className="w-[80%] mt-12 grid gap-x-10 gap-y-10 place-items-center sm:grid-cols-3 md:gap-y-14 lg:gap-y-20 lg:grid-cols-4 xl:grid-cols-5">
+            {isLoading
+              ? Array.from({ length: 10 }, (_, idx) => (
+                  <StoreCard
+                    key={idx}
+                    storeName=""
+                    profilePicture=""
+                    isLoading={true}
+                  />
+                ))
+              : stores.map((store: Store) => (
+                  <StoreCard
+                    key={store.storeName}
+                    storeName={store.storeName}
+                    profilePicture={store.profilePicture}
+                    isLoading={false}
+                    onClick={() => viewStore(store._id)}
+                  />
+                ))}
           </div>
         </CenterLayout>
       </PadLayout>

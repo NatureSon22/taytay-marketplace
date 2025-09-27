@@ -24,13 +24,7 @@ const sampleProducts: Product[] = [
     productPictures: [product3],
   },
   {
-    id: 4,
-    productName: "Sleeve Stripped Shirt",
-    productPrice: "180",
-    productPictures: [product4],
-  },
-  {
-    id: 5,
+    _id: "4",
     productName: "Sleeve Stripped Shirt",
     productPrice: "180",
     productPictures: [product4],

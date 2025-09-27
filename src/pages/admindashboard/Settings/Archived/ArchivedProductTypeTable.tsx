@@ -10,8 +10,11 @@ import { IoReturnUpBack } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useState } from "react";
-import Pagination from "@/components/ui/Pagination";
-import { useArchivedProductType, useRetrieveProductType } from "@/hooks/useProductTypes";
+import Pagination from "@/components/ui/PaginationButton";
+import {
+  useArchivedProductType,
+  useRetrieveProductType,
+} from "@/hooks/useProductTypes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { notifySuccess, notifyError } from "@/utils/toast";
@@ -20,17 +23,24 @@ const ITEMS_PER_PAGE = 8;
 
 function ArchivedProductTypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: archivedProductTypes = [], isLoading } = useArchivedProductType();
+  const { data: archivedProductTypes = [], isLoading } =
+    useArchivedProductType();
   const retrieveProductType = useRetrieveProductType();
 
   const totalPages = Math.ceil(archivedProductTypes.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentData = archivedProductTypes.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentData = archivedProductTypes.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handleRestore = async (id: string) => {
     try {
       await retrieveProductType.mutateAsync(id);
-      notifySuccess("Restored!", "Product type has been successfully restored.");
+      notifySuccess(
+        "Restored!",
+        "Product type has been successfully restored."
+      );
     } catch (err: any) {
       notifyError("Failed!", err?.message || "Unable to restore product type.");
     }
@@ -72,7 +82,10 @@ function ArchivedProductTypeTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
+                <TableCell
+                  colSpan={3}
+                  className="py-6 text-center text-gray-500"
+                >
                   No archived product types found.
                 </TableCell>
               </TableRow>
@@ -92,7 +105,7 @@ function ArchivedProductTypeTable() {
       )}
 
       {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
+      <ToastContainer hideProgressBar />
     </div>
   );
 }

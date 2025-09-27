@@ -6,12 +6,14 @@ type StoreCardProps = {
   stallNumber?: string;
   profilePicture?: string;
   isLoading?: boolean;
+  onClick?: () => void;
 };
 
 function StoreCard({
   storeName,
   profilePicture,
   isLoading = false,
+  onClick = () => {},
 }: StoreCardProps) {
   return (
     <div
@@ -20,6 +22,7 @@ function StoreCard({
           ? "cursor-default"
           : "cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:border-slate-200 hover:shadow-xs"
       }`}
+      onClick={onClick}
     >
       {isLoading ? (
         <div className="size-30 md:size-36 rounded-full">

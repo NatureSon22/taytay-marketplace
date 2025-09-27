@@ -12,8 +12,10 @@ import type {
 import ProductList from "@/components/ProductList";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/api/products";
+import { useNavigate } from "react-router";
 
 function ProductsPage() {
+  const navigate = useNavigate();
   const [filterOptions, setFilterOptions] = useState<ProductFilterSettings>({
     category: "",
     apparel: "",
@@ -65,6 +67,10 @@ function ProductsPage() {
     setOpenFilterBar((prev) => !prev);
   };
 
+  const onProductClick = (productId: string) => {
+    navigate(`/products/${productId}`);
+  };
+
   return (
     <PageLayout paddingTopVariant="none">
       <PadLayout>
@@ -78,7 +84,11 @@ function ProductsPage() {
               handleOpenFilterBar={handleOpenFilterBar}
             />
 
-            <ProductList products={products} isLoading={isLoading} />
+            <ProductList
+              products={products}
+              isLoading={isLoading}
+              onProductClick={onProductClick}
+            />
           </div>
         </CenterLayout>
       </PadLayout>

@@ -21,6 +21,21 @@ export const getProducts = async () => {
   return body.data;
 };
 
+export const getProduct = async (id: string): Promise<Product> => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/${id}`,
+    createFetchOptions({ method: "GET" })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    throw new Error(body.message);
+  }
+
+  return body.data;
+};
+
 export const createProduct = async (
   formData: FormData
 ): Promise<CreateProductResponse> => {

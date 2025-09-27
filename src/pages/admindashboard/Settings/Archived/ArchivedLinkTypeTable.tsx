@@ -8,10 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IoReturnUpBack } from "react-icons/io5";
-import { useArchivedLinks, useRestoreArchivedLink } from "@/hooks/useArchivedLinks";
+import {
+  useArchivedLinks,
+  useRestoreArchivedLink,
+} from "@/hooks/useArchivedLinks";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { notifySuccess, notifyError } from "@/utils/toast";
@@ -25,7 +28,10 @@ function ArchivedLinkTypeTable() {
 
   const totalPages = Math.ceil(archivedLinks.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentData = archivedLinks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentData = archivedLinks.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handleRestore = async (id: string) => {
     try {
@@ -104,7 +110,7 @@ function ArchivedLinkTypeTable() {
       )}
 
       {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
+      <ToastContainer hideProgressBar />
     </div>
   );
 }

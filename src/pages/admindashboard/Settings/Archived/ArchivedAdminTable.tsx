@@ -9,7 +9,7 @@ import {
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "@/components/ui/button";
 import { useState, type Key } from "react";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { IoReturnUpBack } from "react-icons/io5";
@@ -26,7 +26,12 @@ function AdminArchiveTable() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredData = archivedAdmins.filter(
-    (admin: { firstName: string; lastName: string; id: string; email: string }) => {
+    (admin: {
+      firstName: string;
+      lastName: string;
+      id: string;
+      email: string;
+    }) => {
       const fullName = `${admin.firstName} ${admin.lastName}`.toLowerCase();
       return (
         admin.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,13 +43,19 @@ function AdminArchiveTable() {
 
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentData = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentData = filteredData.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   // Handle restore with toast feedback
   const handleRestore = async (id: string) => {
     try {
       await restoreAdmin(id);
-      notifySuccess("Restored!", "Admin account has been restored successfully.");
+      notifySuccess(
+        "Restored!",
+        "Admin account has been restored successfully."
+      );
     } catch (err: any) {
       notifyError("Failed!", err?.message || "Unable to restore admin.");
     }
@@ -83,13 +94,19 @@ function AdminArchiveTable() {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-6 text-center text-gray-500">
+                <TableCell
+                  colSpan={6}
+                  className="py-6 text-center text-gray-500"
+                >
                   Loading...
                 </TableCell>
               </TableRow>
             ) : currentData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-6 text-center text-gray-500">
+                <TableCell
+                  colSpan={6}
+                  className="py-6 text-center text-gray-500"
+                >
                   No admins found.
                 </TableCell>
               </TableRow>
@@ -114,8 +131,16 @@ function AdminArchiveTable() {
                     <TableCell className="py-4">
                       <div
                         className={`flex rounded-full items-center justify-center w-[100px]
-                        ${admin.status === "Active" ? "bg-green-100 text-green-800" : ""}
-                        ${admin.status === "Inactive" ? "bg-red-100 text-red-800" : ""}`}
+                        ${
+                          admin.status === "Active"
+                            ? "bg-green-100 text-green-800"
+                            : ""
+                        }
+                        ${
+                          admin.status === "Inactive"
+                            ? "bg-red-100 text-red-800"
+                            : ""
+                        }`}
                       >
                         <span className="px-3 py-1 rounded-full text-sm font-medium">
                           {admin.status}
@@ -141,11 +166,15 @@ function AdminArchiveTable() {
       </ScrollArea>
 
       <div className="flex justify-end">
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
+      <ToastContainer hideProgressBar />
     </div>
   );
 }

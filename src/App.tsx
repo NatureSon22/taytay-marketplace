@@ -48,11 +48,11 @@ const router = createBrowserRouter([
 
       // products
       { path: "/products", element: <ProductsPage /> },
-      { path: "/product", element: <ProductDetailsPage /> },
+      { path: "/products/:id", element: <ProductDetailsPage /> },
 
       // store
       { path: "/stores", element: <StorePage /> },
-      { path: "/store", element: <StoreDetails /> },
+      { path: "/stores/:id", element: <StoreDetails /> },
 
       // account routes (protected)
       {
@@ -94,7 +94,10 @@ const router = createBrowserRouter([
           { path: "category-setting", element: <CategorySetting /> },
           { path: "product-type-setting", element: <TypeSetting /> },
           { path: "link-type-setting", element: <LinkTypeSetting /> },
-          { path: "general-information-setting", element: <GeneralInformationSetting /> },
+          {
+            path: "general-information-setting",
+            element: <GeneralInformationSetting />,
+          },
           { path: "backup-restore-setting", element: <BackupRestoreSetting /> },
           { path: "account-info-setting", element: <AccountInfoSetting /> },
           { path: "archive-setting", element: <ArchiveSetting /> },

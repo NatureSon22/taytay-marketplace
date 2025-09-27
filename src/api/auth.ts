@@ -22,8 +22,7 @@ export const login = async (credentials: LoginCredentials) => {
     throw new Error(body.message || "Login failed");
   }
 
-  const { publicUser, store } = body.data;
-  return publicUser && store ? { publicUser, store } : body.data;
+  return body;
 };
 
 export const register = async (form: FormData): Promise<string> => {
@@ -70,5 +69,7 @@ export const getLoggedInUser = async () => {
   }
 
   const { publicUser, store } = body.data;
-  return publicUser && store ? { publicUser, store } : body.data;
+  return publicUser && store
+    ? { publicUser, store, type: body.data.type }
+    : body.data;
 };
