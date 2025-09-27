@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useState } from "react";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { useArchivedCategories, useRetrieveCategory } from "@/hooks/useCategories";
 import { toast, Toaster } from "sonner";
 
