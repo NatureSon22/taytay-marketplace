@@ -5,6 +5,7 @@ import { howToGoOptions, editorTabs } from "@/data/generalInformationData";
 import { useGeneralInformation } from "@/hooks/useGeneralInformation";
 import type { IGeneralInformation } from "@/types/generalInformation";
 import { Button } from "@/components/ui/button";
+import { toast, Toaster } from "sonner";
 
 function GeneralInformationSetting() {
   const { data, isLoading, isError, saveInfo, isSaving } =
@@ -75,17 +76,23 @@ function GeneralInformationSetting() {
     }
   };
 
-  const handleSave = () => {
-    if (formData) {
-      saveInfo(formData);
-    }
-  };
+const handleSave = async () => {
+  if (!formData) return;
+
+  try {
+    await saveInfo(formData); 
+    toast.success("Information saved successfully!");
+  } catch (err: any) {
+    toast.error(err?.message || "Failed to save information");
+  }
+};
 
   if (isLoading) return <p>Loading general information...</p>;
   if (isError) return <p>Error loading general information.</p>;
 
   return (
     <div>
+      <Toaster position="top-right" />
       <h3 className="text-lg font-medium text-100 mb-4">General Information</h3>
 
       <GeneralInfoNavbar

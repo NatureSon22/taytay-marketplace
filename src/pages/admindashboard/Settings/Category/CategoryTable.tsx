@@ -12,6 +12,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FaArchive } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { useCategories } from "@/hooks/useCategories";
+import { toast, Toaster } from "sonner";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -20,12 +21,24 @@ function CategoryTable() {
   const { data = [], isLoading, isError, error, archiveCategory, isArchiving } =
     useCategories();
 
+  const handleArchiveCategory = (categoryId: string) => {
+    archiveCategory(categoryId, {
+      onSuccess: () => {
+        toast.success("Category archived successfully!");
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || "Failed to archive category");
+      },
+    });
+  };
+
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
     <div className="flex flex-col gap-4">
+      <Toaster position="top-right" />
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -64,7 +77,7 @@ function CategoryTable() {
                       size="sm"
                       variant="outline"
                       className="text-100 !border-100 border rounded-full w-10 h-10"
-                      onClick={() => archiveCategory(category.id)}
+                      onClick={() => handleArchiveCategory(category.id)}
                       disabled={isArchiving}
                     >
                       <FaArchive className="text-100" />

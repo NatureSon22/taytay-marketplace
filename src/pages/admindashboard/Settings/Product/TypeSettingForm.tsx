@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateProductType } from "@/hooks/useProductTypes";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { toast, Toaster } from "sonner";
 
 function ProductTypeSettingForm() {
   const [formData, setFormData] = useState({ id: "", label: "" });
@@ -21,23 +19,24 @@ function ProductTypeSettingForm() {
 
   const handleSubmit = () => {
     if (!formData.id || !formData.label) {
-      notifyError("Validation Error", "Both Type ID and Label are required.");
+      toast.error("Both Type ID and Label are required.");
       return;
     }
 
     createProductType(formData, {
       onSuccess: () => {
-        notifySuccess("Product Type Added", "The product type was successfully added.");
+        toast.success("The product type was successfully added.");
         setFormData({ id: "", label: "" });
       },
       onError: (err: any) => {
-        notifyError("Failed to Add", err?.message || "Something went wrong.");
+        toast.error(err?.message || "Something went wrong.");
       },
     });
   };
 
   return (
     <div className="max-w-full space-y-8">
+      <Toaster position="top-right" />
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Product Type</h3>
         <div className="flex gap-4">
@@ -79,9 +78,6 @@ function ProductTypeSettingForm() {
           {status === "pending" ? "Adding..." : "Add Type"}
         </Button>
       </div>
-
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
     </div>
   );
 }

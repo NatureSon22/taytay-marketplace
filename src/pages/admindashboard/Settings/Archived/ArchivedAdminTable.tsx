@@ -14,9 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useArchivedAdmins } from "@/hooks/useArchivedAdmins";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { toast, Toaster } from "sonner";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -44,14 +42,15 @@ function AdminArchiveTable() {
   const handleRestore = async (id: string) => {
     try {
       await restoreAdmin(id);
-      notifySuccess("Restored!", "Admin account has been restored successfully.");
+      toast.success("Admin account has been restored successfully.");
     } catch (err: any) {
-      notifyError("Failed!", err?.message || "Unable to restore admin.");
+      toast.error(err?.message || "Unable to restore admin.");
     }
   };
 
   return (
     <div className="flex flex-col gap-4">
+      <Toaster position="top-right" />
       <div className="relative w-full">
         <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">
           <Search size={18} />
@@ -144,8 +143,6 @@ function AdminArchiveTable() {
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       </div>
 
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
     </div>
   );
 }

@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCreateCategory } from "@/hooks/useCategories";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { toast, Toaster } from "sonner";
 
 function CategorySettingForm() {
   const [formData, setFormData] = useState({ id: "", label: "" });
@@ -22,23 +20,24 @@ function CategorySettingForm() {
 
   const handleSubmit = () => {
     if (!formData.id || !formData.label) {
-      notifyError("Validation Error", "Both ID and Label are required.");
+      toast.error("Both ID and Label are required.");
       return;
     }
 
     createCategory(formData, {
       onSuccess: () => {
-        notifySuccess("Category Added", "The product category was successfully added.");
+        toast.success("The product category was successfully added.");
         setFormData({ id: "", label: "" });
       },
       onError: (err: any) => {
-        notifyError("Failed to Add", err?.message || "Something went wrong.");
+        toast.error(err?.message || "Something went wrong.");
       },
     });
   };
 
   return (
     <div className="max-w-full space-y-8">
+      <Toaster position="top-right" />
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Product Category</h3>
         <div className="flex gap-4">
@@ -80,9 +79,6 @@ function CategorySettingForm() {
           {status === "pending" ? "Adding..." : "Add Category"}
         </Button>
       </div>
-
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
     </div>
   );
 }
