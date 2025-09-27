@@ -4,13 +4,13 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { formatDate } from "@/utils/formatDate";
 import { useState, useMemo } from "react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import Pagination from "@/components/ui/Pagination";
-import { useActLogs } from "@/hooks/useActLogs"; 
+import Pagination from "@/components/ui/PaginationButton";
+import { useActLogs } from "@/hooks/useActLogs";
 
 function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
   const { data: logs = [], isLoading, isError, error } = useActLogs();
@@ -29,20 +29,18 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
     );
   }
 
-    const filteredLogs = useMemo(() => {
-      const lowerSearch = searchQuery.toLowerCase();
-      return logs.filter((log) =>
-        `${log.username ?? ""} ${log.action}`
-          .toLowerCase()
-          .includes(lowerSearch)
-      );
-    }, [logs, searchQuery]);
-  
-    const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
-    const paginatedLog = filteredLogs.slice(
-      (currentPage - 1) * rowsPerPage,
-      currentPage * rowsPerPage
+  const filteredLogs = useMemo(() => {
+    const lowerSearch = searchQuery.toLowerCase();
+    return logs.filter((log) =>
+      `${log.username ?? ""} ${log.action}`.toLowerCase().includes(lowerSearch)
     );
+  }, [logs, searchQuery]);
+
+  const totalPages = Math.ceil(filteredLogs.length / rowsPerPage);
+  const paginatedLog = filteredLogs.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   return (
     <div>
@@ -58,7 +56,10 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
           <TableBody>
             {paginatedLog.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="py-6 text-center text-gray-500">
+                <TableCell
+                  colSpan={4}
+                  className="py-6 text-center text-gray-500"
+                >
                   No activity found.
                 </TableCell>
               </TableRow>
@@ -67,7 +68,9 @@ function ActivityLogTable({ searchQuery }: { searchQuery: string }) {
                 <TableRow key={log._id}>
                   <TableCell className="py-4">{log.username}</TableCell>
                   <TableCell className="py-4">{log.action}</TableCell>
-                  <TableCell className="py-4">{formatDate(log.createdAt)}</TableCell>
+                  <TableCell className="py-4">
+                    {formatDate(log.createdAt)}
+                  </TableCell>
                 </TableRow>
               ))
             )}

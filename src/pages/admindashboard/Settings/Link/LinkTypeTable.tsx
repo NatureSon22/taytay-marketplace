@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { FaArchive } from "react-icons/fa";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useLinks, useArchiveLink } from "@/hooks/useLinks";
 import { toast } from "sonner";

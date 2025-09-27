@@ -6,6 +6,7 @@ type ProductCardProps = {
   productPrice: string;
   productPictures: string[];
   isLoading: boolean;
+  onClick?: () => void;
 };
 
 function ProductCard({
@@ -13,6 +14,7 @@ function ProductCard({
   productPrice,
   productPictures,
   isLoading,
+  onClick = () => {},
 }: ProductCardProps) {
   return (
     <div
@@ -21,6 +23,7 @@ function ProductCard({
         !isLoading &&
           "group hover:shadow-md hover:scale-[1.02] hover:-translate-y-1 hover:border-gray-200"
       )}
+      onClick={onClick}
     >
       {/* Image Container */}
       <div className="relative h-[280px] w-full overflow-hidden bg-gray-50">

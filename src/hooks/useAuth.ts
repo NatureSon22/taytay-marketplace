@@ -1,5 +1,6 @@
 import { getLoggedInUser } from "@/api/auth";
 import useAccountStore from "@/stores/useAccountState";
+import useStoreState from "@/stores/useStoreState";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
@@ -10,6 +11,7 @@ const useAuth = () => {
     resetSellerAccount,
     resetAdminAccount,
   } = useAccountStore();
+  const { setStore } = useStoreState();
 
   const { data, status } = useQuery({
     queryKey: ["authenticated"],
@@ -19,12 +21,13 @@ const useAuth = () => {
 
   useEffect(() => {
     if (status === "success" && data) {
-      if (data.type === "account") {
-        setSellerAccount(data.data);
-        resetAdminAccount();
-      } else if (data.type === "admin") {
+      if (data.type === "admin") {
         setAdminAccount(data.data);
         resetSellerAccount();
+      } else {
+        setSellerAccount(data.publicUser);
+        setStore(data.store);
+        resetAdminAccount();
       }
     } else if (status === "error") {
       resetSellerAccount();
@@ -37,6 +40,7 @@ const useAuth = () => {
     setAdminAccount,
     resetSellerAccount,
     resetAdminAccount,
+    setStore,
   ]);
 };
 

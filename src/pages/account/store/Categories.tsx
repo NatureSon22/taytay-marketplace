@@ -29,10 +29,11 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 function Categories() {
-  const { isEditing, enableEditing, disableEditing } = useEditableState();
+  const { isEditing, enableEditing, disableEditing, toggleEditing } =
+    useEditableState();
   const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState<Category[]>();
-  const { store } = useStoreState();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const { store, setStore } = useStoreState();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -46,32 +47,42 @@ function Categories() {
       if (!store) throw new Error("Store is empty");
       return updateStoreData(payload, store._id);
     },
+    onSuccess: (data) => {
+      console.log(data.categories);
+      setStore(data);
+    },
+    onSettled: () => {
+      setCategory("");
+      setCategories([]);
+      toggleEditing();
+      form.reset();
+    },
   });
 
   useEffect(() => {
     if (!store) return;
     form.setValue("categories", store.categories);
-    setCategories(store.categories);
-  }, [form, store]);
+  }, [form, store, store?.categories]);
 
   const addCategory = () => {
     const newCategory = { label: category.trim() };
     if (!newCategory.label) return;
 
-    form.setValue("categories", [
-      ...(form.getValues("categories") || []),
-      newCategory,
-    ]);
+    // form.setValue("categories", [
+    //   ...(form.getValues("categories") || []),
+    //   newCategory,
+    // ]);
 
+    setCategories((prev) => [...prev, newCategory]);
     setCategory("");
   };
 
   const onRemove = (label: string) => {
-    const updatedCategories = form
-      .getValues("categories")
-      .filter((category) => category.label !== label);
+    const updatedCategories = categories.filter(
+      (category) => category.label !== label
+    );
 
-    form.setValue("categories", updatedCategories);
+    setCategories(updatedCategories);
   };
 
   const editCategory = (id: string, value: string) => {
@@ -84,9 +95,16 @@ function Categories() {
     form.setValue("categories", updatedCategories);
   };
 
-  const onSubmit = (data: FormData) => {
+  const disableActions = () => {
+    setCategory("");
+    setCategories([]);
+    toggleEditing();
+    form.reset();
+  };
+
+  const onSubmit = () => {
     const payload: Partial<Store> = {
-      categories: data.categories,
+      categories: categories,
     };
 
     mutate(payload);
@@ -98,9 +116,10 @@ function Categories() {
       isEditing={isEditing}
       enableEditing={enableEditing}
       disableEditing={disableEditing}
+      disableActions={disableActions}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {isEditing ? (
             <>
               <div className="space-y-4">
@@ -114,7 +133,7 @@ function Categories() {
                         e.preventDefault();
                       }
                     }}
-                    placeholder="Enter category"
+                    placeholder="Enter new category"
                   />
                   <Button
                     type="button"
@@ -140,7 +159,7 @@ function Categories() {
               <div className="space-y-3">
                 {form.watch("categories")?.map((category) => {
                   return (
-                    <div className="flex gap-4">
+                    <div className="flex gap-4" key={category.label}>
                       <Input
                         className="h-full"
                         value={category.label}
@@ -149,7 +168,10 @@ function Categories() {
                         }
                       />
 
-                      <Button>Remove</Button>
+                      <div className="flex gap-2">
+                        <Button>Edit</Button>
+                        <Button variant={"destructive"}>Remove</Button>
+                      </div>
                     </div>
                   );
                 })}

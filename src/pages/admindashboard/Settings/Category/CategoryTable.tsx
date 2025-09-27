@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { FaArchive } from "react-icons/fa";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { useCategories } from "@/hooks/useCategories";
 import { toast, Toaster } from "sonner";
 
@@ -18,8 +18,14 @@ const ITEMS_PER_PAGE = 6;
 
 function CategoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data = [], isLoading, isError, error, archiveCategory, isArchiving } =
-    useCategories();
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+    archiveCategory,
+    isArchiving,
+  } = useCategories();
 
   const handleArchiveCategory = (categoryId: string) => {
     archiveCategory(categoryId, {
@@ -57,7 +63,10 @@ function CategoryTable() {
               </TableRow>
             ) : isError ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-red-500 py-6">
+                <TableCell
+                  colSpan={3}
+                  className="text-center text-red-500 py-6"
+                >
                   Error: {error.message}
                 </TableCell>
               </TableRow>

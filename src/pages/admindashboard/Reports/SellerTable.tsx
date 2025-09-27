@@ -7,17 +7,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { useUsers } from "@/hooks/useUsers";
 
 function SellerTable({ searchQuery }: { searchQuery: string }) {
-  const {
-    paginatedUsers,
-    isLoading,
-    currentPage,
-    totalPages,
-    setCurrentPage,
-  } = useUsers("Seller", searchQuery);
+  const { paginatedUsers, isLoading, currentPage, totalPages, setCurrentPage } =
+    useUsers("Seller", searchQuery);
 
   return (
     <div className="space-y-4">
@@ -50,15 +45,25 @@ function SellerTable({ searchQuery }: { searchQuery: string }) {
                       <TableCell className="py-2">
                         {seller.firstName} {seller.lastName}
                       </TableCell>
-                      <TableCell className="py-2">
-                        {seller.username}
-                      </TableCell>
+                      <TableCell className="py-2">{seller.username}</TableCell>
                       <TableCell className="py-2">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium
-                            ${seller.status === "Verified" ? "bg-green-100 text-green-800" : ""}
-                            ${seller.status === "Pending" ? "bg-yellow-100 text-yellow-800" : ""}
-                            ${seller.status === "Blocked" ? "bg-red-100 text-red-800" : ""}`}
+                            ${
+                              seller.status === "Verified"
+                                ? "bg-green-100 text-green-800"
+                                : ""
+                            }
+                            ${
+                              seller.status === "Pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : ""
+                            }
+                            ${
+                              seller.status === "Blocked"
+                                ? "bg-red-100 text-red-800"
+                                : ""
+                            }`}
                         >
                           {seller.status}
                         </span>

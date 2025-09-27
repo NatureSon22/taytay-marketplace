@@ -23,7 +23,10 @@ function ArchivedCategoriesTable() {
 
   const totalPages = Math.ceil(archivedCategories.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentData = archivedCategories.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentData = archivedCategories.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handleRetrieve = async (id: string) => {
     try {
@@ -71,7 +74,10 @@ function ArchivedCategoriesTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="py-6 text-center text-gray-500">
+                <TableCell
+                  colSpan={3}
+                  className="py-6 text-center text-gray-500"
+                >
                   No archived categories found.
                 </TableCell>
               </TableRow>

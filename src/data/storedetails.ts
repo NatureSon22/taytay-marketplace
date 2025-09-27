@@ -5,7 +5,7 @@ import shopee from "@/assets/Shopee-Logo.png";
 import paymaya from "@/assets/PayMaya_Logo.png";
 import gcash from "@/assets/GCash-Logo.png";
 
-const storedetail: Store = {
+const storedetail: Partial<Store> = {
   _id: "store-0001",
   profilePicture: profile,
   description:
@@ -17,12 +17,14 @@ const storedetail: Store = {
   stallNumbers: ["000", "001"],
   linkedAccounts: [
     {
-      logo: lazada, url: "",
-      platform: ""
+      logo: lazada,
+      url: "",
+      platform: "",
     },
     {
-      logo: shopee, url: "",
-      platform: ""
+      logo: shopee,
+      url: "",
+      platform: "",
     },
   ],
   paymentMode: [{ logo: paymaya }, { logo: gcash }],

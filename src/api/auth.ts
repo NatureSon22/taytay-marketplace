@@ -16,15 +16,14 @@ export const login = async (credentials: LoginCredentials) => {
     body: JSON.stringify(credentials),
   });
 
-  const data = await res.json(); 
+  const body = await res.json();
 
   if (!res.ok) {
-    throw new Error(data.message || "Login failed");
+    throw new Error(body.message || "Login failed");
   }
 
-  return data;
+  return body;
 };
-
 
 export const register = async (form: FormData): Promise<string> => {
   const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
@@ -69,6 +68,8 @@ export const getLoggedInUser = async () => {
     throw new Error(body.message || "Failed to fetch user");
   }
 
-const result = await res.json();
-return result; 
+  const { publicUser, store } = body.data;
+  return publicUser && store
+    ? { publicUser, store, type: body.data.type }
+    : body.data;
 };

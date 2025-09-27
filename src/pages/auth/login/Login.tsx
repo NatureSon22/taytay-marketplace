@@ -24,6 +24,7 @@ import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/auth";
 import { LoaderCircle } from "lucide-react";
 import useAccountStore from "@/stores/useAccountState";
+import useStoreState from "@/stores/useStoreState";
 
 const formSchema = z.object({
   email: z.email({ message: "Invalid email" }),
@@ -36,6 +37,7 @@ type FormData = z.infer<typeof formSchema>;
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const { setStore } = useStoreState();
   const navigate = useNavigate();
 
   const form = useForm<FormData>({
@@ -46,29 +48,29 @@ function Login() {
     },
   });
 
-const { mutate, isPending, isError, error } = useMutation({
-  mutationFn: login,
-  onSuccess: (
-    res: { message: string; data: any; type: "admin" | "account" }
-  ) => {
-    console.log("Logged in:", res);
-
-    if (res.type === "admin") {
-      useAccountStore.getState().setAdminAccount({
-        ...res.data,
-        userType: "admin",
-      });
-      navigate("/admin/dashboard");
-    } else {
-      useAccountStore.getState().setSellerAccount({
-        ...res.data,
-        userType: "account",
-      });
-      navigate("/");
-    }
-  },
-});
-
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: login,
+    onSuccess: (res: {
+      message: string;
+      data: any;
+      type: "admin" | "account";
+    }) => {
+      if (res.type === "admin") {
+        useAccountStore.getState().setAdminAccount({
+          ...res.data,
+          userType: "admin",
+        });
+        navigate("/admin/dashboard");
+      } else {
+        useAccountStore.getState().setSellerAccount({
+          ...res.data.publicUser,
+          userType: "account",
+        });
+        setStore({ ...res.data.store });
+        navigate("/");
+      }
+    },
+  });
 
   const onSubmit = (data: FormData) => {
     mutate(data);

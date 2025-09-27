@@ -1,58 +1,69 @@
-import productImage1 from "@/assets/running-shoes.webp";
-import productImage2 from "@/assets/Frame 32 (2).png";
-import productImage3 from "@/assets/Frame 32 (3).png";
-import productImage4 from "@/assets/Frame 32 (4).png";
-import { Fragment, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 type ProductImagesProps = {
   images: string[];
+  isLoading: boolean;
 };
 
-function ProductImages() {
-  const [productImages, setProductImages] = useState([
-    productImage1,
-    productImage2,
-    productImage3,
-    productImage4,
-  ]);
-  const [selectedImage, setSelectedImage] = useState(productImage1);
+function ProductImages({ images, isLoading }: ProductImagesProps) {
+  const [productImages, setProductImages] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  useEffect(() => {
+    if (images && images.length > 0) {
+      setProductImages(images);
+      setSelectedImage(images[0]);
+    }
+  }, [images]);
 
   const handleSelectImage = (newSelectedImage: string) => {
-    setProductImages((prev) => {
-      const remainingImages = prev.filter(
-        (img) => img !== newSelectedImage && img !== selectedImage
-      );
-
-      const updatedImages = [
-        newSelectedImage,
-        ...remainingImages,
-        selectedImage,
-      ];
-
-      setSelectedImage(newSelectedImage);
-
-      // return the new images
-      return updatedImages;
-    });
+    setSelectedImage(newSelectedImage);
   };
 
+  // (fill with skeletons if fewer images)
+  const thumbnailSlots = Array.from({ length: 4 }).map(
+    (_, idx) => productImages[idx] ?? ""
+  );
+
   return (
-    <div className="space-y-3 md:space-y-0 md:flex md:flex-row-reverse md:gap-3 lg:flex-row-reverse">
+    <div className="w-full space-y-3 md:space-y-0 md:flex md:flex-row-reverse md:gap-3 lg:w-max lg:flex-row-reverse">
       {/* main image */}
-      <div className="h-[300px] rounded-xl md:h-[400px] lg:h-[500px] lg:w-[400px] xl:w-[500px] overflow-hidden">
-        <img
-          className="h-full w-full object-cover rounded-xl hover:scale-110 transition-transform duration-150"
-          src={selectedImage}
-          alt=""
-        />
+      <div className="h-[300px] w-full rounded-xl md:h-[400px] lg:h-[500px] lg:w-[400px] xl:w-[500px] overflow-hidden">
+        {isLoading ? (
+          <Skeleton className="w-full h-full bg-slate-300" />
+        ) : (
+          <img
+            className="h-full w-full object-cover rounded-xl hover:scale-110 transition-transform duration-150"
+            src={selectedImage}
+            alt=""
+          />
+        )}
       </div>
 
-      <div className="flex gap-3 h-[100px] md:w-[150px] md:flex-col md:h-[125px] lg:w-[170px] lg:h-[158px]">
-        {productImages.map((productImage) => {
-          return selectedImage !== productImage ? (
+      {/* thumbnails */}
+      <div
+        className={cn(
+          "flex gap-3 md:flex-col h-[100px] md:h-[400px] lg:h-[500px]",
+          "md:w-[120px] lg:w-[140px]"
+        )}
+      >
+        {thumbnailSlots.map((productImage, idx) =>
+          isLoading ? (
+            <Skeleton
+              key={idx}
+              className="flex-1 w-full rounded-xl bg-slate-300"
+            />
+          ) : productImage.length > 0 ? (
             <div
-              className="h-full cursor-pointer rounded-xl border-2 border-transparent hover:border-500 transition-colors"
               key={productImage}
+              className={cn(
+                "flex-1 cursor-pointer rounded-xl border-2 transition-colors overflow-hidden",
+                selectedImage === productImage
+                  ? "border-yellow-500"
+                  : "border-transparent hover:border-yellow-500"
+              )}
               onClick={() => handleSelectImage(productImage)}
             >
               <img
@@ -62,9 +73,12 @@ function ProductImages() {
               />
             </div>
           ) : (
-            <Fragment key={productImage}></Fragment>
-          );
-        })}
+            <Skeleton
+              key={`skeleton-${idx}`}
+              className="flex-1 w-full rounded-xl bg-slate-100"
+            />
+          )
+        )}
       </div>
     </div>
   );

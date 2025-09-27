@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 
-export function formatDate(raw: string, showTime: boolean = false) {
+export function formatDate(raw: string | undefined, showTime: boolean = false) {
+  if (!raw) return;
   const parsed = new Date(raw);
   return isNaN(parsed.getTime())
     ? raw

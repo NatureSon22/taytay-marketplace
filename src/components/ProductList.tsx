@@ -7,6 +7,7 @@ type ProductListProps = {
   columns?: number;
   isLoading?: boolean;
   fill_rows?: number;
+  onProductClick?: (productId: string) => void;
 };
 
 function ProductList({
@@ -14,6 +15,7 @@ function ProductList({
   columns = 4,
   isLoading = false,
   fill_rows = 2,
+  onProductClick = () => {},
 }: ProductListProps) {
   return (
     <div
@@ -40,11 +42,12 @@ function ProductList({
           ))
         : products.map((product) => (
             <ProductCard
-              key={product._id}
+              key={product.productName}
               productName={product.productName}
               productPrice={product.productPrice}
               productPictures={product.productPictures}
               isLoading={false}
+              onClick={() => onProductClick(product._id)}
             />
           ))}
     </div>

@@ -1,5 +1,6 @@
 import { getLoggedInUser } from "@/api/auth";
 import useAccountStore from "@/stores/useAccountState";
+import useStoreState from "@/stores/useStoreState";
 import { useQuery } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { type ReactNode, useEffect } from "react";
@@ -12,6 +13,7 @@ type AuthLayerProps = {
 function AuthLayer({ children }: AuthLayerProps) {
   const { sellerAccount, adminAccount, setSellerAccount, setAdminAccount } =
     useAccountStore();
+  const { setStore } = useStoreState();
 
   const hasAccount = sellerAccount || adminAccount;
 
@@ -19,18 +21,20 @@ function AuthLayer({ children }: AuthLayerProps) {
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
     refetchOnWindowFocus: false,
-    enabled: !hasAccount,
+    // enabled: !hasAccount,
   });
 
   useEffect(() => {
     if (data) {
       if (data.type === "account") {
-        setSellerAccount(data.data);
+        setSellerAccount(data.publicUser);
+        setStore(data.store);
+        console.log(data);
       } else if (data.type === "admin") {
         setAdminAccount(data.data);
       }
     }
-  }, [data, setAdminAccount, setSellerAccount]);
+  }, [data, setAdminAccount, setSellerAccount, setStore]);
 
   if (hasAccount) return children;
 

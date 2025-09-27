@@ -1,8 +1,50 @@
+import type { Product } from "@/types";
 import ComboBox from "./ComboBox";
 import ProductList from "./ProductList";
-import sampleProducts from "@/data/sampleproducts";
+import { getAllProductTypesForStore } from "@/api/productTypes";
+import formatComboBoxItem from "@/utils/formatComboBoxItem";
+import { useQueries } from "@tanstack/react-query";
+import { getAllCategoriesForStore } from "@/api/categories";
 
-const SameShopProducts = () => {
+type SameShopProducts = {
+  products?: Product[];
+  isLoading: boolean;
+  storeId?: string;
+};
+
+const SameShopProducts = ({
+  products = [],
+  isLoading,
+  storeId,
+}: SameShopProducts) => {
+  const [{ data: productCategories = [] }, { data: productTypes = [] }] =
+    useQueries({
+      queries: [
+        {
+          queryKey: ["product-categories", storeId],
+          queryFn: () => getAllCategoriesForStore(storeId!),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+          enabled: !!storeId,
+        },
+        {
+          queryKey: ["product-types", storeId],
+          queryFn: () => getAllProductTypesForStore(storeId!),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+          enabled: !!storeId,
+        },
+      ],
+    });
+
   return (
     <div className="space-y-8 @container">
       <div className="flex gap-5 flex-col justify-between @md:flex-row">
@@ -13,17 +55,33 @@ const SameShopProducts = () => {
         {/* w-[220px] */}
         <div className="flex flex-col gap-3 md:flex-row">
           <div className="w-full @md:w-[200px] @lg:w-[220px] @xl:w-[240px]">
-            <ComboBox items={[]} term="category" />
+            <ComboBox
+              items={productCategories}
+              term="category"
+              enableSearch={false}
+            />
           </div>
 
           <div className="w-full  @md:w-[200px] @lg:w-[220px] @xl:w-[240px]">
-            <ComboBox items={[]} term="apparel" />
+            <ComboBox
+              items={productTypes}
+              term="apparel"
+              enableSearch={false}
+            />
           </div>
         </div>
       </div>
 
-      <div>
-        <ProductList products={sampleProducts} columns={5} />
+      <div className="">
+        {!isLoading && products.length === 0 ? (
+          <div className="text-[1.2rem] text-center">
+            <p className="text-slate-500 font-semibold">
+              This store hasn’t added any products yet...
+            </p>
+          </div>
+        ) : (
+          <ProductList products={products} columns={4} isLoading={isLoading} />
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,45 @@
 import type { Store } from "@/types";
 import { createFetchOptions } from "./fetchOptions";
+import type { Pagination } from "@/types/pagination";
+
+export const getStores = async () => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/stores/`,
+    createFetchOptions({ method: "GET" })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    const { message } = await res.json();
+    throw new Error(message);
+  }
+
+  return body.data;
+};
+
+export const getStore = async (id: string): Promise<Store> => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/stores/${id}`,
+    createFetchOptions({ method: "GET" })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    const { message } = await res.json();
+    throw new Error(message);
+  }
+
+  return body.data;
+};
 
 export const updateStoreIcon = async (
   payload: FormData,
   id: string
 ): Promise<Store> => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/store/${id}/profile-picture`,
+    `${import.meta.env.VITE_API_URL}/stores/${id}/profile-picture`,
     createFetchOptions({ method: "PUT", body: payload, stringifyBody: false })
   );
 
@@ -24,7 +57,7 @@ export const updateStoreData = async (
   id: string
 ): Promise<Store> => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/store/${id}`,
+    `${import.meta.env.VITE_API_URL}/stores/${id}`,
     createFetchOptions({ method: "PUT", body: payload })
   );
 
@@ -37,9 +70,16 @@ export const updateStoreData = async (
   return data;
 };
 
-export const getStoreProducts = async (id: string) => {
+export const getStoreProducts = async (
+  id: string,
+  productCategory: string = "",
+  productType: string = "",
+  page: number = 1
+) => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/store/${id}/products`,
+    `${
+      import.meta.env.VITE_API_URL
+    }/stores/${id}/products?productCategory=${productCategory}&productType=${productType}&page=${page}`,
     createFetchOptions({ method: "GET" })
   );
 
@@ -49,5 +89,5 @@ export const getStoreProducts = async (id: string) => {
     throw new Error(body.message);
   }
 
-  return body.data;
+  return { products: body.data, pagination: body.pagination as Pagination };
 };

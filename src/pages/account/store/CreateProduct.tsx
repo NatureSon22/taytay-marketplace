@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,15 +23,15 @@ import { createProduct } from "@/api/products";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { ChevronLeft } from "lucide-react";
-import { getCategories } from "@/api/categories";
+import { getAllCategoriesForStore } from "@/api/categories";
 import useStoreState from "@/stores/useStoreState";
 import formatComboBoxItem from "@/utils/formatComboBoxItem";
-import { getProductTypes } from "@/api/productTypes";
+import { getAllProductTypesForStore } from "@/api/productTypes";
 
 const formSchema = z.object({
   productName: z.string().min(1, { message: "Product name is required" }),
   productPrice: z.preprocess(
-    (val) => (typeof val === "string" ? Number(val) : val),
+    (val) => (val !== "" ? Number(val) : undefined),
     z.number().min(1, { message: "Product price is required" })
   ),
   productDescription: z
@@ -89,7 +89,7 @@ function CreateProduct() {
       queries: [
         {
           queryKey: ["product-categories", store?._id],
-          queryFn: () => getCategories(store!._id),
+          queryFn: () => getAllCategoriesForStore(store!._id),
           select: (data) =>
             formatComboBoxItem(
               data as Record<string, unknown>[],
@@ -100,7 +100,7 @@ function CreateProduct() {
         },
         {
           queryKey: ["product-types", store?._id],
-          queryFn: () => getProductTypes(store!._id),
+          queryFn: () => getAllProductTypesForStore(store!._id),
           select: (data) =>
             formatComboBoxItem(
               data as Record<string, unknown>[],

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { FaArchive } from "react-icons/fa";
-import Pagination from "@/components/ui/Pagination";
+import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useProductTypes } from "@/hooks/useProductTypes";
 import { toast } from "sonner";
@@ -18,8 +18,14 @@ const ITEMS_PER_PAGE = 6;
 
 function TypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { data = [], isLoading, isError, error, archiveProductTypes, isArchiving } =
-    useProductTypes();
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+    archiveProductTypes,
+    isArchiving,
+  } = useProductTypes();
 
   const handleArchiveType = (typeId: string) => {
     archiveProductTypes(typeId, {
@@ -33,7 +39,7 @@ function TypeTable() {
   const currentData = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-<div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -52,7 +58,10 @@ function TypeTable() {
               </TableRow>
             ) : isError ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-red-500 py-6">
+                <TableCell
+                  colSpan={3}
+                  className="text-center text-red-500 py-6"
+                >
                   Error: {error.message}
                 </TableCell>
               </TableRow>

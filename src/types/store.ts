@@ -23,6 +23,7 @@ export type Store = {
   storeName: string;
   joinedDate: string;
   contactNumber: string;
+  noOfProducts?: number;
   email: string;
   categories: Category[];
   stallNumbers: string[];

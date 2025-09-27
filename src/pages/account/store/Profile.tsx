@@ -1,10 +1,12 @@
 import StoreProfile from "@/components/StoreProfile";
 import { Button } from "@/components/ui/button";
+import useStoreState from "@/stores/useStoreState";
 import { PencilIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { store } = useStoreState();
 
   const clickEditStore = () => {
     navigate("/account/store/edit");
@@ -20,7 +22,7 @@ const Profile = () => {
         <PencilIcon />
         Edit Store Information
       </Button>
-      <StoreProfile showExtraProps={false} />
+      <StoreProfile showExtraProps={false} store={store} />
     </div>
   );
 };

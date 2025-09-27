@@ -40,7 +40,7 @@ function AboutStore() {
     if (store?.description) {
       form.setValue("description", store.description);
     }
-  }, [store?.description, form.setValue]);
+  }, [store?.description, form]);
 
   const { mutate, isPending: isSaving } = useMutation({
     mutationFn: (payload: Partial<Store>) => {
