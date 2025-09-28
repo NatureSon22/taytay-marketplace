@@ -1,14 +1,24 @@
 import type { Product } from "@/types";
 import { createFetchOptions } from "./fetchOptions";
+import type { Pagination } from "@/types/pagination";
 
 export type CreateProductResponse = {
   data: Product;
   message: string;
 };
 
-export const getProducts = async () => {
+export const getProducts = async (
+  page: number,
+  productCategory: string = "",
+  productType: string = "",
+  sort: { field: string; order: string }[] = []
+) => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/products`,
+    `${
+      import.meta.env.VITE_API_URL
+    }/products?productCategory=${productCategory}&productType=${productType}&page=${page}&sort=${encodeURIComponent(
+      JSON.stringify(sort)
+    )}`,
     createFetchOptions({ method: "GET" })
   );
 
@@ -18,7 +28,10 @@ export const getProducts = async () => {
     throw new Error(body.message);
   }
 
-  return body.data;
+  return {
+    products: body?.data,
+    pagination: body.pagination as Pagination,
+  };
 };
 
 export const getProduct = async (id: string): Promise<Product> => {

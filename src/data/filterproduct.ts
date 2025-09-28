@@ -3,15 +3,15 @@ import type { ComboBoxItem } from "@/components/ComboBox";
 const categories: ComboBoxItem[] = [
   {
     label: "T-shirts",
-    value: "T-shirts",
+    value: "123",
   },
   {
     label: "Shorts",
-    value: "Shorts",
+    value: "234",
   },
   {
     label: "Hoodie",
-    value: "Jeans",
+    value: "456",
   },
 ];
 

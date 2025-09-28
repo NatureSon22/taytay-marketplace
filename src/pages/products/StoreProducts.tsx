@@ -2,19 +2,30 @@ import CenterLayout from "@/layouts/CenterLayout";
 import ContentGrid from "@/layouts/ContentGrid";
 import PadLayout from "@/layouts/PadLayout";
 import storeImg from "@/assets/storeImg.png";
-import { Store } from "lucide-react";
+import { RotateCcw, Store } from "lucide-react";
 import ComboBox from "@/components/ComboBox";
 import ProductList from "@/components/ProductList";
 import { getStore, getStoreProducts } from "@/api/store";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import PaginationControls from "@/components/PaginationControls";
+import { getAllCategoriesForStore } from "@/api/categories";
+import formatComboBoxItem from "@/utils/formatComboBoxItem";
+import { getAllProductTypesForStore } from "@/api/productTypes";
+import { Button } from "@/components/ui/button";
 
 type StoreProductProps = {
   storeId: string;
 };
 
 function StoreProducts({ storeId }: StoreProductProps) {
+  const [page, setPage] = useState(1);
+  const [filterCategory, setFilterCategory] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const navigate = useNavigate();
+
   const { data: store, isLoading: storeLoading } = useQuery({
     queryKey: ["store", storeId],
     queryFn: () => getStore(storeId),
@@ -22,10 +33,45 @@ function StoreProducts({ storeId }: StoreProductProps) {
   });
 
   const { data, isLoading: productsLoading } = useQuery({
-    queryKey: ["store-products", storeId],
-    queryFn: () => getStoreProducts(storeId),
+    queryKey: ["store-products", storeId, filterCategory, filterType, page],
+    queryFn: () => getStoreProducts(storeId, filterCategory, filterType, page),
     enabled: !!storeId,
   });
+
+  const [{ data: productCategories = [] }, { data: productTypes = [] }] =
+    useQueries({
+      queries: [
+        {
+          queryKey: ["product-categories", storeId],
+          queryFn: () => getAllCategoriesForStore(storeId),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+        },
+        {
+          queryKey: ["product-types", storeId],
+          queryFn: () => getAllProductTypesForStore(storeId),
+          select: (data) =>
+            formatComboBoxItem(
+              data as Record<string, unknown>[],
+              "_id",
+              "label"
+            ),
+        },
+      ],
+    });
+
+  const onProductClick = (productId: string) => {
+    navigate(`/products/${productId}`);
+  };
+
+  const resetFilter = () => {
+    setFilterCategory("");
+    setFilterType("");
+  };
 
   return (
     <PadLayout>
@@ -87,23 +133,58 @@ function StoreProducts({ storeId }: StoreProductProps) {
                   ) : (
                     <>
                       <div className="w-[220px]">
-                        <ComboBox items={[]} term="category" />
+                        <ComboBox
+                          items={productCategories}
+                          term="category"
+                          enableSearch={false}
+                          value={filterCategory}
+                          onChange={setFilterCategory}
+                        />
                       </div>
                       <div className="w-[220px]">
-                        <ComboBox items={[]} term="type" />
+                        <ComboBox
+                          items={productTypes}
+                          term="type"
+                          enableSearch={false}
+                          value={filterType}
+                          onChange={setFilterType}
+                        />
                       </div>
+
+                      <Button className="h-full" onClick={resetFilter}>
+                        <RotateCcw className="mx-1" />
+                      </Button>
                     </>
                   )}
                 </div>
               </div>
 
               {/* product grid */}
-              <div>
+              <div className="grid gap-12">
+                {!productsLoading && data?.products.length === 0 && (
+                  <div className="h-32 grid place-items-center">
+                    <p className="text-gray-500">
+                      No products match your filters. Try adjusting your search.
+                    </p>
+                  </div>
+                )}
+
                 <ProductList
                   products={data?.products || []}
                   columns={4}
                   isLoading={productsLoading}
+                  onProductClick={onProductClick}
                 />
+
+                {!productsLoading && data?.products.length > 0 && (
+                  <div className="ml-auto">
+                    <PaginationControls
+                      totalPages={data?.pagination.totalPages}
+                      page={data?.pagination.page}
+                      onPageChange={setPage}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

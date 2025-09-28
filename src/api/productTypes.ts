@@ -1,8 +1,8 @@
 import { createFetchOptions } from "./fetchOptions";
 
-export const getAllProductTypes = async (id: string) => {
+export const getAllProductTypes = async () => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/product-types/${id}`,
+    `${import.meta.env.VITE_API_URL}/product-types`,
     createFetchOptions({ method: "GET" })
   );
 

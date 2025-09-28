@@ -126,13 +126,15 @@ const Products = () => {
           />
         )}
 
-        <div className="ml-auto">
-          <PaginationControls
-            totalPages={data?.pagination.totalPages}
-            page={data?.pagination.page}
-            onPageChange={setPage}
-          />
-        </div>
+        {!isLoading && data?.products && (
+          <div className="ml-auto">
+            <PaginationControls
+              totalPages={data?.pagination.totalPages}
+              page={data?.pagination.page}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

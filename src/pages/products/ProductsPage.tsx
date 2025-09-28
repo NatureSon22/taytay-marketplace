@@ -13,6 +13,7 @@ import ProductList from "@/components/ProductList";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/api/products";
 import { useNavigate } from "react-router";
+import PaginationControls from "@/components/PaginationControls";
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -22,10 +23,23 @@ function ProductsPage() {
     sort: [],
   });
   const [openFilterBar, setOpenFilterBar] = useState(true);
+  const [page, setPage] = useState(1);
 
-  const { data: products = [], isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      "products",
+      page,
+      filterOptions.category,
+      filterOptions.apparel,
+      filterOptions.sort,
+    ],
+    queryFn: () =>
+      getProducts(
+        page,
+        filterOptions.category!,
+        filterOptions.apparel!,
+        filterOptions.sort
+      ),
   });
 
   const handleFilterOptions = (field: FilterField, value: string) => {
@@ -40,6 +54,8 @@ function ProductsPage() {
     order: SortOrder,
     disableSort = false
   ) => {
+    console.log(filterOptions);
+
     setFilterOptions((prev) => {
       const { sort } = prev;
       const existingRule = sort.find((rule) => rule.field === field);
@@ -71,6 +87,14 @@ function ProductsPage() {
     navigate(`/products/${productId}`);
   };
 
+  const resetFilter = () => {
+    setFilterOptions({
+      category: "",
+      apparel: "",
+      sort: [],
+    });
+  };
+
   return (
     <PageLayout paddingTopVariant="none">
       <PadLayout>
@@ -82,13 +106,36 @@ function ProductsPage() {
               handleSortToggle={handleSortToggle}
               openFilterBar={openFilterBar}
               handleOpenFilterBar={handleOpenFilterBar}
+              resetFilter={resetFilter}
             />
 
-            <ProductList
-              products={products}
-              isLoading={isLoading}
-              onProductClick={onProductClick}
-            />
+            <div className="grid flex-1">
+              {(filterOptions.category || filterOptions.apparel) &&
+              !isLoading &&
+              data?.products.length === 0 ? (
+                <div className="m-auto">
+                  <p className="text-gray-500 text-xl">
+                    No products match your filters. Try adjusting your search.
+                  </p>
+                </div>
+              ) : (
+                <ProductList
+                  products={data?.products || []}
+                  isLoading={isLoading}
+                  onProductClick={onProductClick}
+                />
+              )}
+
+              {!isLoading && data?.products.length > 0 && (
+                <div className="ml-auto mt-auto">
+                  <PaginationControls
+                    totalPages={data?.pagination.totalPages}
+                    page={data?.pagination.page}
+                    onPageChange={setPage}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </CenterLayout>
       </PadLayout>
