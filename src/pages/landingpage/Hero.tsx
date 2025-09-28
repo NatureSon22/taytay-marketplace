@@ -16,8 +16,8 @@ function Hero() {
   return (
     <PadLayout>
       <div className="flex-1 flex flex-col gap-10 md:flex-row overflow-hidden">
-        <div className="flex-1 px-2 flex justify-center lg:justify-end ">
-          <div className="space-y-4 max-w-[700px] lg:max-w-[780px]">
+        <div className="flex-1 px-2 flex justify-center">
+          <div className="space-y-4 px-6 max-w-[700px]">
             <img src={heroLogo} alt="Hero Logo" className="h-[100px] w-auto" />
             <h1 className="font-kenzoestic text-100 text-[2.5rem] leading-[3rem] md:text-[4rem] md:leading-[4.5rem] lg:text-[5rem] lg:leading-[5.5rem] xl:text-[6rem] xl:leading-[6.5rem]">
               connecting communities empowering local businesses
@@ -29,7 +29,7 @@ function Hero() {
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center ">
+        <div className="hidden [@media(min-width:1400px)]:flex flex-1 items-center justify-center">
           <div className="w-full flex flex-col gap-5 max-w-[500px] lg:max-w-[600px]">
             <Carousel
               plugins={[
@@ -44,19 +44,17 @@ function Hero() {
               className="w-full"
             >
               <CarouselContent>
-                {[sliderImage1, sliderImage2, sliderImage3].map(
-                  (img, index) => (
-                    <CarouselItem key={index}>
-                      <div className="relative overflow-hidden rounded-lg shadow-lg">
-                        <img
-                          src={img}
-                          alt={`Slider image ${index + 1}`}
-                          className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover"
-                        />
-                      </div>
-                    </CarouselItem>
-                  )
-                )}
+                {[sliderImage1, sliderImage2, sliderImage3].map((img, index) => (
+                  <CarouselItem key={index}>
+                    <div className="relative overflow-hidden rounded-lg shadow-lg">
+                      <img
+                        src={img}
+                        alt={`Slider image ${index + 1}`}
+                        className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
               </CarouselContent>
             </Carousel>
 

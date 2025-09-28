@@ -20,7 +20,7 @@ function ProductList({
   return (
     <div
       className={cn(
-        "w-full grid place-items-center gap-10 md:grid-cols-2 lg:grid-cols-3 xl:place-items-start",
+        "z-2 w-full grid place-items-center gap-10 md:grid-cols-2 lg:grid-cols-3 xl:place-items-start",
         columns === 4
           ? "xl:grid-cols-4"
           : columns === 3

@@ -10,7 +10,7 @@ type SideBarProps = {
 };
 
 function SideBar({ openSideBar, handleOpenSideBar }: SideBarProps) {
-  const [selectedPath, setSelectedPath] = useState("/");
+  const [selectedPath, setSelectedPath] = useState("/home");
 
   const handleSelectedPath = (path: string) => () => {
     setSelectedPath(path);
@@ -44,7 +44,7 @@ function SideBar({ openSideBar, handleOpenSideBar }: SideBarProps) {
             return (
               <Link
                 key={el.path}
-                to={el.path}  
+                to={"/"}
                 className={`font-semibold relative inline-block w-max pr-3 hover:text-100 ${
                   selectedPath === el.path ? "text-100" : ""
                 }`}
@@ -54,7 +54,7 @@ function SideBar({ openSideBar, handleOpenSideBar }: SideBarProps) {
                 <div
                   className={
                     selectedPath === el.path
-                      ? "absolute -bottom-2 left-1/2 transform w-full -translate-x-1/2 py-[3px] rounded-full bg-100"
+                      ? "absolute -bottom-2 left-1/2 transform w-full -translate-x-1/2  py-[3px] rounded-full bg-100"
                       : ""
                   }
                 ></div>

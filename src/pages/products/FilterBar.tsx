@@ -74,7 +74,21 @@ function FilterBar({
   handleOpenFilterBar,
 }: FilterBarProps) {
   return (
-    <div className="bg-white w-[65%] grid gap-5 h-min py-8 px-6 rounded-l-xl sticky top-0 ml-auto shadow-2xl sm:max-w-[270px] lg:max-w-[300px]">
+    <div className="z-10 md:block bg-white grid gap-5 h-min py-8 px-6 rounded-l-xl sticky top-0 w-[100%] sm:max-w-[100%] lg:max-w-[300px] shadow-none md:shadow-2xl">
+
+      <div className="md:hidden mb-4">
+              <Button
+                onClick={handleOpenFilterBar}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                {openFilterBar ? "Close Filters" : "Open Filters"}
+              </Button>
+            </div>
+    <div className={`${openFilterBar ? "block" : "hidden"} md:block grid gap-5 h-min py-8 px-6`}>
+      
+      
       <div className="pb-3 flex justify-between border-b-[1px] border-slate-200">
         <p className="font-bold text-[1.1rem]">Filter</p>
         <SlidersHorizontal className="h-5 text-slate-400" />
@@ -82,7 +96,7 @@ function FilterBar({
 
       {/* ComboBox filters (category, apparel) */}
       {comboBoxFilters.map(({ label, field, items }) => (
-        <div key={field} className="space-y-3">
+        <div key={field} className={`space-y-3`}>
           <p className="font-bold text-[0.95rem]">{label}</p>
           <ComboBox
             term={field}
@@ -95,7 +109,7 @@ function FilterBar({
 
       {/* Sort Sections */}
       {sortSections.map(({ label, field, options }) => (
-        <div key={field} className="space-y-4">
+        <div key={field} className="space-y-4 mt-3">
           <div className="flex items-start gap-3">
             <Checkbox
               className="border-slate-400 mt-1"
@@ -138,6 +152,7 @@ function FilterBar({
       <Button className="w-full mt-5 bg-200 text-[0.8rem] py-6 rounded-full">
         Apply Filter
       </Button>
+    </div>
     </div>
   );
 }

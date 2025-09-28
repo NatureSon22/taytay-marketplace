@@ -75,20 +75,21 @@ function ProductsPage() {
     <PageLayout paddingTopVariant="none">
       <PadLayout>
         <CenterLayout>
-          <div className="w-[87%] flex gap-10">
-            <FilterBar
-              filterOptions={filterOptions}
-              handleFilterOptions={handleFilterOptions}
-              handleSortToggle={handleSortToggle}
-              openFilterBar={openFilterBar}
-              handleOpenFilterBar={handleOpenFilterBar}
-            />
-
+          <div className="w-[87%] flex flex-col md:flex-row gap-10">
+              <FilterBar
+                filterOptions={filterOptions}
+                handleFilterOptions={handleFilterOptions}
+                handleSortToggle={handleSortToggle}
+                openFilterBar={openFilterBar}
+                handleOpenFilterBar={handleOpenFilterBar}
+            
+              />
             <ProductList
               products={products}
               isLoading={isLoading}
               onProductClick={onProductClick}
             />
+            
           </div>
         </CenterLayout>
       </PadLayout>
