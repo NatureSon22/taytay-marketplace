@@ -62,6 +62,8 @@ function FilterBar({
   handleFilterOptions,
   handleSortToggle,
   resetFilter,
+  handleOpenFilterBar,
+  openFilterBar,
 }: FilterBarProps) {
   const [comboBoxFilters, setComboBoxFilters] = useState([
     {
@@ -116,100 +118,103 @@ function FilterBar({
 
   return (
     <div className="z-10 md:block bg-white grid gap-5 h-min py-8 px-6 rounded-l-xl sticky top-0 w-[100%] sm:max-w-[100%] lg:max-w-[300px] shadow-none md:shadow-2xl">
-
       <div className="md:hidden mb-4">
-              <Button
-                onClick={handleOpenFilterBar}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <SlidersHorizontal className="h-4 w-4" />
-                {openFilterBar ? "Close Filters" : "Open Filters"}
-              </Button>
-            </div>
-    <div className={`${openFilterBar ? "block" : "hidden"} md:block grid gap-5 h-min py-8 px-6`}>
-      
-      
-      <div className="pb-3 flex justify-between border-b-[1px] border-slate-200">
-        <p className="font-bold text-[1.1rem]">Filter</p>
-        <SlidersHorizontal className="h-5 text-slate-400" />
-      </div>
-
-      {/* ComboBox filters (category, apparel) */}
-      {comboBoxFilters.map(({ label, field, items }) => (
-        <div key={field} className={`space-y-3`}>
-          <p className="font-bold text-[0.95rem]">{label}</p>
-          <ComboBox
-            term={field}
-            items={items}
-            value={filterOptions[field]}
-            onChange={(value) => handleFilterOptions(field, value)}
-            enableSearch={false}
-          />
-        </div>
-      ))}
-
-      {/* Sort Sections */}
-      {sortSections.map(({ label, field, options }) => (
-        <div key={field} className="space-y-4 mt-3">
-          <div className="flex items-start gap-3">
-            <Checkbox
-              className="border-slate-400 mt-1"
-              checked={filterOptions.sort.some((s) => s.field === field)}
-              onClick={() => {
-                const active = filterOptions.sort.find(
-                  (s) => s.field === field
-                );
-                if (active) {
-                  handleSortToggle(field, active.order, true); // disable
-                } else {
-                  handleSortToggle(field, options[0].value as SortOrder); // enable with default
-                }
-              }}
-            />
-            <p className="font-bold text-[0.95rem]">{label}</p>
-          </div>
-
-          <RadioGroup
-            value={
-              filterOptions.sort.find((s) => s.field === field)?.order ??
-              options[0].value
-            }
-            className="ml-2"
-            onValueChange={(value) =>
-              handleSortToggle(field, value as SortOrder)
-            }
-            disabled={!filterOptions.sort.some((rule) => rule.field === field)}
-          >
-            {options.map(({ value, label }, i) => {
-              const isActive = filterOptions.sort.some(
-                (rule) => rule.field === field
-              );
-              return (
-                <div key={value} className="flex items-center gap-3">
-                  <RadioGroupItem value={value} id={`${field}-${i}`} />
-                  <Label
-                    htmlFor={`${field}-${i}`}
-                    className={isActive ? "text-gray-900" : "text-gray-400"}
-                  >
-                    {label}
-                  </Label>
-                </div>
-              );
-            })}
-          </RadioGroup>
-        </div>
-      ))}
-
-      <div className="space-y-2 mt-2">
         <Button
-          className="w-full bg-200 text-[0.8rem] py-6 rounded-full"
-          onClick={resetFilter}
+          onClick={handleOpenFilterBar}
+          variant="outline"
+          className="flex items-center gap-2"
         >
-          Reset Filter
+          <SlidersHorizontal className="h-4 w-4" />
+          {openFilterBar ? "Close Filters" : "Open Filters"}
         </Button>
       </div>
-    </div>
+      <div
+        className={`${
+          openFilterBar ? "block" : "hidden"
+        } md:block grid gap-5 h-min py-8 px-6`}
+      >
+        <div className="pb-3 flex justify-between border-b-[1px] border-slate-200">
+          <p className="font-bold text-[1.1rem]">Filter</p>
+          <SlidersHorizontal className="h-5 text-slate-400" />
+        </div>
+
+        {/* ComboBox filters (category, apparel) */}
+        {comboBoxFilters.map(({ label, field, items }) => (
+          <div key={field} className={`space-y-3`}>
+            <p className="font-bold text-[0.95rem]">{label}</p>
+            <ComboBox
+              term={field}
+              items={items}
+              value={filterOptions[field]}
+              onChange={(value) => handleFilterOptions(field, value)}
+              enableSearch={false}
+            />
+          </div>
+        ))}
+
+        {/* Sort Sections */}
+        {sortSections.map(({ label, field, options }) => (
+          <div key={field} className="space-y-4 mt-3">
+            <div className="flex items-start gap-3">
+              <Checkbox
+                className="border-slate-400 mt-1"
+                checked={filterOptions.sort.some((s) => s.field === field)}
+                onClick={() => {
+                  const active = filterOptions.sort.find(
+                    (s) => s.field === field
+                  );
+                  if (active) {
+                    handleSortToggle(field, active.order, true); // disable
+                  } else {
+                    handleSortToggle(field, options[0].value as SortOrder); // enable with default
+                  }
+                }}
+              />
+              <p className="font-bold text-[0.95rem]">{label}</p>
+            </div>
+
+            <RadioGroup
+              value={
+                filterOptions.sort.find((s) => s.field === field)?.order ??
+                options[0].value
+              }
+              className="ml-2"
+              onValueChange={(value) =>
+                handleSortToggle(field, value as SortOrder)
+              }
+              disabled={
+                !filterOptions.sort.some((rule) => rule.field === field)
+              }
+            >
+              {options.map(({ value, label }, i) => {
+                const isActive = filterOptions.sort.some(
+                  (rule) => rule.field === field
+                );
+                return (
+                  <div key={value} className="flex items-center gap-3">
+                    <RadioGroupItem value={value} id={`${field}-${i}`} />
+                    <Label
+                      htmlFor={`${field}-${i}`}
+                      className={isActive ? "text-gray-900" : "text-gray-400"}
+                    >
+                      {label}
+                    </Label>
+                  </div>
+                );
+              })}
+            </RadioGroup>
+          </div>
+        ))}
+
+        <div className="space-y-2 mt-2">
+          <Button
+            className="w-full bg-200 text-[0.8rem] py-6 rounded-full"
+            onClick={resetFilter}
+          >
+            Reset Filter
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
