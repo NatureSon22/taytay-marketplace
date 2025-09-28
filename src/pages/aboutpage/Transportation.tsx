@@ -32,35 +32,43 @@ function Transportation() {
   ];
 
   return (
-    <div className="grid place-items-center gap-16">
-      <div className="flex flex-col items-center gap-8 md:flex-row lg:gap-16">
+    <div className="grid place-items-center gap-10 px-4 sm:px-6 lg:px-10">
+      {/* Transportation icons */}
+      <div className="flex flex-row flex-wrap justify-center gap-4 sm:gap-6 lg:gap-12">
         {transportations.map((item, i) => (
           <div
             key={item.label}
-            className={`flex flex-col items-center justify-center size-36 rounded-full cursor-pointer hover:shadow-2xl ${
-              i === transport
+            className={`flex flex-col items-center justify-center 
+              size-24 sm:size-28 md:size-32 lg:size-36 
+              rounded-full cursor-pointer transition hover:shadow-2xl
+              ${i === transport
                 ? "shadow-2xl border border-slate-300/50"
                 : "shadow-xl border border-slate-200/50"
-            }`}
+              }`}
             onClick={handleTransport(i)}
           >
-            <div className="size-12 grid place-items-center">
+            <div className="grid place-items-center h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12">
               <img
                 src={item.img}
                 alt={item.label}
-                className={`${
-                  i === transportations.length - 1 ? "h-8 w-14" : ""
+                className={`object-contain ${
+                  i === transportations.length - 1
+                    ? "h-5 w-8 sm:h-6 sm:w-10 md:h-8 md:w-14"
+                    : "h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10"
                 }`}
               />
             </div>
-            <p className="text-[0.9rem] font-medium">{item.label}</p>
+            <p className="text-[0.7rem] sm:text-sm md:text-base font-medium text-center">
+              {item.label}
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="border border-slate-300 rounded-2xl py-8 px-8 md:w-[55%] space-y-6">
+      {/* Content box */}
+      <div className="border border-slate-300 rounded-2xl py-6 px-4 sm:px-6 md:px-8 w-full md:w-[70%] lg:w-[55%] space-y-6">
         <div
-          className="prose max-w-none contact"
+          className="prose max-w-none contact text-sm sm:text-base"
           dangerouslySetInnerHTML={{ __html: contents[transport] }}
         />
       </div>
