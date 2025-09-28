@@ -11,13 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useState } from "react";
 import Pagination from "@/components/ui/PaginationButton";
-import {
-  useArchivedProductType,
-  useRetrieveProductType,
-} from "@/hooks/useProductTypes";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { useArchivedProductType, useRetrieveProductType } from "@/hooks/useProductTypes";
+import { toast, Toaster } from "sonner";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -37,12 +32,9 @@ function ArchivedProductTypeTable() {
   const handleRestore = async (id: string) => {
     try {
       await retrieveProductType.mutateAsync(id);
-      notifySuccess(
-        "Restored!",
-        "Product type has been successfully restored."
-      );
+      toast.success("Product type has been successfully restored.");
     } catch (err: any) {
-      notifyError("Failed!", err?.message || "Unable to restore product type.");
+      toast.error(err?.message || "Unable to restore product type.");
     }
   };
 
@@ -52,6 +44,7 @@ function ArchivedProductTypeTable() {
 
   return (
     <div className="space-y-6">
+      <Toaster position="top-right" />
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -104,8 +97,6 @@ function ArchivedProductTypeTable() {
         </div>
       )}
 
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar />
     </div>
   );
 }

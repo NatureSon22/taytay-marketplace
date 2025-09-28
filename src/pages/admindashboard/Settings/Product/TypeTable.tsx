@@ -12,6 +12,7 @@ import { FaArchive } from "react-icons/fa";
 import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useProductTypes } from "@/hooks/useProductTypes";
+import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -25,6 +26,13 @@ function TypeTable() {
     archiveProductTypes,
     isArchiving,
   } = useProductTypes();
+
+  const handleArchiveType = (typeId: string) => {
+    archiveProductTypes(typeId, {
+      onSuccess: () => toast.success("Product type archived successfully!"),
+      onError: (err: any) => toast.error(err?.message || "Failed to archive product type"),
+    });
+  };
 
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -73,7 +81,7 @@ function TypeTable() {
                       size="sm"
                       variant="outline"
                       className="text-100 !border-100 border rounded-full w-10 h-10"
-                      onClick={() => archiveProductTypes(productType.id)}
+                      onClick={() => handleArchiveType(productType.id)}
                       disabled={isArchiving}
                     >
                       <FaArchive className="text-100" />

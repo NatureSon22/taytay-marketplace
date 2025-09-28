@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { notifyError, notifySuccess } from "@/utils/toast.tsx";
 import {
   Select,
   SelectTrigger,
@@ -12,8 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useCreateAdmin } from "@/hooks/useCreateAdmin";
 import AdminTable from "../../Reports/AdminTable";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, Toaster } from "sonner";
 
 function AdminSettingForm() {
   const [formData, setFormData] = useState({
@@ -36,7 +34,7 @@ function AdminSettingForm() {
     });
   };
 
-  const { mutate: createAdmin, status, error } = useCreateAdmin(resetForm);
+  const { mutate: createAdmin, status } = useCreateAdmin(resetForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -48,7 +46,7 @@ function AdminSettingForm() {
 
   const handleSubmit = () => {
     if (formData.role === "") {
-      notifyError("Warning", "Please select a role");
+      toast.error("Please select a role");
       return;
     }
 
@@ -64,10 +62,10 @@ function AdminSettingForm() {
       {
         onSuccess: () => {
           resetForm();
-          notifySuccess("Success", "Admin added successfully!");
+          toast.success("Admin added successfully!");
         },
         onError: (err: any) => {
-          notifyError("Error", err?.message || "Something went wrong!");
+          toast.error(err?.message || "Something went wrong!");
         },
       }
     );
@@ -77,7 +75,7 @@ function AdminSettingForm() {
 
   return (
     <div className="max-w-full space-y-8">
-      {/* Form Fields */}
+      <Toaster position="top-right" />
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Account Information</h3>
         <div className="flex gap-4">
@@ -189,8 +187,6 @@ function AdminSettingForm() {
         <AdminTable />
       </div>
 
-      {/* Toast Container */}
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
   );
 }

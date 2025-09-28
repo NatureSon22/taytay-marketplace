@@ -99,7 +99,7 @@ function ProductsPage() {
     <PageLayout paddingTopVariant="none">
       <PadLayout>
         <CenterLayout>
-          <div className="w-[87%] flex gap-10">
+          <div className="w-[87%] flex flex-col md:flex-row gap-10">
             <FilterBar
               filterOptions={filterOptions}
               handleFilterOptions={handleFilterOptions}

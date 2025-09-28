@@ -4,9 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IoMdAdd } from "react-icons/io";
 import { useCreateLink } from "@/hooks/useLinks";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { toast, Toaster } from "sonner";
 
 function LinkTypeSettingForm() {
   const [id, setId] = useState("");
@@ -38,7 +36,7 @@ function LinkTypeSettingForm() {
 
   const handleSubmit = () => {
     if (!id || !label) {
-      notifyError("Validation Error", "Both ID and Label are required.");
+      toast.error("Both ID and Label are required.");
       return;
     }
 
@@ -51,17 +49,18 @@ function LinkTypeSettingForm() {
 
     createLink(formData, {
       onSuccess: () => {
-        notifySuccess("Link Added", "The link type was successfully added.");
+        toast.success("The link type was successfully added.");
         handleCancel();
       },
       onError: (err: any) => {
-        notifyError("Failed to Add", err?.message || "Something went wrong.");
+        toast.error(err?.message || "Something went wrong.");
       },
     });
   };
 
   return (
     <div className="max-w-full space-y-8">
+      <Toaster position="top-right" />
       <div className="w-full flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-medium text-100">Link Type</h3>
         <div className="flex gap-6">
@@ -134,9 +133,6 @@ function LinkTypeSettingForm() {
           {isPending ? "Adding..." : "Add Link"}
         </Button>
       </div>
-
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar/>
     </div>
   );
 }

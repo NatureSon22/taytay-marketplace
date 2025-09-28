@@ -11,13 +11,8 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useState } from "react";
 import Pagination from "@/components/ui/PaginationButton";
-import {
-  useArchivedCategories,
-  useRetrieveCategory,
-} from "@/hooks/useCategories";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { useArchivedCategories, useRetrieveCategory } from "@/hooks/useCategories";
+import { toast, Toaster } from "sonner";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -36,9 +31,9 @@ function ArchivedCategoriesTable() {
   const handleRetrieve = async (id: string) => {
     try {
       await retrieveCategory.mutateAsync(id);
-      notifySuccess("Restored!", "Category has been successfully restored.");
+      toast.success("Category has been successfully restored.");
     } catch (err: any) {
-      notifyError("Failed!", err?.message || "Unable to restore category.");
+      toast.error(err?.message || "Unable to restore category.");
     }
   };
 
@@ -48,6 +43,7 @@ function ArchivedCategoriesTable() {
 
   return (
     <div className="space-y-6">
+      <Toaster position="top-right" />
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -100,8 +96,6 @@ function ArchivedCategoriesTable() {
         </div>
       )}
 
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar />
     </div>
   );
 }

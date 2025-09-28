@@ -5,6 +5,7 @@ import {
   updateSellerStatus,
   type Seller,
 } from "@/services/seller";
+import { toast } from "sonner";
 
 export function useSellers(enabled: boolean, searchTerm?: string) {
   const queryClient = useQueryClient();
@@ -35,23 +36,28 @@ export function useSellers(enabled: boolean, searchTerm?: string) {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
 
-  const { mutate: updateStatus, isPending: isUpdatingStatus } = useMutation({
-    mutationFn: ({
-      _id,
-      status,
-    }: {
-      _id: string;
-      status: "Pending" | "Verified" | "Blocked";
-    }) => updateSellerStatus(_id, status), // service fn
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["sellers"] }),
-  });
+const { mutate: updateStatus, isPending: isUpdatingStatus } = useMutation({
+  mutationFn: ({
+    _id,
+    status,
+  }: {
+    _id: string;
+    status: "Pending" | "Verified" | "Blocked";
+  }) => updateSellerStatus(_id, status),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["sellers"] });
+    toast.success("Seller status updated successfully");
+  },
+  onError: (err: any) => {
+    toast.error(err?.message || "Failed to update seller status");
+  },
+});
 
   return {
     sellers: paginated,
     isLoading,
-    updateStatus,        // use in <UserStatusSelect>
-    isUpdatingStatus,    // loading state
+    updateStatus,
+    isUpdatingStatus,
     currentPage,
     totalPages,
     setCurrentPage,

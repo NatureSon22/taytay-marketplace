@@ -11,13 +11,8 @@ import {
 import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { IoReturnUpBack } from "react-icons/io5";
-import {
-  useArchivedLinks,
-  useRestoreArchivedLink,
-} from "@/hooks/useArchivedLinks";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { notifySuccess, notifyError } from "@/utils/toast";
+import { useArchivedLinks, useRestoreArchivedLink } from "@/hooks/useArchivedLinks";
+import { toast, Toaster } from "sonner";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -36,9 +31,9 @@ function ArchivedLinkTypeTable() {
   const handleRestore = async (id: string) => {
     try {
       await restoreLink.mutateAsync(id);
-      notifySuccess("Restored!", "Link type has been successfully restored.");
+      toast.success("Link type has been successfully restored.");
     } catch (err: any) {
-      notifyError("Failed!", err?.message || "Unable to restore link type.");
+      toast.error(err?.message || "Unable to restore link type.");
     }
   };
 
@@ -52,6 +47,7 @@ function ArchivedLinkTypeTable() {
 
   return (
     <div className="flex flex-col gap-4">
+      <Toaster position="top-right" />
       <ScrollArea className="w-full rounded-[20px] border">
         <Table>
           <TableHeader>
@@ -108,9 +104,6 @@ function ArchivedLinkTypeTable() {
           />
         </div>
       )}
-
-      {/* Toast Container */}
-      <ToastContainer hideProgressBar />
     </div>
   );
 }

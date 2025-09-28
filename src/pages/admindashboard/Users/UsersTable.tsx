@@ -22,9 +22,10 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { UserStatusSelect } from "@/components/UserStatusSelect";
 import PermitModal from "@/components/PermitModal";
 import type { Administrator } from "@/services/admin";
-import type { Seller } from "@/services/seller"; // ✅ real seller type
+import type { Seller } from "@/services/seller"; 
 import { useAdmins } from "@/hooks/useAdmins";
-import { useSellers } from "@/hooks/useSellers"; // ✅ real seller hook
+import { useSellers } from "@/hooks/useSellers"; 
+import { Toaster } from "sonner";
 
 function UsersTable() {
   const [userType, setUserType] = useState<"Seller" | "Administrator">("Seller");
@@ -62,6 +63,7 @@ const {
 
   return (
     <div className="bg-white border rounded-xl p-6 shadow-sm">
+      <Toaster position="top-right" />
       {/* Search + Filter */}
       <div className="flex justify-between items-center mb-4 gap-2">
         <div className="relative w-full">

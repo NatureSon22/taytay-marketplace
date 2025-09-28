@@ -12,13 +12,22 @@ import { FaArchive } from "react-icons/fa";
 import Pagination from "@/components/ui/PaginationButton";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useLinks, useArchiveLink } from "@/hooks/useLinks";
+import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 4;
 
 function LinkTypeTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: links = [], isLoading } = useLinks();
-  const archiveLink = useArchiveLink();
+  
+  const { mutate: archiveLink, isPending: isArchiving } = useArchiveLink();
+
+  const handleArchiveLink = (linkId: string) => {
+    archiveLink(linkId, {
+      onSuccess: () => toast.success("Link archived successfully!"),
+      onError: (err: any) => toast.error(err?.message || "Failed to archive link"),
+    });
+  };
 
   const totalPages = Math.ceil(links.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -58,7 +67,7 @@ function LinkTypeTable() {
                       size="sm"
                       variant="outline"
                       className="text-100 !border-100 border rounded-full w-10 h-10"
-                      onClick={() => archiveLink.mutate(link.id)}
+                      onClick={() => handleArchiveLink(link.id)}
                     >
                       <FaArchive className="text-100" />
                     </Button>
