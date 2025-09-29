@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination.tsx";
+} from "@/components/ui/pagination.js";
 import { cn } from "@/lib/utils";
 
 type PaginationControlsProps = {
