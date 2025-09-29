@@ -6,7 +6,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination.js";
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 
 type PaginationControlsProps = {
