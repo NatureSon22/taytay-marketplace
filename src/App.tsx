@@ -31,6 +31,7 @@ import ManageStore from "./pages/account/store/ManageStore";
 import CreateProduct from "./pages/account/store/CreateProduct";
 import Login from "./pages/auth/login/Login";
 import StoreInfo from "./pages/account/store/ManageStoreInfo";
+import PageNotFound from "./pages/PageNotFound";
 
 const router = createBrowserRouter([
   {
@@ -104,6 +105,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <PageNotFound />,
   },
 ]);
 

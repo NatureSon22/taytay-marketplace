@@ -100,20 +100,20 @@ function CredentialsForm({
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full border">
                 <FormLabel>Password</FormLabel>
 
-                <div className="flex gap-2">
-                  <FormControl>
+                <div className="flex gap-2 w-full items-center">
+                  <FormControl className="flex-1">
                     <Input
+                      className="w-full"
                       type={showPassword ? "text" : "password"}
                       {...field}
                     />
                   </FormControl>
 
                   <Button
-                    className="cursor-pointer"
-                    variant={"secondary"}
+                    variant="secondary"
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                   >

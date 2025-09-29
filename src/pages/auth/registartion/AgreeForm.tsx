@@ -1,3 +1,4 @@
+import { useState } from "react";
 import StyledText from "@/components/StyledText";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,6 +11,8 @@ type AgreeFormProps = {
 };
 
 function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
+  const [agreed, setAgreed] = useState(false);
+
   return (
     <div className="max-w-[500px] mx-auto shadow-100 py-9 px-7 rounded-xl md:py-14 md:px-12">
       <div className="grid gap-5">
@@ -32,7 +35,11 @@ function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
         </p>
 
         <div className="flex gap-4 items-start">
-          <Checkbox className="border-slate-400 mt-1" />
+          <Checkbox
+            className="border-slate-400 mt-1"
+            checked={agreed}
+            onCheckedChange={(checked) => setAgreed(!!checked)}
+          />
           <p>
             By checking this box, I acknowledge and agree to the above statement
           </p>
@@ -50,8 +57,9 @@ function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
 
           <Button
             className="cursor-pointer bg-100 text-white"
-            type="submit"
+            type="button"
             onClick={registerAccount}
+            disabled={!agreed}
           >
             Submit
           </Button>

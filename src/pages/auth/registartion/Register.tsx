@@ -45,6 +45,10 @@ function Register() {
     }
 
     registerMutation.mutate(formData);
+
+    if (registerMutation.isSuccess) {
+      goToNextStep();
+    }
   };
 
   const updateRegistrationData = (data: Partial<RegistrationData>) => {

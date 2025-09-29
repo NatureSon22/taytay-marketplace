@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 
 const FINAL_STEP = 5;
 
 export function useRegistrationFlow() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(4);
 
   const goToNextStep = () => {
     setStep((prev) => {
       const updatedStep = prev + 1;
 
-      if (updatedStep == FINAL_STEP) {
-        navigate("/thank-you");
-      }
+      // if (updatedStep == FINAL_STEP) {
+      //   navigate("/thank-you");
+      // }
 
       return updatedStep;
     });
