@@ -44,22 +44,24 @@ function Hero() {
               className="w-full"
             >
               <CarouselContent>
-                {[sliderImage1, sliderImage2, sliderImage3].map((img, index) => (
-                  <CarouselItem key={index}>
-                    <div className="relative overflow-hidden rounded-lg shadow-lg">
-                      <img
-                        src={img}
-                        alt={`Slider image ${index + 1}`}
-                        className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover"
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
+                {[sliderImage1, sliderImage2, sliderImage3].map(
+                  (img, index) => (
+                    <CarouselItem key={index}>
+                      <div className="relative overflow-hidden rounded-lg shadow-lg">
+                        <img
+                          src={img}
+                          alt={`Slider image ${index + 1}`}
+                          className="w-full h-[300px] md:h-[400px] lg:h-[500px] object-cover"
+                        />
+                      </div>
+                    </CarouselItem>
+                  )
+                )}
               </CarouselContent>
             </Carousel>
 
             <Link
-              to="/"
+              to="/products"
               className="ml-auto flex gap-3 font-medium text-100 px-3 md:px-0"
             >
               <span>See All Products</span>

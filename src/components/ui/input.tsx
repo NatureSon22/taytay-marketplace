@@ -14,7 +14,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
   return (
     <div
       className={cn(
-        "relative flex items-center gap-1",
+        "relative flex items-center gap-1 w-full",
         className && typeof className === "string" ? "" : ""
       )}
     >

@@ -6,12 +6,8 @@ const storeFilters: ComboBoxItem[] = [
     value: "newest",
   },
   {
-    label: "Most Popular",
-    value: "most-popular",
-  },
-  {
-    label: "Top Rated",
-    value: "top-rated",
+    label: "Most Visited",
+    value: "most-visited",
   },
 ];
 

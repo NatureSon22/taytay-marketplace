@@ -1,5 +1,12 @@
 import { Skeleton } from "./ui/skeleton";
 import clsx from "clsx";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { MoreVertical, Edit, Trash } from "lucide-react";
 
 type ProductCardProps = {
   productName: string;
@@ -7,6 +14,9 @@ type ProductCardProps = {
   productPictures: string[];
   isLoading: boolean;
   onClick?: () => void;
+  editable?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 function ProductCard({
@@ -15,6 +25,9 @@ function ProductCard({
   productPictures,
   isLoading,
   onClick = () => {},
+  editable = false,
+  onEdit = () => {},
+  onDelete = () => {},
 }: ProductCardProps) {
   return (
     <div
@@ -25,6 +38,44 @@ function ProductCard({
       )}
       onClick={onClick}
     >
+      {/* Popover for Edit/Delete */}
+      {editable && !isLoading && (
+        <div className="absolute top-3 right-3 z-10">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full hover:bg-gray-100"
+                onClick={(e) => e.stopPropagation()} // prevent triggering card click
+              >
+                <MoreVertical className="h-5 w-5 text-gray-600" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-40 p-2 flex flex-col gap-2"
+              align="end"
+              onClick={(e) => e.stopPropagation()} // stop bubbling to card
+            >
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 justify-start"
+                onClick={onEdit}
+              >
+                <Edit className="h-4 w-4" /> Edit
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 justify-start text-red-500 hover:text-red-600"
+                onClick={onDelete}
+              >
+                <Trash className="h-4 w-4" /> Delete
+              </Button>
+            </PopoverContent>
+          </Popover>
+        </div>
+      )}
+
       {/* Image Container */}
       <div className="relative h-[280px] w-full overflow-hidden bg-gray-50">
         {isLoading ? (
@@ -63,7 +114,7 @@ function ProductCard({
               <Skeleton className="w-[5rem] py-2 bg-slate-300 mb-2" />
             ) : (
               <p className="text-[1.1rem] font-bold transition-colors duration-200">
-                ₱{productPrice.toLocaleString()}
+                ₱{Number(productPrice).toLocaleString()}
               </p>
             )}
           </div>

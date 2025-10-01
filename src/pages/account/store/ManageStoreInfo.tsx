@@ -11,8 +11,8 @@ function ManageStoreInfo() {
       <StoreIcon />
       <AboutStore />
       <StoreDetails />
-      <Categories />
-      <Types />
+      {/* <Categories />
+      <Types /> */}
       <LinkedAccounts />
     </div>
   );

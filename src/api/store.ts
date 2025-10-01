@@ -2,20 +2,25 @@ import type { Store } from "@/types";
 import { createFetchOptions } from "./fetchOptions";
 import type { Pagination } from "@/types/pagination";
 
-export const getStores = async () => {
+export const getStores = async (
+  storeName: string = "",
+  page: number = 1,
+  sort: string = ""
+) => {
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL}/stores/`,
+    `${
+      import.meta.env.VITE_API_URL
+    }/stores?storeName=${storeName}&page=${page}&sort=${sort}`,
     createFetchOptions({ method: "GET" })
   );
 
   const body = await res.json();
 
   if (!res.ok) {
-    const { message } = await res.json();
-    throw new Error(message);
+    throw new Error(body.message || "Failed to fetch stores");
   }
 
-  return body.data;
+  return body;
 };
 
 export const getStore = async (id: string): Promise<Store> => {

@@ -20,7 +20,7 @@ function StoreCard({
       className={`group relative w-full max-w-[300px] border border-slate-200/80 grid place-items-center gap-7 px-4 py-12 rounded-xl ${
         isLoading
           ? "cursor-default"
-          : "cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:border-slate-200 hover:shadow-xs"
+          : "cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:-translate-y-2 hover:border-slate-200 hover:shadow-xsz"
       }`}
       onClick={onClick}
     >

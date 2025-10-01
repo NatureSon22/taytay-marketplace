@@ -12,17 +12,19 @@ import type {
 import ProductList from "@/components/ProductList";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/api/products";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import PaginationControls from "@/components/PaginationControls";
 
 function ProductsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [filterOptions, setFilterOptions] = useState<ProductFilterSettings>({
-    category: "",
+    category: location.state?.categoryId || "",
     apparel: "",
     sort: [],
   });
-  const [openFilterBar, setOpenFilterBar] = useState(true);
+  const [openFilterBar, setOpenFilterBar] = useState(false);
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useQuery({

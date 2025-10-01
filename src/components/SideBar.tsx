@@ -1,8 +1,13 @@
 import navLabels from "@/data/navigation";
 import { Button } from "./ui/button";
-import { Menu } from "lucide-react";
-import { Link } from "react-router";
+import { LoaderCircle, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import { useState } from "react";
+import useAccountStore from "@/stores/useAccountState";
+import { useMutation } from "@tanstack/react-query";
+import useStoreState from "@/stores/useStoreState";
+import { toast } from "sonner";
+import { logout } from "@/api/auth";
 
 type SideBarProps = {
   openSideBar: boolean;
@@ -11,9 +16,27 @@ type SideBarProps = {
 
 function SideBar({ openSideBar, handleOpenSideBar }: SideBarProps) {
   const [selectedPath, setSelectedPath] = useState("/home");
+  const { sellerAccount, resetSellerAccount } = useAccountStore();
+  const { resetStore } = useStoreState();
+  const navigate = useNavigate();
 
-  const handleSelectedPath = (path: string) => () => {
-    setSelectedPath(path);
+  const { mutate, isPending } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      resetSellerAccount();
+      resetStore();
+      navigate("/");
+    },
+    onError: () => {
+      toast.error("Something went wrong. Please try again");
+    },
+    onSettled: () => {
+      handleOpenSideBar();
+    },
+  });
+
+  const clickLogout = () => {
+    mutate();
   };
 
   return (
@@ -39,28 +62,61 @@ function SideBar({ openSideBar, handleOpenSideBar }: SideBarProps) {
           <Menu />
         </Button>
 
-        <div className="grid gap-9">
-          {navLabels.map((el) => {
-            return (
+        <div className="grid gap-6">
+          {navLabels.map((el) => (
+            <Link
+              key={el.path}
+              to={el.path}
+              className={`font-semibold relative inline-block w-max pr-3 hover:text-100 ${
+                selectedPath === el.path ? "text-100" : ""
+              }`}
+              onClick={() => {
+                setSelectedPath(el.path);
+                handleOpenSideBar();
+              }}
+            >
+              <p>{el.label}</p>
+              {selectedPath === el.path && (
+                <div className="absolute -bottom-2 left-1/2 transform w-full -translate-x-1/2 py-[3px] rounded-full bg-100"></div>
+              )}
+            </Link>
+          ))}
+
+          {sellerAccount && (
+            <>
               <Link
-                key={el.path}
-                to={"/"}
-                className={`font-semibold relative inline-block w-max pr-3 hover:text-100 ${
-                  selectedPath === el.path ? "text-100" : ""
-                }`}
-                onClick={handleSelectedPath(el.path)}
+                to="/account/manage"
+                className="font-semibold relative inline-block w-max pr-3 hover:text-100"
+                onClick={handleOpenSideBar}
               >
-                <p>{el.label}</p>
-                <div
-                  className={
-                    selectedPath === el.path
-                      ? "absolute -bottom-2 left-1/2 transform w-full -translate-x-1/2  py-[3px] rounded-full bg-100"
-                      : ""
-                  }
-                ></div>
+                Manage Account
               </Link>
-            );
-          })}
+
+              <Link
+                to="/account/store"
+                className="font-semibold relative inline-block w-max pr-3 hover:text-100"
+                onClick={handleOpenSideBar}
+              >
+                Manage Store
+              </Link>
+
+              {/* ✅ Only the logout stays as a button */}
+              <Button
+                onClick={clickLogout}
+                variant="destructive"
+                className="mt-4 py-6"
+              >
+                {isPending ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <LoaderCircle className="animate-spin" />
+                    <p className="text-gray-400">Logging out...</p>
+                  </div>
+                ) : (
+                  "Logout"
+                )}
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

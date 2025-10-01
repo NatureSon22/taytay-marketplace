@@ -9,7 +9,7 @@ export type CreateProductResponse = {
 };
 
 export const getProducts = async (
-  page: number,
+  page: number = 1,
   productCategory: string = "",
   productType: string = "",
   sort: { field: string; order: string }[] = []

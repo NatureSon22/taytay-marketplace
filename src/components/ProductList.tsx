@@ -8,6 +8,7 @@ type ProductListProps = {
   isLoading?: boolean;
   fill_rows?: number;
   onProductClick?: (productId: string) => void;
+  editable?: boolean;
 };
 
 function ProductList({
@@ -16,6 +17,7 @@ function ProductList({
   isLoading = false,
   fill_rows = 2,
   onProductClick = () => {},
+  editable = false,
 }: ProductListProps) {
   return (
     <div
@@ -48,6 +50,7 @@ function ProductList({
               productPictures={product.productPictures}
               isLoading={false}
               onClick={() => onProductClick(product._id)}
+              editable={editable}
             />
           ))}
     </div>
