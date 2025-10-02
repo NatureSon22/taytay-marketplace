@@ -100,7 +100,7 @@ function CredentialsForm({
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="w-full border">
+              <FormItem className="w-full">
                 <FormLabel>Password</FormLabel>
 
                 <div className="flex gap-2 w-full items-center">

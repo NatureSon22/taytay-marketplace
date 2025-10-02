@@ -17,6 +17,7 @@ type FormWrapperProps = {
   goToPreviousStep: () => void;
   updateRegistrationData: (data: Partial<RegistrationData>) => void;
   registerAccount: () => void;
+  loading: boolean;
 };
 
 function FormWrapper({
@@ -26,6 +27,7 @@ function FormWrapper({
   goToPreviousStep,
   updateRegistrationData,
   registerAccount,
+  loading,
 }: FormWrapperProps) {
   const navigate = useNavigate();
 
@@ -71,6 +73,7 @@ function FormWrapper({
               goToNextStep={goToNextStep}
               goToPreviousStep={goToPreviousStep}
               registerAccount={registerAccount}
+              loading={loading}
             />
           )}
           {step === 4 && <RegistrationSuccess />}

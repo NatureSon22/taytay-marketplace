@@ -21,5 +21,9 @@ export function useRegistrationFlow() {
     setStep((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
-  return { step, goToNextStep, goToPreviousStep };
+  const reset = () => {
+    setStep(0);
+  };
+
+  return { step, goToNextStep, goToPreviousStep, reset };
 }

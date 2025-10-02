@@ -3,14 +3,20 @@ import StyledText from "@/components/StyledText";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router";
+import { LoaderCircle } from "lucide-react";
 
 type AgreeFormProps = {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   registerAccount: () => void;
+  loading: boolean;
 };
 
-function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
+function AgreeForm({
+  goToPreviousStep,
+  registerAccount,
+  loading,
+}: AgreeFormProps) {
   const [agreed, setAgreed] = useState(false);
 
   return (
@@ -51,6 +57,7 @@ function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
             variant={"ghost"}
             type="button"
             onClick={goToPreviousStep}
+            disabled={loading}
           >
             Back
           </Button>
@@ -59,9 +66,16 @@ function AgreeForm({ goToPreviousStep, registerAccount }: AgreeFormProps) {
             className="cursor-pointer bg-100 text-white"
             type="button"
             onClick={registerAccount}
-            disabled={!agreed}
+            disabled={!agreed || loading}
           >
-            Submit
+            {loading ? (
+              <>
+                <LoaderCircle className="animate-spin" />
+                <p>Submitting...</p>
+              </>
+            ) : (
+              <>Submit</>
+            )}
           </Button>
         </div>
       </div>

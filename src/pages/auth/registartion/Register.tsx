@@ -5,15 +5,30 @@ import { useState } from "react";
 import FormWrapper from "./FormWrapper";
 import type { RegistrationData } from "@/types/registration";
 import { useRegistrationFlow } from "@/hooks/useRegistrationFlow";
-import { useRegister } from "@/hooks/useRegister";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "@/api/auth";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 function Register() {
-  const { step, goToNextStep, goToPreviousStep } = useRegistrationFlow();
+  const { step, goToNextStep, goToPreviousStep, reset } = useRegistrationFlow();
   const [registrationData, setRegistrationData] = useState<RegistrationData>(
     {} as RegistrationData
   );
+  const navigate = useNavigate();
 
-  const registerMutation = useRegister();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: FormData) => register(data),
+    onSuccess: () => {
+      goToNextStep();
+    },
+    onError: () => {
+      toast.error("Something went wrong!");
+      setRegistrationData({} as RegistrationData);
+      reset();
+      navigate("/register");
+    },
+  });
 
   const registerAccount = () => {
     const formData = new FormData();
@@ -44,11 +59,7 @@ function Register() {
       formData.append("permit", registrationData.permit);
     }
 
-    registerMutation.mutate(formData);
-
-    if (registerMutation.isSuccess) {
-      goToNextStep();
-    }
+    mutate(formData);
   };
 
   const updateRegistrationData = (data: Partial<RegistrationData>) => {
@@ -67,6 +78,7 @@ function Register() {
             goToPreviousStep={goToPreviousStep}
             updateRegistrationData={updateRegistrationData}
             registerAccount={registerAccount}
+            loading={ isPending}
           />
         </div>
       </CenterLayout>
