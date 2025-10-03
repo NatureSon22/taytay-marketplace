@@ -7,7 +7,9 @@ export function useReports() {
   return useQuery<Admin[]>({
     queryKey: ["admins"],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/admins`);
+      const res = await fetch(`${API_URL}/admins`, {
+        credentials: "include",
+      });
       if (!res.ok) {
         throw new Error("Failed to fetch admins");
       }

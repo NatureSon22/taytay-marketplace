@@ -186,6 +186,7 @@ function AccountInfoForm() {
                 onChange={handleChange}
                 placeholder={adminAccount?.email || ""}
                 type="email"
+                disabled
               />
             </div>
 
