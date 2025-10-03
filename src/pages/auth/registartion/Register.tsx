@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 function Register() {
-  const { step, goToNextStep, goToPreviousStep, reset } = useRegistrationFlow();
+  const { step, goToNextStep, goToPreviousStep } = useRegistrationFlow();
   const [registrationData, setRegistrationData] = useState<RegistrationData>(
     {} as RegistrationData
   );
@@ -21,11 +21,10 @@ function Register() {
     mutationFn: (data: FormData) => register(data),
     onSuccess: () => {
       goToNextStep();
+      setRegistrationData({} as RegistrationData);
     },
     onError: (error) => {
       toast.error(error.message);
-      setRegistrationData({} as RegistrationData);
-      reset();
       navigate("/register");
     },
   });
@@ -55,6 +54,7 @@ function Register() {
     registrationData.stallNumbers.forEach((stall) => {
       formData.append("stallNumbers[]", stall); // repeated key for arrays
     });
+
     if (registrationData.permit) {
       formData.append("permit", registrationData.permit);
     }

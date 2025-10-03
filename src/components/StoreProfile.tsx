@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import parse from "html-react-parser";
 import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
 
 type StoreProfileProps = {
   store?: Store | null;
@@ -135,13 +136,18 @@ const StoreProfile = ({
 
       {showExtraProps && (
         <div className="flex flex-col gap-7 lg:flex-row xl:gap-14">
-          <div className="text-justify leading-6 lg:w-[75%] xl:w-[65%]">
+          <div
+            className={cn(
+              "text-justify leading-6 lg:w-[75%] xl:w-[65%]",
+              store?.description ? "" : "text-slate-500"
+            )}
+          >
             {isLoading ? (
               <Skeleton className="h-32 w-full bg-slate-300" />
             ) : (
               parse(
-                (store?.description ??
-                  storeDetailsPlaceholder.description) as string
+                store?.description ??
+                  "This store hasn’t added a description yet. Stay tuned!"
               )
             )}
           </div>

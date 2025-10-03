@@ -7,11 +7,11 @@ function RegistrationSuccess() {
         </p>
 
         <p>
-          Your registration has been received successfully. Please wait while we
-          review and verify your information. You will receive a confirmation
-          email once your account is approved and ready to post products. We
-          appreciate your patience and look forward to having you as part of our
-          community!
+          Your registration has been received successfully.{" "}
+          <b>Please wait while we review and verify your information.</b> You
+          will receive a <b>confirmation email</b> once your account is{" "}
+          <b>approved</b> and ready to post products. We appreciate your
+          patience and look forward to having you as part of our community!
         </p>
       </div>
     </div>
