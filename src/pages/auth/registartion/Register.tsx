@@ -22,8 +22,8 @@ function Register() {
     onSuccess: () => {
       goToNextStep();
     },
-    onError: () => {
-      toast.error("Something went wrong!");
+    onError: (error) => {
+      toast.error(error.message);
       setRegistrationData({} as RegistrationData);
       reset();
       navigate("/register");
@@ -78,7 +78,7 @@ function Register() {
             goToPreviousStep={goToPreviousStep}
             updateRegistrationData={updateRegistrationData}
             registerAccount={registerAccount}
-            loading={ isPending}
+            loading={isPending}
           />
         </div>
       </CenterLayout>
