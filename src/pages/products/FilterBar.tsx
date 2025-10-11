@@ -117,7 +117,7 @@ function FilterBar({
   }, [productCategories, productTypes]);
 
   return (
-    <div className="z-10 md:block bg-white grid gap-5 rounded-xl border border-slate-200 sticky md:top-0 w-full sm:max-w-full md:max-w-[240px] lg:max-w-[300px] shadow-none md:shadow-xl max-h-screen">
+    <div className="z-10 h-min md:block bg-white grid gap-5 rounded-xl border border-slate-200 sticky md:top-0 w-full sm:max-w-full md:max-w-[240px] lg:max-w-[300px] shadow-none md:shadow-xl max-h-screen">
       {/* Mobile toggle */}
       <div className="md:hidden mb-4 px-4 pt-4">
         <Button

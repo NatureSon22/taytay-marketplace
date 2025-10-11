@@ -28,12 +28,17 @@ import useStoreState from "@/stores/useStoreState";
 import formatComboBoxItem from "@/utils/formatComboBoxItem";
 import { getAllProductTypesForStore } from "@/api/productTypes";
 
+const link = z.object({
+  _id: z.string().optional(),
+  platform: z.string(),
+  url: z.url("Invalid url"),
+  isDeleted: z.boolean().catch(false),
+  platformName: z.string(),
+});
+
 const formSchema = z.object({
   productName: z.string().min(1, { message: "Product name is required" }),
-  productPrice: z.preprocess(
-    (val) => (val !== "" ? Number(val) : undefined),
-    z.number().min(1, { message: "Product price is required" })
-  ),
+  productPrice: z.string().nonempty("Product price is required"),
   productDescription: z
     .string()
     .min(1, { message: "Product description is required" }),
@@ -48,17 +53,11 @@ const formSchema = z.object({
     .array(z.string())
     .min(1, "At least one type is required")
     .max(5, "You can select up to 5 types"),
-  links: z
-    .array(
-      z.object({
-        platform: z.string(),
-        url: z.url("Invalid url"),
-      })
-    )
-    .optional(),
+  links: z.array(link).min(1, "At least one link is required"),
 });
 
 type FormDataType = z.infer<typeof formSchema>;
+type LinkType = z.infer<typeof link>;
 const MAX_IMAGES_COUNT = 4;
 
 function CreateProduct() {
@@ -71,16 +70,21 @@ function CreateProduct() {
   const [prevImageURL, setPrevImageURL] = useState("");
   const [isMaxImagesReached, setIsMaxImagesReached] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<SelectOption>(
+    {} as SelectOption
+  );
+  const [productLink, setProductLink] = useState("");
 
   const form = useForm<FormDataType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       productName: "",
       productDescription: "",
-      productPrice: 0,
+      productPrice: "0",
       categories: [],
       types: [],
       productPictures: [],
+      links: [],
     },
   });
 
@@ -208,7 +212,61 @@ function CreateProduct() {
     setIsMaxImagesReached(images.length > MAX_IMAGES_COUNT);
   };
 
+  const addProductLink = () => {
+    if (!productLink.trim()) return;
+
+    const productLinks = [
+      ...(form.getValues("links") || []),
+      {
+        platform: selectedAccount.id,
+        url: productLink.trim(),
+        isDeleted: false,
+        platformName: selectedAccount.label,
+      } as LinkType,
+    ];
+
+    form.setValue("links", productLinks);
+    form.trigger("links");
+    setProductLink("");
+    setSelectedAccount({} as SelectOption);
+
+    console.log(productLinks);
+  };
+
+  const editProductLink = (platform: string, value: string) => {
+    const updatedProductLinks = form
+      .getValues("links")
+      ?.map((link: LinkType) => {
+        return link.platform === platform ? { ...link, url: value } : link;
+      });
+
+    form.setValue("links", updatedProductLinks);
+  };
+
+  const removeProductLink = (platform: string) => {
+    console.log(platform);
+    const currentLinks = form.getValues("links") || [];
+
+    const updatedProductLinks = currentLinks
+      .map((link: LinkType) => {
+        // If it's a persisted link (has _id), just mark it deleted
+        if (link.platform === platform && link._id) {
+          return { ...link, isDeleted: true };
+        }
+        return link;
+      })
+      // Filter out any *new* (client-side only) links that match the platform
+      .filter((link: LinkType) => {
+        if (!link._id && link.platform === platform) return false;
+        return true;
+      });
+
+    form.setValue("links", updatedProductLinks);
+  };
+
   const onSubmit = (data: FormDataType) => {
+    console.log("send");
+
     if (!store) return;
 
     const payload = new FormData();
@@ -228,6 +286,12 @@ function CreateProduct() {
 
     data.types.map((type: string) => {
       payload.append("types[]", type);
+    });
+
+    data.links?.forEach((link, index) => {
+      payload.append(`links[${index}][platform]`, link.platform);
+      payload.append(`links[${index}][url]`, link.url);
+      payload.append(`links[${index}][isDeleted]`, String(link.isDeleted));
     });
 
     mutate(payload);
@@ -295,7 +359,7 @@ function CreateProduct() {
               <FormItem>
                 <FormLabel>Product category</FormLabel>
                 <FormControl>
-                  <div className="space-y-3">
+                  <div className="">
                     <ComboBox
                       items={productCategories}
                       term="category"
@@ -305,7 +369,12 @@ function CreateProduct() {
                       disabled={isPending}
                     />
 
-                    <div className="flex items-center flex-wrap gap-3">
+                    <div
+                      className={cn(
+                        "flex items-center flex-wrap gap-3",
+                        categories.length > 0 ? "mt-3" : ""
+                      )}
+                    >
                       {categories.map((category) => {
                         return (
                           <ListItem
@@ -346,7 +415,7 @@ function CreateProduct() {
                     <div
                       className={cn(
                         "flex items-center flex-wrap gap-3",
-                        types.length > 0 ? "mt-2" : ""
+                        types.length > 0 ? "mt-3" : ""
                       )}
                     >
                       {types.map((type) => {
@@ -415,7 +484,12 @@ function CreateProduct() {
               )}
             />
 
-            <div className="mt-3 flex flex-wrap gap-7">
+            <div
+              className={cn(
+                "flex flex-wrap gap-7",
+                images.length > 0 ? "mt-3" : ""
+              )}
+            >
               {images.map((image) => (
                 <ListItem
                   key={image.name}
@@ -426,19 +500,103 @@ function CreateProduct() {
                 />
               ))}
             </div>
+          </div>
 
-            <div className="mt-5 flex justify-end">
-              <Button className="bg-100" type="submit" disabled={isPending}>
-                {isPending ? (
-                  <>
-                    <LoaderCircle className="animate-spin" />
-                    Adding product
-                  </>
-                ) : (
-                  <p>Add product</p>
-                )}
-              </Button>
-            </div>
+          <FormField
+            control={form.control}
+            name="links"
+            render={() => (
+              <FormItem>
+                <FormLabel>Product type</FormLabel>
+                <FormControl>
+                  <div className="grid gap-7">
+                    <div className="flex flex-col gap-2 md:flex-row">
+                      <div className="md:min-w-[200px]">
+                        <ComboBox
+                          items={formatComboBoxItem(
+                            store?.linkedAccounts || [],
+                            "platform",
+                            "platformName"
+                          )}
+                          term="type"
+                          selectItem={setSelectedAccount}
+                          enableSearch={false}
+                          selectionType="pair"
+                          value={selectedAccount.id}
+                          disabled={isPending}
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-2 md:items-stretch">
+                        <Input
+                          className="flex-1 py-[5.5px] md:h-full min-w-[300px]"
+                          value={productLink}
+                          onChange={(e) => setProductLink(e.target.value)}
+                          placeholder="Product link"
+                        />
+                        <Button
+                          className="h-full"
+                          type="button"
+                          onClick={addProductLink}
+                          disabled={!productLink || !selectedAccount}
+                        >
+                          Add Link
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-2">
+                      {form
+                        .watch("links")
+                        ?.filter((link) => !link.isDeleted)
+                        .map((link: LinkType) => (
+                          <div
+                            key={link.platform}
+                            className="flex items-stretch gap-3"
+                          >
+                            <span className="text-slate-500 font-medium my-auto sm:min-w-[90px]">
+                              {link.platformName}
+                            </span>
+
+                            <div className="h-full flex-1 md:max-w-[500px] flex">
+                              <Input
+                                value={link.url}
+                                onChange={(e) =>
+                                  editProductLink(link.platform, e.target.value)
+                                }
+                                className="h-full"
+                              />
+                            </div>
+
+                            <Button
+                              type="button"
+                              className="mr-auto py-4"
+                              variant={"destructive"}
+                              onClick={() => removeProductLink(link.platform)}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="mt-5 flex justify-end">
+            <Button className="bg-100" type="submit" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <LoaderCircle className="animate-spin" />
+                  Adding product
+                </>
+              ) : (
+                <p>Add product</p>
+              )}
+            </Button>
           </div>
         </form>
       </Form>

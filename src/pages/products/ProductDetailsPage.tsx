@@ -3,8 +3,6 @@ import ContentGrid from "@/layouts/ContentGrid";
 import PadLayout from "@/layouts/PadLayout";
 import PageLayout from "@/layouts/PageLayout";
 
-import shopee from "@/assets/Shopee-Logo.png";
-import lazada from "@/assets/Lazada-Logo.png";
 import ProductImages from "./ProductImages";
 import StoreProducts from "./StoreProducts";
 import { useParams } from "react-router";
@@ -113,7 +111,10 @@ function ProductDetailsPage() {
 
                   {/* availability */}
                   <div className="mt-5 space-y-3">
-                    <p className="text-200/60">Available on</p>
+                    {(productLoading || (data?.links?.length ?? 0) > 0) && (
+                      <p className="text-200/60">Available on</p>
+                    )}
+
                     <div className="flex items-center gap-7">
                       {productLoading ? (
                         <>
@@ -122,12 +123,20 @@ function ProductDetailsPage() {
                         </>
                       ) : (
                         <>
-                          <div className="w-[80px] h-[50px]">
-                            <img src={shopee} alt="Shopee" />
-                          </div>
-                          <div className="w-[80px] h-[50px]">
-                            <img src={lazada} alt="Lazada" />
-                          </div>
+                          {data.links?.map((link) => {
+                            return (
+                              <a
+                                key={link.url}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <div className="w-[80px] h-[50px]">
+                                  <img src={link.logo} alt="Shopee" />
+                                </div>
+                              </a>
+                            );
+                          })}
                         </>
                       )}
                     </div>

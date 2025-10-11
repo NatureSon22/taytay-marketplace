@@ -35,6 +35,7 @@ function NewArrivals() {
             isLoading={isLoading}
             fill_rows={1}
             onProductClick={onProductClick}
+            limit={4}
           />
 
           <Button

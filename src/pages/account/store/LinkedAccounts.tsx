@@ -159,8 +159,9 @@ function LinkedAccounts() {
                         <div className="flex items-center gap-2">
                           <Input
                             {...field}
-                            className="py-[11px]"
+                            className="py-[11px] md:min-w-[300px]"
                             disabled={!platform}
+                            placeholder="Platform link"
                           />
                           {existing && (
                             <Button

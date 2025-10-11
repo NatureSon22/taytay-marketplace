@@ -9,6 +9,7 @@ type ProductListProps = {
   fill_rows?: number;
   onProductClick?: (productId: string) => void;
   editable?: boolean;
+  limit?: number;
 };
 
 function ProductList({
@@ -18,7 +19,10 @@ function ProductList({
   fill_rows = 2,
   onProductClick = () => {},
   editable = false,
+  limit,
 }: ProductListProps) {
+  const visibleProducts = limit ? products.slice(0, limit) : products;
+
   return (
     <div
       className={cn(
@@ -42,9 +46,9 @@ function ProductList({
               isLoading={true}
             />
           ))
-        : products.map((product) => (
+        : visibleProducts.map((product) => (
             <ProductCard
-              key={product.productName}
+              key={product._id}
               productName={product.productName}
               productPrice={product.productPrice}
               productPictures={product.productPictures}
