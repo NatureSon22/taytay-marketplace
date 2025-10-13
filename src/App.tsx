@@ -28,7 +28,7 @@ import TypeSetting from "./pages/admindashboard/Settings/Product/TypeSetting";
 import LinkTypeSetting from "./pages/admindashboard/Settings/Link/LinkTypeSetting";
 import AuthLayer from "./components/layer/AuthLayer";
 import ManageStore from "./pages/account/store/ManageStore";
-import CreateProduct from "./pages/account/store/CreateProduct";
+import CreateProduct from "./pages/account/store/createproduct/CreateProduct";
 import Login from "./pages/auth/login/Login";
 import StoreInfo from "./pages/account/store/ManageStoreInfo";
 import PageNotFound from "./pages/PageNotFound";
@@ -69,6 +69,7 @@ const router = createBrowserRouter([
           { path: "store", element: <ManageStore /> },
           { path: "store/edit", element: <StoreInfo /> },
           { path: "store/product/new", element: <CreateProduct /> },
+          { path: "store/product/edit/:id", element: <CreateProduct /> },
         ],
       },
     ],

@@ -57,7 +57,7 @@ const formSchema = z.object({
 });
 
 type FormDataType = z.infer<typeof formSchema>;
-type LinkType = z.infer<typeof link>;
+export type LinkType = z.infer<typeof link>;
 const MAX_IMAGES_COUNT = 4;
 
 function CreateProduct() {
@@ -244,7 +244,6 @@ function CreateProduct() {
   };
 
   const removeProductLink = (platform: string) => {
-    console.log(platform);
     const currentLinks = form.getValues("links") || [];
 
     const updatedProductLinks = currentLinks
@@ -507,7 +506,7 @@ function CreateProduct() {
             name="links"
             render={() => (
               <FormItem>
-                <FormLabel>Product type</FormLabel>
+                <FormLabel>Product Link</FormLabel>
                 <FormControl>
                   <div className="grid gap-7">
                     <div className="flex flex-col gap-2 md:flex-row">

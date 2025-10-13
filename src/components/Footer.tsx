@@ -35,7 +35,11 @@ function Footer() {
 
                   <div className="grid gap-3 sm:gap-2">
                     {nav.items.map((item) => (
-                      <Link key={item.path} to={item.path}>
+                      <Link
+                        key={item.label}
+                        to={item.path}
+                        state={item.id ? { categoryId: item.id } : undefined}
+                      >
                         {item.label}
                       </Link>
                     ))}

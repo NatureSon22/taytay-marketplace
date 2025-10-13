@@ -2,7 +2,7 @@ import CenterLayout from "@/layouts/CenterLayout";
 import PadLayout from "@/layouts/PadLayout";
 import PageLayout from "@/layouts/PageLayout";
 import FilterBar from "./FilterBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   FilterField,
   ProductFilterSettings,
@@ -44,6 +44,16 @@ function ProductsPage() {
       ),
   });
 
+  useEffect(() => {
+    const categoryId = location.state?.categoryId;
+    if (!categoryId) return;
+
+    setFilterOptions((prev) => ({
+      ...prev,
+      category: categoryId,
+    }));
+  }, [location.state?.categoryId]);
+
   const handleFilterOptions = (field: FilterField, value: string) => {
     setFilterOptions((prev) => ({
       ...prev,
@@ -56,8 +66,6 @@ function ProductsPage() {
     order: SortOrder,
     disableSort = false
   ) => {
-    console.log(filterOptions);
-
     setFilterOptions((prev) => {
       const { sort } = prev;
       const existingRule = sort.find((rule) => rule.field === field);

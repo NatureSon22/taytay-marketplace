@@ -123,20 +123,22 @@ function ProductDetailsPage() {
                         </>
                       ) : (
                         <>
-                          {data.links?.map((link) => {
-                            return (
-                              <a
-                                key={link.url}
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <div className="w-[80px] h-[50px]">
-                                  <img src={link.logo} alt="Shopee" />
-                                </div>
-                              </a>
-                            );
-                          })}
+                          {data.links?.map((link) => (
+                            <a
+                              key={link.url}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <div className="w-[80px] h-[50px] grid place-items-center bg-white overflow-hidden rounded-md">
+                                <img
+                                  src={link.logo}
+                                  alt={link.url}
+                                  className="object-contain w-full h-full"
+                                />
+                              </div>
+                            </a>
+                          ))}
                         </>
                       )}
                     </div>

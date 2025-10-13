@@ -1,6 +1,6 @@
 import NavLogo from "@/assets/nav-logo.png";
 import SearchBar from "./SearchBar";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
@@ -13,6 +13,7 @@ function NavBar() {
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState(location.pathname ?? "/");
   const [openSideBar, setOpenSideBar] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedPath(location.pathname);
@@ -34,7 +35,11 @@ function NavBar() {
     <>
       <div className="flex items-center py-6 px-5 gap-5 md:px-24">
         <div className="flex items-center gap-5 flex-[1.5] md:gap-8">
-          <img src={NavLogo} className="hidden sm:block" />
+          <img
+            src={NavLogo}
+            className="hidden sm:block cursor-pointer"
+            onClick={() => navigate("/")}
+          />
           <SearchBar />
         </div>
 
@@ -42,7 +47,7 @@ function NavBar() {
           {navLabels.map((el) => {
             return (
               <Link
-                key={el.path}
+                key={el.label}
                 to={el.path}
                 className={`font-semibold relative inline-block px-2 hover:text-100 ${
                   selectedPath === el.path ? "text-100" : ""

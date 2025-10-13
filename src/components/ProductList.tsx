@@ -49,6 +49,7 @@ function ProductList({
         : visibleProducts.map((product) => (
             <ProductCard
               key={product._id}
+              productId={product._id}
               productName={product.productName}
               productPrice={product.productPrice}
               productPictures={product.productPictures}

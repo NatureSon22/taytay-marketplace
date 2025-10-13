@@ -123,6 +123,7 @@ const Products = () => {
             columns={4}
             isLoading={isLoading}
             onProductClick={() => {}}
+            editable={true}
           />
         )}
 

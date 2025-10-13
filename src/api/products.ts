@@ -50,6 +50,21 @@ export const getProduct = async (id: string): Promise<Product> => {
   return body.data;
 };
 
+export const getProductDetails = async (id: string): Promise<Product> => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/${id}/details`,
+    createFetchOptions({ method: "GET" })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    throw new Error(body.message);
+  }
+
+  return body.data;
+};
+
 export const getProductSuggestions = async (
   productName: string
 ): Promise<Item[]> => {
@@ -84,4 +99,34 @@ export const createProduct = async (
 
   const { data, message } = await res.json();
   return { data, message };
+};
+
+export const updateProduct = async (formData: FormData, productId: string) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/${productId}`,
+    createFetchOptions({ method: "PUT", body: formData, stringifyBody: false })
+  );
+
+  if (!res.ok) {
+    const { message } = await res.json();
+    throw new Error(message);
+  }
+
+  const { data, message } = await res.json();
+  return { data, message };
+};
+
+export const deleteProduct = async (id: string) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/`,
+    createFetchOptions({ method: "DELETE", body: { id } })
+  );
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    throw new Error(body.message);
+  }
+
+  return body.data;
 };

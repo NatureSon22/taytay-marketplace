@@ -6,29 +6,51 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Edit, Trash } from "lucide-react";
+import { MoreVertical, Edit, Trash, LoaderCircleIcon } from "lucide-react";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProduct } from "@/api/products";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 type ProductCardProps = {
+  productId?: string;
   productName: string;
   productPrice: string;
   productPictures: string[];
   isLoading: boolean;
   onClick?: () => void;
   editable?: boolean;
-  onEdit?: () => void;
-  onDelete?: () => void;
 };
 
 function ProductCard({
+  productId = "",
   productName,
   productPrice,
   productPictures,
   isLoading,
   onClick = () => {},
   editable = false,
-  onEdit = () => {},
-  onDelete = () => {},
 }: ProductCardProps) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { mutate: onDeleteProduct, isPending } = useMutation({
+    mutationFn: () => deleteProduct(productId || ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["store-products"] });
+      toast.success("Product deleted successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const clickEdit = () => {
+    navigate(`/account/store/product/edit/${productId}`);
+  };
+
   return (
     <div
       className={clsx(
@@ -41,13 +63,13 @@ function ProductCard({
       {/* Popover for Edit/Delete */}
       {editable && !isLoading && (
         <div className="absolute top-3 right-3 z-10">
-          <Popover>
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full hover:bg-gray-100"
-                onClick={(e) => e.stopPropagation()} // prevent triggering card click
+                className="rounded-full hover:bg-gray-100 bg-white border border-slate-200"
+                onClick={(e) => e.stopPropagation()}
               >
                 <MoreVertical className="h-5 w-5 text-gray-600" />
               </Button>
@@ -55,21 +77,33 @@ function ProductCard({
             <PopoverContent
               className="w-40 p-2 flex flex-col gap-2"
               align="end"
-              onClick={(e) => e.stopPropagation()} // stop bubbling to card
+              onClick={clickEdit}
             >
               <Button
                 variant="ghost"
                 className="flex items-center gap-2 justify-start"
-                onClick={onEdit}
+                onClick={() => {}}
+                disabled={isPending}
               >
-                <Edit className="h-4 w-4" /> Edit
+                <>
+                  <Edit className="h-4 w-4" /> Edit
+                </>
               </Button>
               <Button
                 variant="ghost"
                 className="flex items-center gap-2 justify-start text-red-500 hover:text-red-600"
-                onClick={onDelete}
+                onClick={() => onDeleteProduct()}
+                disabled={isPending}
               >
-                <Trash className="h-4 w-4" /> Delete
+                {isPending ? (
+                  <>
+                    <LoaderCircleIcon className="animate-spin" /> Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash className="h-4 w-4" /> Delete
+                  </>
+                )}
               </Button>
             </PopoverContent>
           </Popover>
@@ -80,12 +114,16 @@ function ProductCard({
       <div className="relative h-[280px] w-full overflow-hidden bg-gray-50">
         {isLoading ? (
           <Skeleton className="h-[280px] w-full bg-slate-300" />
-        ) : (
+        ) : productPictures[0] ? (
           <img
             src={productPictures[0]}
-            alt={productName}
+            alt={productName || "Product image"}
             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
           />
+        ) : (
+          <div className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+            No image
+          </div>
         )}
 
         {!isLoading && (
@@ -114,14 +152,14 @@ function ProductCard({
               <Skeleton className="w-[5rem] py-2 bg-slate-300 mb-2" />
             ) : (
               <p className="text-[1.1rem] font-bold transition-colors duration-200">
-                ₱{Number(productPrice).toLocaleString()}
+                ₱{productPrice ? Number(productPrice).toLocaleString() : "0.00"}
               </p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Subtle shine effect */}
+      {/* Shine Effect */}
       {!isLoading && (
         <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12" />
       )}

@@ -12,6 +12,8 @@ import type { Store } from "@/types";
 import { useNavigate } from "react-router";
 import PaginationControls from "@/components/PaginationControls";
 import { useDebounce } from "@/hooks/useDebounce";
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
 
 function StorePage() {
   const [search, setSearch] = useState("");
@@ -29,6 +31,10 @@ function StorePage() {
 
   const viewStore = (storeId: string) => {
     navigate(`/stores/${storeId}`);
+  };
+
+  const resetFilter = () => {
+    setSort("");
   };
 
   return (
@@ -49,17 +55,23 @@ function StorePage() {
 
             <div className="flex items-center gap-5">
               <p className="hidden sm:block">Filter:</p>
-              <div className="w-52">
-                <ComboBox
-                  items={storeFilters}
-                  term="filter"
-                  enableSearch={false}
-                  value={sort}
-                  onChange={(val) => {
-                    setSort(val);
-                    setPage(1); // reset to first page when filter changes
-                  }}
-                />
+
+              <div className="flex items-center gap-1">
+                <div className="w-52">
+                  <ComboBox
+                    items={storeFilters}
+                    term="filter"
+                    enableSearch={false}
+                    value={sort}
+                    onChange={(val) => {
+                      setSort(val);
+                      setPage(1); // reset to first page when filter changes
+                    }}
+                  />
+                </div>
+                <Button className="py-5" onClick={resetFilter}>
+                  <RotateCcw className="mx-1" />  
+                </Button>
               </div>
             </div>
           </div>

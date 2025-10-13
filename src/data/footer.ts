@@ -1,6 +1,7 @@
 type FooterNavLink = {
   label: string;
   path: string;
+  id?: string;
 };
 
 type FooterNavSection = {
@@ -31,15 +32,18 @@ const footerNav: FooterNavSection[] = [
     items: [
       {
         label: "Men's Fashion",
-        path: "/men-fashion",
+        path: "/products",
+        id: "68c408bf6849a6ad67baa1c9",
       },
       {
         label: "Women's Fashion",
-        path: "/women-fashion",
+        path: "/products",
+        id: "68c409096849a6ad67baa1d1",
       },
       {
         label: "Kid's",
-        path: "/kids-fashion",
+        path: "/products",
+        id: "68c409436849a6ad67baa1e8",
       },
     ],
   },
