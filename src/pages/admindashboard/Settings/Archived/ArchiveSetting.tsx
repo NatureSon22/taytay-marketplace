@@ -4,6 +4,7 @@ import ArchivedAdminTable from "./ArchivedAdminTable";
 import ArchivedProductTypeTable from "./ArchivedProductTypeTable";
 import ArchivedCategoriesTable from "./ArchivedCategoriesTable";
 import ArchivedLinkTypeTable from "./ArchivedLinkTypeTable";
+import ArchivedOrganizationsTable from "./ArchivedOrganizationTable";
 
 function ArchiveSetting() {
   const [activeTab, setActiveTab] = useState("Admin");
@@ -18,6 +19,7 @@ function ArchiveSetting() {
         {activeTab === "Product Type" && <ArchivedProductTypeTable />}
         {activeTab === "Categories" &&  <ArchivedCategoriesTable />}
         {activeTab === "Link Type" && <ArchivedLinkTypeTable />}
+        {activeTab === "Organization" && <ArchivedOrganizationsTable />}
       </div>
     </div>
   );

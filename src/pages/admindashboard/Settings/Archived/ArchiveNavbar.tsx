@@ -1,4 +1,3 @@
-// components/ArchiveNavbar.tsx
 import React from "react";
 
 type ArchiveNavbarProps = {
@@ -6,7 +5,7 @@ type ArchiveNavbarProps = {
   setActiveTab: (tab: string) => void;
 };
 
-const archiveTabs = ["Admin", "Product Type", "Categories", "Link Type"];
+const archiveTabs = ["Admin", "Product Type", "Categories", "Link Type", "Organization"];
 
 function ArchiveNavbar({ activeTab, setActiveTab }: ArchiveNavbarProps) {
   return (

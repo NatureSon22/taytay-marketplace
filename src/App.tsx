@@ -20,6 +20,7 @@ import ReportsPage from "./pages/admindashboard/Reports/ReportsPage";
 import SettingsPage from "./pages/admindashboard/Settings/SettingsPage";
 import AdminSetting from "./pages/admindashboard/Settings/Admin/AdminSetting";
 import CategorySetting from "./pages/admindashboard/Settings/Category/CategorySetting";
+import OrganizationSetting from "./pages/admindashboard/Settings/Organization/OrganizationSetting";
 import GeneralInformationSetting from "./pages/admindashboard/Settings/General/GeneralInformationSetting";
 import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupAndRestore/BackupRestoreSetting";
 import AccountInfoSetting from "./pages/admindashboard/Settings/Account/AccountInfoSetting";
@@ -28,7 +29,7 @@ import TypeSetting from "./pages/admindashboard/Settings/Product/TypeSetting";
 import LinkTypeSetting from "./pages/admindashboard/Settings/Link/LinkTypeSetting";
 import AuthLayer from "./components/layer/AuthLayer";
 import ManageStore from "./pages/account/store/ManageStore";
-import CreateProduct from "./pages/account/store/createproduct/CreateProduct";
+import CreateProduct from "./pages/account/store/CreateProduct";
 import Login from "./pages/auth/login/Login";
 import StoreInfo from "./pages/account/store/ManageStoreInfo";
 import PageNotFound from "./pages/PageNotFound";
@@ -69,7 +70,6 @@ const router = createBrowserRouter([
           { path: "store", element: <ManageStore /> },
           { path: "store/edit", element: <StoreInfo /> },
           { path: "store/product/new", element: <CreateProduct /> },
-          { path: "store/product/edit/:id", element: <CreateProduct /> },
         ],
       },
     ],
@@ -96,6 +96,7 @@ const router = createBrowserRouter([
           { path: "category-setting", element: <CategorySetting /> },
           { path: "product-type-setting", element: <TypeSetting /> },
           { path: "link-type-setting", element: <LinkTypeSetting /> },
+          { path: "organization-setting", element: <OrganizationSetting /> },
           {
             path: "general-information-setting",
             element: <GeneralInformationSetting />,
@@ -113,13 +114,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (

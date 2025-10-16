@@ -5,6 +5,7 @@ const sidebarItems = [
   { label: "Categories", href: "/admin/settings/category-setting" },
   { label: "Product Type", href: "/admin/settings/product-type-setting" },
   { label: "Link Type", href: "/admin/settings/link-type-setting" },
+  { label: "Organization", href: "/admin/settings/organization-setting" },
   { label: "General Information", href: "/admin/settings/general-information-setting" },
   { label: "Account Information", href: "/admin/settings/account-info-setting" },
   { label: "Archives", href: "/admin/settings/archive-setting" },

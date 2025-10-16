@@ -65,14 +65,26 @@ function LinkTypeSettingForm() {
         <h3 className="text-lg font-medium text-100">Link Type</h3>
         <div className="flex gap-6">
           <div className="flex flex-col gap-1 w-[50%]">
-            <Label htmlFor="link-id" className="text-md">Link ID</Label>
-            <Input
-              id="link-id"
-              name="id"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              required
-            />
+            <Label htmlFor="link-id" className="text-md">
+              Link ID
+            </Label>
+            <div className="flex items-center border rounded-md pl-2">
+              <span className="text-gray-500 select-none text-sm">LNK-</span>
+              <input
+                id="link-id"
+                name="id"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={id.replace(/^LNK-/, "")}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  setId(`LNK-${numericValue}`);
+                }}
+                className="w-full outline-none border-none focus:ring-0 py-2 text-sm bg-transparent"
+                required
+                placeholder="001"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-1 w-[50%]">
             <Label htmlFor="link-label" className="text-md">Link Label</Label>
@@ -82,6 +94,7 @@ function LinkTypeSettingForm() {
               value={label}
               onChange={(e) => setLabel(e.target.value)}
               required
+              placeholder="Enter link label"
             />
           </div>
         </div>
