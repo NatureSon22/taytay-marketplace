@@ -32,6 +32,7 @@ import CreateProduct from "./pages/account/store/createproduct/CreateProduct";
 import Login from "./pages/auth/login/Login";
 import StoreInfo from "./pages/account/store/ManageStoreInfo";
 import PageNotFound from "./pages/PageNotFound";
+import Verification from "./pages/auth/login/Verification";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "/terms-and-conditions", element: <TermsOfUse /> },
       { path: "/register", element: <Register /> },
       { path: "/login", element: <Login /> },
+      { path: "/verification", element: <Verification /> },
 
       // products
       { path: "/products", element: <ProductsPage /> },

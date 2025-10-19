@@ -22,6 +22,8 @@ import { useMutation } from "@tanstack/react-query";
 import { updateStoreData } from "@/api/store";
 import { toast } from "sonner";
 import useAccountStore from "@/stores/useAccountState";
+import useOrganizations from "@/hooks/useOrganizations";
+import ComboBox from "@/components/ComboBox";
 
 const phoneRe = /^(09|\+639)\d{9}$/;
 
@@ -31,6 +33,7 @@ const formSchema = z.object({
     .array()
     .min(1, { message: "At least one stall number is required" }),
   storeName: z.string().min(1, { message: "Store name is required" }),
+  organization: z.string(),
   contactNumber: z
     .string()
     .regex(phoneRe, { message: "Valid phone is required" }),
@@ -45,6 +48,9 @@ function StoreDetails() {
   const { store, setStore } = useStoreState();
   const { sellerAccount } = useAccountStore();
   const [stallNumber, setStallNumber] = useState("");
+  const [organizationId, setOrganization] = useState("");
+
+  const organizations = useOrganizations();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -75,8 +81,15 @@ function StoreDetails() {
   useEffect(() => {
     if (store) {
       form.reset({ ...store });
+      setOrganization(store.organization || "");
     }
   }, [store, form]);
+
+  const chooseOrganization = (id: string) => {
+    setOrganization(id);
+    form.setValue("organization", id);
+    form.trigger("organization");
+  };
 
   const addStallNumber =
     (onChange: ControllerRenderProps<FormData, "stallNumbers">["onChange"]) =>
@@ -244,12 +257,43 @@ function StoreDetails() {
             />
           </div>
 
-          {sellerAccount?.isVerified && !isEditing && (
-            <FormItem>
-              <FormLabel className="text-[1rem]">Business Permit</FormLabel>
-              <p className="text-300 font-semibold">Verified</p>
-            </FormItem>
-          )}
+          <div
+            className={cn(
+              "flex-1 flex flex-col justify-between space-y-5 md:flex-row md:items-center md:space-y-0",
+              isEditing ? "max-w-[550px]" : "max-w-[700px]"
+            )}
+          >
+            {sellerAccount?.isVerified && !isEditing && (
+              <FormItem>
+                <FormLabel className="text-[1rem]">Business Permit</FormLabel>
+                <p className="text-300 font-semibold">Verified</p>
+              </FormItem>
+            )}
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={() => (
+                <FormItem>
+                  <FormLabel className="text-[1rem]">Organization</FormLabel>
+                  <FormControl>
+                    {isEditing ? (
+                      <ComboBox
+                        items={organizations}
+                        value={organizationId}
+                        onChange={chooseOrganization}
+                        term="organization"
+                        enableSearch={false}
+                      />
+                    ) : (
+                      <p>{store?.organizationName}</p>
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <SaveButton isEditing={isEditing} isSaving={isSaving} />
         </form>

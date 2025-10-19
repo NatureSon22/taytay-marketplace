@@ -42,12 +42,17 @@ const StoreProfile = ({
               />
             )}
           </div>
-          <div className="text-2xl uppercase font-bold">
-            {isLoading ? (
-              <Skeleton className="h-8 w-32 bg-slate-300" />
-            ) : (
-              store?.storeName
-            )}
+
+          <div>
+            <div className="text-2xl uppercase font-bold">
+              {isLoading ? (
+                <Skeleton className="h-8 w-32 bg-slate-300" />
+              ) : (
+                store?.storeName
+              )}
+            </div>
+
+            <p className="text-slate-400 text-[0.9rem]">{store?.organizationName}</p>
           </div>
         </div>
 

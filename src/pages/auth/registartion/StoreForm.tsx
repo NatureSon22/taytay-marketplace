@@ -1,3 +1,4 @@
+import ComboBox from "@/components/ComboBox";
 import StyledText from "@/components/StyledText";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useOrganizations from "@/hooks/useOrganizations";
 import type { FormStepProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MoveRight, X } from "lucide-react";
@@ -19,6 +21,7 @@ import { z } from "zod";
 const FILESIZE_LIMIT = 5 * 1024 * 1024;
 
 const formSchema = z.object({
+  organization: z.string({ message: "Select organization" }),
   stallNumbers: z
     .string()
     .array()
@@ -55,6 +58,7 @@ function StoreForm({
   const [stallNumbers, setStallNumbers] = useState<string[]>(
     registrationData?.stallNumbers ? [...registrationData.stallNumbers] : []
   );
+  const [organizationId, setOrganization] = useState("");
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -68,6 +72,14 @@ function StoreForm({
         : new File([], ""),
     },
   });
+
+  const organizations = useOrganizations();
+
+  const chooseOrganization = (id: string) => {
+    setOrganization(id);
+    form.setValue("organization", id);
+    form.trigger("organization");
+  };
 
   const addStallNumber =
     (onChange: ControllerRenderProps<FormData, "stallNumbers">["onChange"]) =>
@@ -99,6 +111,26 @@ function StoreForm({
           <div className="mr-auto">
             <StyledText text="Store Details" size="" />
           </div>
+
+          <FormField
+            control={form.control}
+            name="organization"
+            render={() => (
+              <FormItem>
+                <FormLabel>Organization</FormLabel>
+                <FormControl>
+                  <ComboBox
+                    items={organizations}
+                    value={organizationId}
+                    onChange={chooseOrganization}
+                    term="organization"
+                    enableSearch={false}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -144,7 +176,7 @@ function StoreForm({
                         );
                       })}
                     </div>
-                  </div> 
+                  </div>
                 </FormControl>
 
                 <FormMessage />

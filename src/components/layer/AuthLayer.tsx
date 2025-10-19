@@ -21,7 +21,7 @@ function AuthLayer({ children }: AuthLayerProps) {
     queryKey: ["auth", "currentUser"],
     queryFn: getLoggedInUser,
     refetchOnWindowFocus: false,
-    // enabled: !hasAccount,
+    //enabled: !hasAccount,
   });
 
   useEffect(() => {
@@ -31,6 +31,7 @@ function AuthLayer({ children }: AuthLayerProps) {
         setStore(data.store);
         console.log(data);
       } else if (data.type === "admin") {
+        console.log("ADMIN DATA: " + data.data);
         setAdminAccount(data.data);
       }
     }

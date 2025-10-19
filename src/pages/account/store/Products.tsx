@@ -23,7 +23,6 @@ const Products = () => {
     queryKey: ["store-products", filterCategory, filterType, page],
     queryFn: () => {
       if (!store) throw new Error("Store is empty");
-
       return getStoreProducts(store._id, filterCategory, filterType, page);
     },
   });
@@ -64,6 +63,10 @@ const Products = () => {
   const goToCreateProductPage = () => {
     navigate("/account/store/product/new");
   };
+
+  const noProducts =
+    !isLoading && (!data?.products || data.products.length === 0);
+  const filtersApplied = filterCategory || filterType;
 
   return (
     <div className="space-y-8 @container">
@@ -109,32 +112,47 @@ const Products = () => {
       </div>
 
       <div className="grid gap-10">
-        {(filterCategory || filterType) &&
-        !isLoading &&
-        data?.products.length === 0 ? (
-          <div className="h-32 grid place-items-center">
-            <p className="text-gray-500">
-              No products match your filters. Try adjusting your search.
-            </p>
+        {noProducts ? (
+          <div className="h-40 grid place-items-center text-center">
+            {filtersApplied ? (
+              <p className="text-gray-500">
+                No products match your filters. Try adjusting your search.
+              </p>
+            ) : (
+              <div>
+                <p className="text-slate-500 font-semibold mb-3 text-[1.1rem]">
+                  This store hasn’t added any products yet...
+                </p>
+                <Button
+                  className="px-5 py-[22px] cursor-pointer"
+                  onClick={goToCreateProductPage}
+                  variant={"secondary"}
+                >
+                  Add Your First Product
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
-          <ProductList
-            products={data?.products || []}
-            columns={4}
-            isLoading={isLoading}
-            onProductClick={() => {}}
-            editable={true}
-          />
-        )}
-
-        {!isLoading && data?.products && (
-          <div className="ml-auto">
-            <PaginationControls
-              totalPages={data?.pagination.totalPages}
-              page={data?.pagination.page}
-              onPageChange={setPage}
+          <>
+            <ProductList
+              products={data?.products || []}
+              columns={4}
+              isLoading={isLoading}
+              onProductClick={() => {}}
+              editable={true}
             />
-          </div>
+
+            {!isLoading && data?.products && data?.products.length > 0 && (
+              <div className="ml-auto">
+                <PaginationControls
+                  totalPages={data?.pagination.totalPages}
+                  page={data?.pagination.page}
+                  onPageChange={setPage}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

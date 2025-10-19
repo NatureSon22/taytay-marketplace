@@ -23,6 +23,8 @@ export type Store = {
   storeName: string;
   joinedDate: string;
   contactNumber: string;
+  organization?: string;
+  organizationName?: string;
   noOfProducts?: number;
   email: string;
   categories: Category[];

@@ -21,10 +21,11 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "@/api/auth";
+import { login, type LoginResponse, type Seller } from "@/api/auth";
 import { LoaderCircle } from "lucide-react";
-import useAccountStore from "@/stores/useAccountState";
-import useStoreState from "@/stores/useStoreState";
+import type { LoginCredentials } from "@/types/registration";
+import useSendVerification from "@/hooks/useSendVerification";
+import type { Admin } from "@/types/admin";
 
 const formSchema = z.object({
   email: z.email({ message: "Invalid email" }),
@@ -34,11 +35,18 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+export type NavigateState = {
+  isAuthenticated: boolean;
+  data: Admin | Seller;
+  userType: "admin" | "account";
+};
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const { setStore } = useStoreState();
   const navigate = useNavigate();
+
+  const { mutate: onSendVerification, isPending: sendVerificationLoading } =
+    useSendVerification();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -48,33 +56,33 @@ function Login() {
     },
   });
 
-  const { mutate, isPending, isError, error } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation<
+    LoginResponse,
+    Error,
+    LoginCredentials
+  >({
     mutationFn: login,
-    onSuccess: (res: {
-      message: string;
-      data: any;
-      type: "admin" | "account";
-    }) => {
-      if (res.type === "admin") {
-        useAccountStore.getState().setAdminAccount({
-          ...res.data,
-          userType: "admin",
-        });
-        navigate("/admin/dashboard");
-      } else {
-        useAccountStore.getState().setSellerAccount({
-          ...res.data.publicUser,
-          userType: "account",
-        });
-        setStore({ ...res.data.store });
-        navigate("/");
-      }
+    onSuccess: (res) => {
+      const navigateState: NavigateState = {
+        isAuthenticated: true,
+        userType: res.type === "admin" ? "admin" : "account",
+        data:
+          res.type === "admin"
+            ? res.data
+            : { publicUser: res.data.publicUser, store: res.data.store },
+      };
+
+      const email =
+        res.type === "admin" ? res.data.email : res.data.publicUser.email;
+
+      onSendVerification(email);
+
+      navigate("/verification", { state: navigateState });
     },
   });
 
   const onSubmit = (data: FormData) => {
     mutate(data);
-    console.log("submit", data);
   };
 
   return (
@@ -177,9 +185,9 @@ function Login() {
 
                     <Button
                       className="bg-100 w-full py-6 text-[0.95rem]"
-                      disabled={isPending}
+                      disabled={isPending || sendVerificationLoading}
                     >
-                      {isPending ? (
+                      {isPending || sendVerificationLoading ? (
                         <>
                           Logging in
                           <LoaderCircle className="animate-spin" />
