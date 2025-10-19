@@ -1,4 +1,4 @@
-import useAccountStore from "@/stores/useAccountState"
+import useAccountStore from "@/stores/useAccountState";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -22,8 +22,8 @@ import { useMutation } from "@tanstack/react-query";
 import { updateStoreData } from "@/api/store";
 import { toast } from "sonner";
 import useAccountStore from "@/stores/useAccountState";
-import useOrganizations from "@/hooks/useOrganizations";
 import ComboBox from "@/components/ComboBox";
+import useOrganizationOptions from "@/hooks/useOrganizationOptions";
 
 const phoneRe = /^(09|\+639)\d{9}$/;
 
@@ -50,7 +50,7 @@ function StoreDetails() {
   const [stallNumber, setStallNumber] = useState("");
   const [organizationId, setOrganization] = useState("");
 
-  const organizations = useOrganizations();
+  const organizations = useOrganizationOptions();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),

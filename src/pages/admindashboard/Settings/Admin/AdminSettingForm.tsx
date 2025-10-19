@@ -36,7 +36,7 @@ function AdminSettingForm() {
 
   const { mutate: createAdmin, status } = useCreateAdmin(resetForm);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -84,12 +84,24 @@ function AdminSettingForm() {
             <Label htmlFor="adminId" className="text-md">
               Admin ID
             </Label>
-            <Input
-              id="adminId"
-              name="adminId"
-              value={formData.adminId}
-              onChange={handleChange}
-            />
+            <div className="flex items-center border rounded-md pl-2">
+              <span className="text-gray-500 select-none text-sm">ADM-</span>
+              <input
+                id="adminId"
+                name="adminId"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={formData.adminId.replace(/^ADM-/, "")}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  setFormData((prev) => ({
+                    ...prev,
+                    adminId: `ADM-${numericValue}`,
+                  }));
+                }}
+                className="w-full outline-none border-none focus:ring-0 py-2 text-sm bg-transparent"
+              />
+            </div>
           </div>
           {/* Email */}
           <div className="flex flex-col gap-1 w-[50%]">

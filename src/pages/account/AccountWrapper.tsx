@@ -2,16 +2,20 @@ import accountTabs from "@/data/accounttabs";
 import CenterLayout from "@/layouts/CenterLayout";
 import PageLayout from "@/layouts/PageLayout";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 
-const BASE_ROUTE = "/account";
+const BASE_ROUTE_ACCOUNT = "/account/manage";
 
 function AccountWrapper() {
   const location = useLocation();
-  const [selectedTab, setSelectedTab] = useState(
-    location.pathname === BASE_ROUTE ? accountTabs[0].path : location.pathname
-  );
+  const [selectedTab, setSelectedTab] = useState("");
+
+  useEffect(() => {
+    const activeTab =
+      accountTabs[location.pathname.includes(BASE_ROUTE_ACCOUNT) ? 0 : 1].path;
+    setSelectedTab(activeTab);
+  }, [location.pathname]);
 
   const handleSelectTab = (path: string) => {
     setSelectedTab(path);

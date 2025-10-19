@@ -20,6 +20,7 @@ import ReportsPage from "./pages/admindashboard/Reports/ReportsPage";
 import SettingsPage from "./pages/admindashboard/Settings/SettingsPage";
 import AdminSetting from "./pages/admindashboard/Settings/Admin/AdminSetting";
 import CategorySetting from "./pages/admindashboard/Settings/Category/CategorySetting";
+import OrganizationSetting from "./pages/admindashboard/Settings/Organization/OrganizationSetting";
 import GeneralInformationSetting from "./pages/admindashboard/Settings/General/GeneralInformationSetting";
 import BackupRestoreSetting from "./pages/admindashboard/Settings/BackupAndRestore/BackupRestoreSetting";
 import AccountInfoSetting from "./pages/admindashboard/Settings/Account/AccountInfoSetting";
@@ -98,6 +99,7 @@ const router = createBrowserRouter([
           { path: "category-setting", element: <CategorySetting /> },
           { path: "product-type-setting", element: <TypeSetting /> },
           { path: "link-type-setting", element: <LinkTypeSetting /> },
+          { path: "organization-setting", element: <OrganizationSetting /> },
           {
             path: "general-information-setting",
             element: <GeneralInformationSetting />,
@@ -115,13 +117,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 function App() {
   return (

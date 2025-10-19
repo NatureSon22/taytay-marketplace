@@ -68,6 +68,7 @@ function Verification() {
           ...data.publicUser,
           userType: "account",
         });
+
         setStore(data.store);
         navigate("/");
       } else {

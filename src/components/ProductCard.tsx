@@ -77,12 +77,15 @@ function ProductCard({
             <PopoverContent
               className="w-40 p-2 flex flex-col gap-2"
               align="end"
-              onClick={clickEdit}
             >
               <Button
                 variant="ghost"
                 className="flex items-center gap-2 justify-start"
-                onClick={() => {}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clickEdit();
+                  setIsPopoverOpen(false);
+                }}
                 disabled={isPending}
               >
                 <>
@@ -92,7 +95,11 @@ function ProductCard({
               <Button
                 variant="ghost"
                 className="flex items-center gap-2 justify-start text-red-500 hover:text-red-600"
-                onClick={() => onDeleteProduct()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteProduct();
+                  setIsPopoverOpen(false);
+                }}
                 disabled={isPending}
               >
                 {isPending ? (

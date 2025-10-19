@@ -11,11 +11,11 @@ type AuthLayerProps = {
 };
 
 function AuthLayer({ children }: AuthLayerProps) {
-  const { sellerAccount, adminAccount, setSellerAccount, setAdminAccount } =
+  const { adminAccount, setSellerAccount, setAdminAccount } =
     useAccountStore();
   const { setStore } = useStoreState();
 
-  const hasAccount = sellerAccount || adminAccount;
+  const hasAccount = adminAccount;
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["auth", "currentUser"],

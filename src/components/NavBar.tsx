@@ -6,14 +6,15 @@ import { Button } from "./ui/button";
 import { Menu } from "lucide-react";
 import SideBar from "./SideBar";
 import navLabels from "@/data/navigation";
-import Authenticated from "./layer/Authenticated";
 import ProfileDropDownMenu from "./ProfileDropDownMenu";
+import useStoreState from "@/stores/useStoreState";
 
 function NavBar() {
   const location = useLocation();
   const [selectedPath, setSelectedPath] = useState(location.pathname ?? "/");
   const [openSideBar, setOpenSideBar] = useState(false);
   const navigate = useNavigate();
+  const { store } = useStoreState();
 
   useEffect(() => {
     setSelectedPath(location.pathname);
@@ -54,7 +55,7 @@ function NavBar() {
                 }`}
                 onClick={handleSelectedPath(el.path)}
               >
-                <p>{el.label}</p>
+                <p className="sm:text-[0.85rem] md:text-[1rem]">{el.label}</p>
                 <div
                   className={
                     selectedPath === el.path
@@ -66,9 +67,7 @@ function NavBar() {
             );
           })}
 
-          <Authenticated>
-            <ProfileDropDownMenu />
-          </Authenticated>
+          {store && <ProfileDropDownMenu />}
         </div>
 
         <Button

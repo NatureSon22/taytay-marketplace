@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import useOrganizations from "@/hooks/useOrganizations";
+import useOrganizationOptions from "@/hooks/useOrganizationOptions";
 import type { FormStepProps } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MoveRight, X } from "lucide-react";
@@ -73,7 +73,7 @@ function StoreForm({
     },
   });
 
-  const organizations = useOrganizations();
+  const organizations = useOrganizationOptions();
 
   const chooseOrganization = (id: string) => {
     setOrganization(id);
