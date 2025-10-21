@@ -77,6 +77,7 @@ export default function AdminTable({
 
             {paginatedAdmins.map((admin) => (
               <TableRow key={admin.id}>
+                <TableCell>{admin.id}</TableCell>
                 <TableCell>{admin.email}</TableCell>
                 <TableCell>
                   {admin.firstName} {admin.middleName ?? ""} {admin.lastName}
